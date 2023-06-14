@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace SmartHomeAPI.ApplicationCore.Entities
+﻿namespace SmartHomeAPI.ApplicationCore.Entities
 {
     public class Temperature
     {

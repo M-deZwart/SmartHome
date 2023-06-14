@@ -1,5 +1,5 @@
 using MongoDB.Driver;
-using SmartHomeAPI.ApplicationCore;
+using SmartHomeAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 

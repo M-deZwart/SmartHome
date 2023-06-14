@@ -1,7 +1,7 @@
 ﻿using SmartHomeAPI.ApplicationCore.Interfaces;
 using SmartHomeAPI.Infrastructure;
 
-namespace SmartHomeAPI.ApplicationCore
+namespace SmartHomeAPI
 {
     public static class ServiceRegistration
     {

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using SmartHomeAPI.ApplicationCore.Entities;
 using SmartHomeAPI.ApplicationCore.Interfaces;
 
