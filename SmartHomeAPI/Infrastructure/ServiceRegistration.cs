@@ -23,7 +23,9 @@ namespace Infrastructure
                 services.AddDbContext<SmartHomeContext>(options =>
                 {
                     var connectionString = configuration.GetConnectionString("EF");
-                    options.UseSqlServer(connectionString);
+                    options.UseSqlServer(connectionString)
+                    .EnableSensitiveDataLogging()
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking); 
                 });
             }
             return services;
