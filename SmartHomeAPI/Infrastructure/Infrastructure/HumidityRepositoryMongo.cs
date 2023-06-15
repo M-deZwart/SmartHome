@@ -4,11 +4,11 @@ using SmartHomeAPI.ApplicationCore.Interfaces;
 
 namespace SmartHomeAPI.Infrastructure
 {
-    public class HumidityRepository : IHumidityRepository
+    public class HumidityRepositoryMongo : IHumidityRepository
     {
         private IMongoCollection<Humidity> _humidityCollection;
 
-        public HumidityRepository(IMongoDatabase db)
+        public HumidityRepositoryMongo(IMongoDatabase db)
         {
             _humidityCollection = db.GetCollection<Humidity>("Humidity");
         }
@@ -21,9 +21,6 @@ namespace SmartHomeAPI.Infrastructure
 
         public List<Humidity> GetByDateRange(DateTime startDate, DateTime endDate)
         {
-            startDate = startDate.ToUniversalTime();
-            endDate = endDate.ToUniversalTime();
-
             var filter = Builders<Humidity>.Filter.And(
                     Builders<Humidity>.Filter.Gte(h => h.Date, startDate),
                     Builders<Humidity>.Filter.Lte(h => h.Date, endDate)

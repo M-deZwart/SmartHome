@@ -4,11 +4,11 @@ using SmartHomeAPI.ApplicationCore.Interfaces;
 
 namespace SmartHomeAPI.Infrastructure
 {
-    public class TemperatureRepository : ITemperatureRepository
+    public class TemperatureRepositoryMongo : ITemperatureRepository
     {
         private IMongoCollection<Temperature> _temperatureCollection;
 
-        public TemperatureRepository(IMongoDatabase db)
+        public TemperatureRepositoryMongo(IMongoDatabase db)
         {
             _temperatureCollection = db.GetCollection<Temperature>("Temperature");
         }
@@ -21,9 +21,6 @@ namespace SmartHomeAPI.Infrastructure
 
         public List<Temperature> GetByDateRange(DateTime startDate, DateTime endDate)
         {
-            startDate = startDate.ToUniversalTime();
-            endDate = endDate.ToUniversalTime();
-
             var filter = Builders<Temperature>.Filter.And(
                     Builders<Temperature>.Filter.Gte(t => t.Date, startDate),
                     Builders<Temperature>.Filter.Lte(t => t.Date, endDate)

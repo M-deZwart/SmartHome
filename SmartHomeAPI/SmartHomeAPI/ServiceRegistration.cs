@@ -5,10 +5,10 @@ namespace SmartHomeAPI
 {
     public static class ServiceRegistration
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddTransient<IHumidityRepository, HumidityRepository>();
-            services.AddTransient<ITemperatureRepository, TemperatureRepository>();
+            services.AddTransient<IHumidityRepository, HumidityRepositoryMongo>();
+            services.AddTransient<ITemperatureRepository, TemperatureRepositoryMongo>();
 
             return services;
         }
