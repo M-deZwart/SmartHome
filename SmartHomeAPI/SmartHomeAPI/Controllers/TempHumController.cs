@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartHomeAPI.ApplicationCore.Entities;
 using SmartHomeAPI.ApplicationCore.Interfaces;
+using SmartHomeAPI.DTOs;
+using SmartHomeAPI.Interfaces;
 
 namespace SmartHomeAPI.Controllers
 {
@@ -12,16 +14,23 @@ namespace SmartHomeAPI.Controllers
         private readonly ILogger<TempHumController> _logger;
         private readonly ITemperatureRepository _temperatureRepository;
         private readonly IHumidityRepository _humidityRepository;
+        private readonly IHumidityMapper _humidityMapper;
+        private readonly ITemperatureMapper _temperatureMapper;
+
 
         public TempHumController(
             ILogger<TempHumController> logger,
             ITemperatureRepository temperatureRepository,
-            IHumidityRepository humidityRepository
+            IHumidityRepository humidityRepository,
+            IHumidityMapper humidityMapper,
+            ITemperatureMapper temperatureMapper
             )
         {
             _logger = logger;
             _temperatureRepository = temperatureRepository;
             _humidityRepository = humidityRepository;
+            _humidityMapper = humidityMapper;
+            _temperatureMapper = temperatureMapper;
         }
 
         [HttpGet("temperature/{celsius}")]
@@ -45,13 +54,16 @@ namespace SmartHomeAPI.Controllers
         public IActionResult GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
         {
             var temperatureList = _temperatureRepository.GetByDateRange(startDate, endDate);
+            List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
 
             temperatureList.ForEach(temperature =>
-            {
+            {    
+                var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
+                temperatureListDTO.Add(temperatureDTO);
                 LoqRequest("GetTemperatureByDateRange", temperature.Celsius, temperature.Date);
             });
             
-            return Ok(temperatureList);
+            return Ok(temperatureListDTO);
         }
 
         [HttpGet("humidity/{percentage}")]
@@ -75,13 +87,16 @@ namespace SmartHomeAPI.Controllers
         public IActionResult GetHumidityByDateRange(DateTime startDate, DateTime endDate)
         {
             var humidityList = _humidityRepository.GetByDateRange(startDate, endDate);
+            List<HumidityDTO> humidityListDTO = new List<HumidityDTO>();
 
             humidityList.ForEach(humidity =>
             {
+                var humidityDTO = _humidityMapper.MapToDTO(humidity);
+                humidityListDTO.Add(humidityDTO);
                 LoqRequest("GetTemperatureByDateRange", humidity.Percentage, humidity.Date);
             });
             
-            return Ok(humidityList);
+            return Ok(humidityListDTO);
         }
 
         private void LoqRequest(string action, object result, DateTime timestamp)

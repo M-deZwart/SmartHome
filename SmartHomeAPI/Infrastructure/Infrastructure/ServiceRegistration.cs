@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Infrastructure.DTOs;
+using Infrastructure.Infrastructure.Interfaces;
+using Infrastructure.Infrastructure.Mappers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 
-namespace Infrastructure
+namespace Infrastructure.Infrastructure
 {
     public static class ServiceRegistration
     {
@@ -17,6 +20,8 @@ namespace Infrastructure
                 var mongoClient = new MongoClient(mongoConnectionString);
                 var mongoDatabase = mongoClient.GetDatabase("smarthome-db");
                 services.AddSingleton(mongoDatabase);
+                services.AddTransient<IHumidityMapper<HumidityMongoDTO>, HumidityMongoMapper>();
+                services.AddTransient<ITemperatureMapper<TemperatureMongoDTO>, TemperatureMongoMapper>();
             }
             if (databaseType == "EF")
             {
@@ -25,7 +30,9 @@ namespace Infrastructure
                     var connectionString = configuration.GetConnectionString("EF");
                     options.UseSqlServer(connectionString)
                     .EnableSensitiveDataLogging()
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking); 
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    services.AddTransient<IHumidityMapper<HumidityEfDTO>, HumidityEfMapper>();
+                    services.AddTransient<ITemperatureMapper<TemperatureEfDTO>, TemperatureEfMapper>();
                 });
             }
             return services;
