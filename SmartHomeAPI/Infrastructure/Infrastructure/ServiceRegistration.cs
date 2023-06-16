@@ -1,9 +1,10 @@
 ﻿using Infrastructure.Infrastructure.DTOs;
-using Infrastructure.Infrastructure.Interfaces;
 using Infrastructure.Infrastructure.Mappers;
+using Interfaces.MappersInfra;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using MongoDB.Driver;
 
 namespace Infrastructure.Infrastructure
@@ -31,10 +32,11 @@ namespace Infrastructure.Infrastructure
                     options.UseSqlServer(connectionString)
                     .EnableSensitiveDataLogging()
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                    services.AddTransient<IHumidityMapper<HumidityEfDTO>, HumidityEfMapper>();
-                    services.AddTransient<ITemperatureMapper<TemperatureEfDTO>, TemperatureEfMapper>();
                 });
+                services.AddTransient<IHumidityMapper<HumidityEfDTO>, HumidityEfMapper>();
+                services.AddTransient<ITemperatureMapper<TemperatureEfDTO>, TemperatureEfMapper>();
             }
+           
             return services;
         }
     }

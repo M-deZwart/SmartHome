@@ -1,6 +1,6 @@
 ﻿using SmartHomeAPI.ApplicationCore.Entities;
 
-namespace Infrastructure.Infrastructure.Interfaces
+namespace Interfaces.MappersInfra
 {
     public interface IHumidityMapper<T>
     {

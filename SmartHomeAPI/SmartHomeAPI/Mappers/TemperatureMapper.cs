@@ -1,6 +1,6 @@
 ﻿using SmartHomeAPI.ApplicationCore.Entities;
 using SmartHomeAPI.DTOs;
-using SmartHomeAPI.Interfaces;
+using SmartHomeAPI.MappersAPI;
 
 namespace SmartHomeAPI.Mappers
 {

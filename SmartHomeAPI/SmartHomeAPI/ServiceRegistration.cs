@@ -1,7 +1,7 @@
-﻿using Infrastructure.Infrastructure;
-using SmartHomeAPI.ApplicationCore.Interfaces;
-using SmartHomeAPI.Interfaces;
+﻿using SmartHomeAPI.MappersAPI;
 using SmartHomeAPI.Mappers;
+using Interfaces.Interfaces;
+using Infrastructure.Infrastructure.Repositories;
 
 namespace SmartHomeAPI
 {

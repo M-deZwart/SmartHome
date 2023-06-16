@@ -1,9 +1,9 @@
 ﻿using Infrastructure.Infrastructure.DTOs;
-using Infrastructure.Infrastructure.Interfaces;
+using Interfaces.Interfaces;
+using Interfaces.MappersInfra;
 using SmartHomeAPI.ApplicationCore.Entities;
-using SmartHomeAPI.ApplicationCore.Interfaces;
 
-namespace Infrastructure.Infrastructure
+namespace Infrastructure.Infrastructure.Repositories
 {
     public class TemperatureRepositoryEF : ITemperatureRepository
     {

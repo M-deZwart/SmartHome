@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Interfaces.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using SmartHomeAPI.ApplicationCore.Entities;
-using SmartHomeAPI.ApplicationCore.Interfaces;
 using SmartHomeAPI.DTOs;
-using SmartHomeAPI.Interfaces;
+using SmartHomeAPI.MappersAPI;
 
 namespace SmartHomeAPI.Controllers
 {

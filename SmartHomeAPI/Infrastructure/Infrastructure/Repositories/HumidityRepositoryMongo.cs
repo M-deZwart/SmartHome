@@ -1,10 +1,10 @@
 ﻿using Infrastructure.Infrastructure.DTOs;
-using Infrastructure.Infrastructure.Interfaces;
+using Interfaces.Interfaces;
+using Interfaces.MappersInfra;
 using MongoDB.Driver;
 using SmartHomeAPI.ApplicationCore.Entities;
-using SmartHomeAPI.ApplicationCore.Interfaces;
 
-namespace SmartHomeAPI.Infrastructure
+namespace SmartHomeAPI.Infrastructure.Repositories
 {
     public class HumidityRepositoryMongo : IHumidityRepository
     {

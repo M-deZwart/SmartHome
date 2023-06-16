@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartHomeAPI.ApplicationCore.Entities;
 
-namespace Infrastructure
+namespace Infrastructure.Infrastructure
 {
     public class SmartHomeContext : DbContext
     {
