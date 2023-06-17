@@ -2,7 +2,7 @@
 {
     public class HumidityDTO
     {
-        public float Percentage { get; set; }
+        public double Percentage { get; set; }
 
         public DateTime Date { get; set; }
     }

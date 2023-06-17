@@ -23,7 +23,7 @@ void loop() {
   delay(5000);
 }
 
-void sendSensorData(float temperature, float humidity) {
+void sendSensorData(double temperature, double humidity) {
   String serverUrlT = "http://192.168.2.14:5233/api/temperature/" + String(temperature);
   String serverUrlH = "http://192.168.2.14:5233/api/humidity/" + String(humidity);
 

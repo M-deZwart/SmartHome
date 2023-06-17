@@ -4,7 +4,7 @@ namespace SmartHomeAPI.ApplicationCore.Entities
 {
     public class Humidity
     {
-        public float Percentage { get; set; }
+        public double Percentage { get; set; }
 
         public DateTime Date { get; set; }
     }

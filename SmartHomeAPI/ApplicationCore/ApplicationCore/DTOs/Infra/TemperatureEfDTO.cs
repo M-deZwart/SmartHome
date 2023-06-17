@@ -7,7 +7,7 @@ namespace Infrastructure.Infrastructure.DTOs
         [Key]
         public Guid ID { get; set; }
 
-        public float Celsius { get; set; }
+        public double Celsius { get; set; }
 
         public DateTime Date { get; set; }
     }

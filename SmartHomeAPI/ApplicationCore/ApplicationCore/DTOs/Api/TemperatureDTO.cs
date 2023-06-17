@@ -2,7 +2,7 @@
 {
     public class TemperatureDTO
     {
-        public float Celsius { get; set; }
+        public double Celsius { get; set; }
 
         public DateTime Date { get; set; }
     }

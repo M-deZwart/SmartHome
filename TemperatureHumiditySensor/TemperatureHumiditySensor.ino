@@ -31,8 +31,8 @@ void loop() {
   int chk = dht.read();
   Serial.println(chk);
 
-  float temperature = dht.readTemperature();
-  float humidity = dht.readHumidity();
+  double temperature = dht.readTemperature();
+  double humidity = dht.readHumidity();
 
   if (!isnan(temperature) && !isnan(humidity)) {
     Serial.print("Humidity (%): ");
@@ -48,7 +48,7 @@ void loop() {
   }
 }
 
-void sendSensorData(float temperature, float humidity) {
+void sendSensorData(double temperature, double humidity) {
   String serverUrlT = "http://192.168.2.14:5233/api/temperature/" + String(temperature);
   String serverUrlH = "http://192.168.2.14:5233/api/humidity/" + String(humidity);
 
