@@ -1,6 +1,6 @@
-﻿using Infrastructure.Infrastructure.DTOs;
+﻿using ApplicationCore.ApplicationCore.Interfaces;
+using Infrastructure.Infrastructure.DTOs;
 using Interfaces.Interfaces;
-using Interfaces.MappersInfra;
 using MongoDB.Driver;
 using SmartHomeAPI.ApplicationCore.Entities;
 
@@ -45,6 +45,19 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             });
 
             return humidityList;
+        }
+
+        public Humidity GetById(Guid id)
+        {
+            var filter = Builders<HumidityMongoDTO>.Filter.Eq(h => h.ID, id);
+            var humidityDTO = _humidityCollection.Find(filter).FirstOrDefault();
+
+            if (humidityDTO != null)
+            {
+                return _humidityMapper.MapToEntity(humidityDTO) ;
+            }
+
+            throw new InvalidOperationException("Humidity not found");
         }
     }
 }

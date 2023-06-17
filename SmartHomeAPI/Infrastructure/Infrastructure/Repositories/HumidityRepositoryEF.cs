@@ -1,6 +1,6 @@
-﻿using Infrastructure.Infrastructure.DTOs;
+﻿using ApplicationCore.ApplicationCore.Interfaces;
+using Infrastructure.Infrastructure.DTOs;
 using Interfaces.Interfaces;
-using Interfaces.MappersInfra;
 using SmartHomeAPI.ApplicationCore.Entities;
 
 
@@ -38,6 +38,17 @@ namespace Infrastructure.Infrastructure.Repositories
             });
 
             return humidityList;
+        }
+
+        public Humidity GetById(Guid id)
+        {
+            var humidityDTO = _smartHomeContext.Humidities.FirstOrDefault(h => h.ID == id);
+
+            if (humidityDTO != null)
+            {
+                return _humidityMapper.MapToEntity(humidityDTO);
+            }
+            throw new InvalidOperationException("Humidity not found");
         }
     }
 }

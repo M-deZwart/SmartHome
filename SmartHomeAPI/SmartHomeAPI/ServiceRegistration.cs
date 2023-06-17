@@ -2,6 +2,9 @@
 using SmartHomeAPI.Mappers;
 using Interfaces.Interfaces;
 using Infrastructure.Infrastructure.Repositories;
+using SmartHomeAPI.Interfaces;
+using SmartHomeAPI.Services;
+using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
 
 namespace SmartHomeAPI
 {
@@ -13,6 +16,14 @@ namespace SmartHomeAPI
             services.AddTransient<ITemperatureRepository, TemperatureRepositoryEF>();
             services.AddTransient<IHumidityMapper, HumidityMapper>();
             services.AddTransient<ITemperatureMapper, TemperatureMapper>();
+
+            services.AddScoped<IRequestLogger>(provider =>
+            {
+                var logger = provider.GetRequiredService<ILogger>();
+                var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+
+                return new RequestLoggerService(logger, httpContextAccessor);
+            });
 
             return services;
         }

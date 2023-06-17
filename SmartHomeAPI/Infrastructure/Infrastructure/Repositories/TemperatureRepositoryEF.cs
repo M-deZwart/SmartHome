@@ -1,6 +1,5 @@
-﻿using Infrastructure.Infrastructure.DTOs;
-using Interfaces.Interfaces;
-using Interfaces.MappersInfra;
+﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
+using Infrastructure.Infrastructure.DTOs;
 using SmartHomeAPI.ApplicationCore.Entities;
 
 namespace Infrastructure.Infrastructure.Repositories
@@ -38,6 +37,18 @@ namespace Infrastructure.Infrastructure.Repositories
             });
 
             return temperatureList;
+        }
+
+        public Temperature GetById(Guid id)
+        {
+            var temperatureDTO = _smartHomeContext.Temperatures.FirstOrDefault(t => t.ID == id);
+
+            if (temperatureDTO != null)
+            {
+                return _temperatureMapper.MapToEntity(temperatureDTO);
+            }
+
+            throw new InvalidOperationException("Temperature not found");
         }
     }
 }

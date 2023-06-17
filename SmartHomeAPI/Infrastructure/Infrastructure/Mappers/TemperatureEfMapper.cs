@@ -1,5 +1,5 @@
-﻿using Infrastructure.Infrastructure.DTOs;
-using Interfaces.MappersInfra;
+﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
+using Infrastructure.Infrastructure.DTOs;
 using SmartHomeAPI.ApplicationCore.Entities;
 
 namespace Infrastructure.Infrastructure.Mappers

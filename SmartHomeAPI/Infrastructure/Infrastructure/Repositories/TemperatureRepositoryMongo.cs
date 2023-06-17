@@ -1,6 +1,5 @@
-﻿using Infrastructure.Infrastructure.DTOs;
-using Interfaces.Interfaces;
-using Interfaces.MappersInfra;
+﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
+using Infrastructure.Infrastructure.DTOs;
 using MongoDB.Driver;
 using SmartHomeAPI.ApplicationCore.Entities;
 
@@ -44,6 +43,19 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             });
 
             return temperatureList;
+        }
+
+        public Temperature GetById(Guid id)
+        {
+            var filter = Builders<TemperatureMongoDTO>.Filter.Eq(t => t.ID, id);
+            var temperatureDTO = _temperatureCollection.Find(filter).FirstOrDefault();
+            
+            if (temperatureDTO != null)
+            {
+                return _temperatureMapper.MapToEntity(temperatureDTO);
+            }
+
+            throw new InvalidOperationException("Temperature not found");
         }
     }
 }

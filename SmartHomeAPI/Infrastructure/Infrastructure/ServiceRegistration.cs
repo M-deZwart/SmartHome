@@ -1,10 +1,10 @@
-﻿using Infrastructure.Infrastructure.DTOs;
+﻿using ApplicationCore.ApplicationCore.Interfaces;
+using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
+using Infrastructure.Infrastructure.DTOs;
 using Infrastructure.Infrastructure.Mappers;
-using Interfaces.MappersInfra;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 using MongoDB.Driver;
 
 namespace Infrastructure.Infrastructure
