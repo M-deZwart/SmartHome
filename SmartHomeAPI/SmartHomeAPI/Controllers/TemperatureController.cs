@@ -1,4 +1,4 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
+﻿using ApplicationCore.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SmartHomeAPI.ApplicationCore.Entities;
 using SmartHomeAPI.DTOs;

@@ -1,5 +1,4 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces;
-using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
+﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
 using Infrastructure.Infrastructure.DTOs;
 using Infrastructure.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;

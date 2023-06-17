@@ -1,6 +1,6 @@
 ﻿using SmartHomeAPI.ApplicationCore.Entities;
 
-namespace ApplicationCore.ApplicationCore.Interfaces.InfraMappers
+namespace ApplicationCore.ApplicationCore.Interfaces
 {
     public interface ITemperatureRepository
     {
