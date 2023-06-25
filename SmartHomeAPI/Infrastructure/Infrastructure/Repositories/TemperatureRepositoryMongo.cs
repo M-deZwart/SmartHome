@@ -51,7 +51,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             var filter = Builders<TemperatureMongoDTO>.Filter.Eq(t => t.ID, id);
             var temperatureDTO = _temperatureCollection.Find(filter).FirstOrDefault();
             
-            if (temperatureDTO != null)
+            if (temperatureDTO is not null)
             {
                 return _temperatureMapper.MapToEntity(temperatureDTO);
             }

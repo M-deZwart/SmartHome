@@ -52,7 +52,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             var filter = Builders<HumidityMongoDTO>.Filter.Eq(h => h.ID, id);
             var humidityDTO = _humidityCollection.Find(filter).FirstOrDefault();
 
-            if (humidityDTO != null)
+            if (humidityDTO is not null)
             {
                 return _humidityMapper.MapToEntity(humidityDTO) ;
             }

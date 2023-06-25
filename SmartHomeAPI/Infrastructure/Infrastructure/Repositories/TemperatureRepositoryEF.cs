@@ -44,7 +44,7 @@ namespace Infrastructure.Infrastructure.Repositories
         {
             var temperatureDTO = _smartHomeContext.Temperatures.FirstOrDefault(t => t.ID == id);
 
-            if (temperatureDTO != null)
+            if (temperatureDTO is not null)
             {
                 return _temperatureMapper.MapToEntity(temperatureDTO);
             }

@@ -51,7 +51,7 @@ namespace SmartHomeAPI.Controllers
             {
                 var temperature = _temperatureRepository.GetById(id);
 
-                if (temperature != null)
+                if (temperature is not null)
                 {
                     var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
                     _requestLogger.LogRequest("GetCurrentTemperature", temperatureDTO.Celsius, temperatureDTO.Date);

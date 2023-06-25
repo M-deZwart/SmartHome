@@ -14,7 +14,7 @@ namespace Infrastructure.Infrastructure
         {
             var databaseType = configuration["DatabaseType"];
 
-            if (databaseType == "Mongo")
+            if (databaseType is "Mongo")
             {
                 var mongoConnectionString = configuration.GetConnectionString("MongoDB");
                 var mongoClient = new MongoClient(mongoConnectionString);
@@ -23,7 +23,7 @@ namespace Infrastructure.Infrastructure
                 services.AddTransient<IHumidityMapper<HumidityMongoDTO>, HumidityMongoMapper>();
                 services.AddTransient<ITemperatureMapper<TemperatureMongoDTO>, TemperatureMongoMapper>();
             }
-            if (databaseType == "EF")
+            if (databaseType is "EF")
             {
                 services.AddDbContext<SmartHomeContext>(options =>
                 {

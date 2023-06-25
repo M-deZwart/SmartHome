@@ -51,7 +51,7 @@ namespace SmartHomeAPI.Controllers
             {
                 var humidity = _humidityRepository.GetById(id);
 
-                if (humidity != null)
+                if (humidity is not null)
                 {
                     var humidityDTO = _humidityMapper.MapToDTO(humidity);
                     _requestLogger.LogRequest("GetCurrentHumidity", humidityDTO.Percentage, humidityDTO.Date);

@@ -44,7 +44,7 @@ namespace Infrastructure.Infrastructure.Repositories
         {
             var humidityDTO = _smartHomeContext.Humidities.FirstOrDefault(h => h.ID == id);
 
-            if (humidityDTO != null)
+            if (humidityDTO is not null)
             {
                 return _humidityMapper.MapToEntity(humidityDTO);
             }
