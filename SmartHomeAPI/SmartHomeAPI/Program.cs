@@ -3,7 +3,7 @@ using SmartHomeAPI;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-//test
+
 // Add services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler=ReferenceHandler.IgnoreCycles);
