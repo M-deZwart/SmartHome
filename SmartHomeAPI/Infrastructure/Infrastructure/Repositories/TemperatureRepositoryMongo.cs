@@ -9,7 +9,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
     public class TemperatureRepositoryMongo : ITemperatureRepository
     {
         private readonly ITemperatureMapper<TemperatureMongoDTO> _temperatureMapper;
-        private IMongoCollection<TemperatureMongoDTO> _temperatureCollection;
+        private readonly IMongoCollection<TemperatureMongoDTO> _temperatureCollection;
 
         public TemperatureRepositoryMongo(IMongoDatabase db, ITemperatureMapper<TemperatureMongoDTO> temperatureMapper)
         {

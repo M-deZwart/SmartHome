@@ -9,7 +9,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
     public class HumidityRepositoryMongo : IHumidityRepository
     {
         private readonly IHumidityMapper<HumidityMongoDTO> _humidityMapper;
-        private IMongoCollection<HumidityMongoDTO> _humidityCollection;
+        private readonly IMongoCollection<HumidityMongoDTO> _humidityCollection;
 
         public HumidityRepositoryMongo(IMongoDatabase db, IHumidityMapper<HumidityMongoDTO> humidityMapper)
         {
