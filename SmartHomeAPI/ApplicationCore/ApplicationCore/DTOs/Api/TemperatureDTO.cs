@@ -1,4 +1,4 @@
-﻿namespace SmartHomeAPI.DTOs
+﻿namespace ApplicationCore.ApplicationCore.DTOs
 {
     public class TemperatureDTO
     {

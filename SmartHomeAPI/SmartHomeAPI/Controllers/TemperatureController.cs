@@ -1,7 +1,7 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces;
+﻿using ApplicationCore.ApplicationCore.DTOs;
+using ApplicationCore.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SmartHomeAPI.ApplicationCore.Entities;
-using SmartHomeAPI.DTOs;
 using SmartHomeAPI.Interfaces;
 using SmartHomeAPI.MappersAPI;
 
@@ -26,22 +26,26 @@ namespace SmartHomeAPI.Controllers
             _requestLogger = requestLogger;
         }
 
-
         [HttpGet("{celsius}")]
         public IActionResult SetTemperature([FromRoute] float celsius)
         {
-            Temperature temperature;
-
-            temperature = new Temperature
+            try
             {
-                Celsius = celsius,
-                Date = DateTime.Now
-            };
+                Temperature temperature = new Temperature
+                {
+                    Celsius = celsius,
+                    Date = DateTime.Now
+                };
 
-            _temperatureRepository.Create(temperature);
+                _temperatureRepository.Create(temperature);
 
-            _requestLogger.LogRequest("SetTemperature", temperature.Celsius, temperature.Date);
-            return Ok(temperature);
+                _requestLogger.LogRequest("SetTemperature", temperature.Celsius, temperature.Date);
+                return Ok(temperature);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
 
         [HttpGet("{id}")]
@@ -66,19 +70,33 @@ namespace SmartHomeAPI.Controllers
         }
 
         [HttpGet("temperatureByDateRange")]
-        public IActionResult GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
+        public ActionResult<List<TemperatureDTO>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
         {
-            var temperatureList = _temperatureRepository.GetByDateRange(startDate, endDate);
-            List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
-
-            temperatureList.ForEach(temperature =>
+            try
             {
-                var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
-                temperatureListDTO.Add(temperatureDTO);
-                _requestLogger.LogRequest("GetTemperatureByDateRange", temperatureDTO.Celsius, temperatureDTO.Date);
-            });
+                var temperatureList = _temperatureRepository.GetByDateRange(startDate, endDate);
+                List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
 
-            return Ok(temperatureListDTO);
+                temperatureList.ForEach(temperature =>
+                {
+                    var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
+                    temperatureListDTO.Add(temperatureDTO);
+                    _requestLogger.LogRequest("GetTemperatureByDateRange", temperatureDTO.Celsius, temperatureDTO.Date);
+                });
+
+                if (temperatureListDTO.Count > 0)
+                {
+                    return Ok(temperatureListDTO);
+                }
+                else
+                {
+                    return NotFound("No temperature data found for the specified date range");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
 
     }

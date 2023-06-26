@@ -1,5 +1,5 @@
-﻿using SmartHomeAPI.ApplicationCore.Entities;
-using SmartHomeAPI.DTOs;
+﻿using ApplicationCore.ApplicationCore.DTOs;
+using SmartHomeAPI.ApplicationCore.Entities;
 
 namespace SmartHomeAPI.MappersAPI
 {

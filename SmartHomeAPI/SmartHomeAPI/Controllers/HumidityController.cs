@@ -1,8 +1,7 @@
-﻿using Infrastructure.Infrastructure.DTOs;
+﻿using ApplicationCore.ApplicationCore.DTOs;
 using Interfaces.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SmartHomeAPI.ApplicationCore.Entities;
-using SmartHomeAPI.DTOs;
 using SmartHomeAPI.Interfaces;
 using SmartHomeAPI.MappersAPI;
 
@@ -30,22 +29,27 @@ namespace SmartHomeAPI.Controllers
         [HttpGet("{percentage}")]
         public IActionResult SetHumidity([FromRoute] float percentage)
         {
-            Humidity humidity;
-
-            humidity = new Humidity
+            try
             {
-                Percentage = percentage,
-                Date = DateTime.Now
-            };
+                Humidity humidity = new Humidity
+                {
+                    Percentage = percentage,
+                    Date = DateTime.Now
+                };
 
-            _humidityRepository.Create(humidity);
+                _humidityRepository.Create(humidity);
 
-            _requestLogger.LogRequest("SetHumidity", humidity.Percentage, humidity.Date);
-            return Ok(humidity);
+                _requestLogger.LogRequest("SetHumidity", humidity.Percentage, humidity.Date);
+                return Ok(humidity);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCurrentHumidity(Guid id)
+        public ActionResult<HumidityDTO> GetCurrentHumidity(Guid id)
         {
             try
             {
@@ -66,19 +70,33 @@ namespace SmartHomeAPI.Controllers
         }
 
         [HttpGet("humidityByDateRange")]
-        public IActionResult GetHumidityByDateRange(DateTime startDate, DateTime endDate)
+        public ActionResult<List<HumidityDTO>> GetHumidityByDateRange(DateTime startDate, DateTime endDate)
         {
-            var humidityList = _humidityRepository.GetByDateRange(startDate, endDate);
-            List<HumidityDTO> humidityListDTO = new List<HumidityDTO>();
-
-            humidityList.ForEach(humidity =>
+            try
             {
-                var humidityDTO = _humidityMapper.MapToDTO(humidity);
-                humidityListDTO.Add(humidityDTO);
-                _requestLogger.LogRequest("GetTemperatureByDateRange", humidityDTO.Percentage, humidityDTO.Date);
-            });
+                var humidityList = _humidityRepository.GetByDateRange(startDate, endDate);
+                List<HumidityDTO> humidityListDTO = new List<HumidityDTO>();
 
-            return Ok(humidityListDTO);
+                humidityList.ForEach(humidity =>
+                {
+                    var humidityDTO = _humidityMapper.MapToDTO(humidity);
+                    humidityListDTO.Add(humidityDTO);
+                    _requestLogger.LogRequest("GetHumidityByDateRange", humidityDTO.Percentage, humidityDTO.Date);
+                });
+
+                if (humidityListDTO.Count > 0)
+                {
+                    return Ok(humidityListDTO);
+                }
+                else
+                {
+                    return NotFound("No humidity data found for the specified date range");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
     }
