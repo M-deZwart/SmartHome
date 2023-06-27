@@ -1,6 +1,4 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
-using Infrastructure.Infrastructure.DTOs;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using SmartHomeAPI.ApplicationCore.Entities;
 
 namespace Infrastructure.Infrastructure.Mappers

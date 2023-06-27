@@ -1,6 +1,4 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
-using Infrastructure.Infrastructure.DTOs;
-using Infrastructure.Infrastructure.Mappers;
+﻿using Infrastructure.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,8 +28,6 @@ namespace Infrastructure.Infrastructure
                     .EnableSensitiveDataLogging()
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
-                services.AddTransient<IHumidityMapper<HumidityEfDTO>, HumidityEfMapper>();
-                services.AddTransient<ITemperatureMapper<TemperatureEfDTO>, TemperatureEfMapper>();
             }       
             return services;
         }

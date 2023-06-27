@@ -1,6 +1,4 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
-using Infrastructure.Infrastructure.DTOs;
-using Microsoft.Identity.Client;
+﻿using Microsoft.Identity.Client;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using SmartHomeAPI.ApplicationCore.Entities;

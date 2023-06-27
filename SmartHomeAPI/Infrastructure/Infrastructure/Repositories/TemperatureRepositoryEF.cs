@@ -1,6 +1,4 @@
 ﻿using ApplicationCore.ApplicationCore.Interfaces;
-using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
-using Infrastructure.Infrastructure.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SmartHomeAPI.ApplicationCore.Entities;
@@ -10,26 +8,22 @@ namespace Infrastructure.Infrastructure.Repositories
     public class TemperatureRepositoryEF : ITemperatureRepository
     {
         private readonly SmartHomeContext _smartHomeContext;
-        private readonly ITemperatureMapper<TemperatureEfDTO> _temperatureMapper;
         private readonly ILogger<TemperatureRepositoryEF> _logger;
 
         public TemperatureRepositoryEF(
             SmartHomeContext smartHomeContext, 
-            ITemperatureMapper<TemperatureEfDTO> temperatureMapper,
             ILogger<TemperatureRepositoryEF> logger)
         {
             _smartHomeContext = smartHomeContext;
-            _temperatureMapper = temperatureMapper;
             _logger = logger;
         }
 
         public async Task Create(Temperature temperature)
         {
             try
-            {
-                var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
-                temperatureDTO.Date = temperature.Date.ToUniversalTime().AddHours(2);
-                _smartHomeContext.Temperatures.Add(temperatureDTO);
+            {              
+                temperature.Date = temperature.Date.ToUniversalTime().AddHours(2);
+                _smartHomeContext.Temperatures.Add(temperature);
                 await _smartHomeContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -44,16 +38,9 @@ namespace Infrastructure.Infrastructure.Repositories
         {
             try
             {
-                var temperatureListDTO = await _smartHomeContext.Temperatures
+                var temperatureList = await _smartHomeContext.Temperatures
                 .Where(t => t.Date >= startDate && t.Date <= endDate)
-                .ToListAsync();
-                List<Temperature> temperatureList = new List<Temperature>();
-
-                temperatureListDTO.ForEach(temperatureDTO =>
-                {
-                    var temperature = _temperatureMapper.MapToEntity(temperatureDTO);
-                    temperatureList.Add(temperature);
-                });
+                .ToListAsync();          
 
                 return temperatureList;
             }
@@ -69,11 +56,11 @@ namespace Infrastructure.Infrastructure.Repositories
         {
             try
             {
-                var temperatureDTO = await _smartHomeContext.Temperatures.FirstOrDefaultAsync(t => t.ID == id);
+                var temperature = await _smartHomeContext.Temperatures.FirstOrDefaultAsync(t => t.Id == id);
 
-                if (temperatureDTO is not null)
+                if (temperature is not null)
                 {
-                    return _temperatureMapper.MapToEntity(temperatureDTO);
+                    return temperature;
                 }
 
                 throw new InvalidOperationException("Temperature not found");

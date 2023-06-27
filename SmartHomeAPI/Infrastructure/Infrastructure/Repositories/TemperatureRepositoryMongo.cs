@@ -1,7 +1,4 @@
-﻿using Amazon.Runtime.Internal.Util;
-using ApplicationCore.ApplicationCore.Interfaces;
-using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
-using Infrastructure.Infrastructure.DTOs;
+﻿using ApplicationCore.ApplicationCore.Interfaces;
 using Infrastructure.Infrastructure.Mappers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
