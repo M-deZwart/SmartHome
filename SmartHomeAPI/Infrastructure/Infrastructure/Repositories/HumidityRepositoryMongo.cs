@@ -1,8 +1,10 @@
 ﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
 using Infrastructure.Infrastructure.DTOs;
 using Interfaces.Interfaces;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using SmartHomeAPI.ApplicationCore.Entities;
+using System.Linq;
 
 namespace SmartHomeAPI.Infrastructure.Repositories
 {
@@ -10,54 +12,88 @@ namespace SmartHomeAPI.Infrastructure.Repositories
     {
         private readonly IHumidityMapper<HumidityMongoDTO> _humidityMapper;
         private readonly IMongoCollection<HumidityMongoDTO> _humidityCollection;
+        private readonly ILogger<HumidityRepositoryMongo> _logger;
 
-        public HumidityRepositoryMongo(IMongoDatabase db, IHumidityMapper<HumidityMongoDTO> humidityMapper)
+        public HumidityRepositoryMongo(
+            IMongoDatabase db, 
+            IHumidityMapper<HumidityMongoDTO> humidityMapper,
+            ILogger<HumidityRepositoryMongo> logger)
         {
             _humidityCollection = db.GetCollection<HumidityMongoDTO>("Humidity");
             _humidityMapper = humidityMapper;
+            _logger = logger;
         }
 
-        public void Create(Humidity humidity)
+        public async Task Create(Humidity humidity)
         {  
-            var humidityDTO = _humidityMapper.MapToDTO(humidity);
-            humidityDTO.Date = humidity.Date.ToUniversalTime().AddHours(2);
-
-            _humidityCollection.InsertOne(humidityDTO);
+            try
+            {
+                var humidityDTO = _humidityMapper.MapToDTO(humidity);
+                humidityDTO.Date = humidity.Date.ToUniversalTime().AddHours(2);
+                await _humidityCollection.InsertOneAsync(humidityDTO);
+            }
+            catch(Exception ex)
+            {
+                var errorMessage = "Failed to create humidity:";
+                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
+                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
+            }
         }
 
-        public List<Humidity> GetByDateRange(DateTime startDate, DateTime endDate)
+        public async Task<List<Humidity>> GetByDateRange(DateTime startDate, DateTime endDate)
         {
-            var filter = Builders<HumidityMongoDTO>.Filter.And(
+            try
+            {
+                var filter = Builders<HumidityMongoDTO>.Filter.And(
                     Builders<HumidityMongoDTO>.Filter.Gte(h => h.Date, startDate),
                     Builders<HumidityMongoDTO>.Filter.Lte(h => h.Date, endDate)
                 );
 
-            var humidityListDTO = _humidityCollection
-                .Find(filter)
-                .ToList();
+                var humidityListDTO = await _humidityCollection
+                    .Find(filter)
+                    .ToListAsync();
 
-            List<Humidity> humidityList = new List<Humidity>();
+                List<Humidity> humidityList = new List<Humidity>();
 
-            humidityListDTO.ForEach(humidityDTO =>
-            {
-                var humidity = _humidityMapper.MapToEntity(humidityDTO);
-                humidityList.Add(humidity);
-            });
+                humidityListDTO.ForEach(humidityDTO =>
+                {
+                    var humidity = _humidityMapper.MapToEntity(humidityDTO);
+                    humidityList.Add(humidity);
+                });
 
-            return humidityList;
-        }
-
-        public Humidity GetById(Guid id)
-        {
-            var filter = Builders<HumidityMongoDTO>.Filter.Eq(h => h.ID, id);
-            var humidityDTO = _humidityCollection.Find(filter).FirstOrDefault();
-
-            if (humidityDTO is not null)
-            {
-                return _humidityMapper.MapToEntity(humidityDTO) ;
+                return humidityList;
             }
-
-            throw new InvalidOperationException("Humidity not found");
+            catch (Exception ex)
+            {
+                var errorMessage = "Failed to get humidity by date range:";
+                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
+                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
+            }
         }
+
+        public async Task<Humidity> GetById(Guid id)
+        {
+            try
+            {
+                var filter = Builders<HumidityMongoDTO>.Filter.Eq(h => h.ID, id);
+                var humidityDTO = await _humidityCollection.Find(filter).FirstOrDefaultAsync();
+
+                if (humidityDTO is not null)
+                {
+                    return _humidityMapper.MapToEntity(humidityDTO);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Humidity not found");
+                }            
+            } 
+            catch (Exception ex)
+            {
+                var errorMessage = "Failed to get humidity by ID:";
+                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
+                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
+            }        
+        }
+
     }
 }

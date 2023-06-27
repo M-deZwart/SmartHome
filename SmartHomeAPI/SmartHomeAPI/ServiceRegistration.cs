@@ -24,7 +24,6 @@ namespace SmartHomeAPI
 
                 return new RequestLoggerService(logger, httpContextAccessor);
             });
-
             return services;
         }
     }

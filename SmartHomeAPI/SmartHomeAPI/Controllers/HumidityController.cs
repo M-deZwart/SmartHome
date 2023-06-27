@@ -15,6 +15,8 @@ namespace SmartHomeAPI.Controllers
         private readonly IHumidityMapper _humidityMapper;
         private readonly IRequestLogger _requestLogger;
 
+        private const string ERROR_OCCURED_MESSAGE = "An error occurred:";
+
         public HumidityController(
             IHumidityRepository humidityRepository,
             IHumidityMapper humidityMapper,
@@ -27,7 +29,7 @@ namespace SmartHomeAPI.Controllers
         }
 
         [HttpGet("{percentage}")]
-        public IActionResult SetHumidity([FromRoute] float percentage)
+        public async Task<IActionResult> SetHumidity([FromRoute] double percentage)
         {
             try
             {
@@ -37,23 +39,23 @@ namespace SmartHomeAPI.Controllers
                     Date = DateTime.Now
                 };
 
-                _humidityRepository.Create(humidity);
+                await _humidityRepository.Create(humidity);
 
                 _requestLogger.LogRequest("SetHumidity", humidity.Percentage, humidity.Date);
                 return Ok(humidity);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, $"{ERROR_OCCURED_MESSAGE} {ex.Message}");
             }
         }
 
         [HttpGet("{id}")]
-        public ActionResult<HumidityDTO> GetCurrentHumidity(Guid id)
+        public async Task<ActionResult<HumidityDTO>> GetCurrentHumidity(Guid id)
         {
             try
             {
-                var humidity = _humidityRepository.GetById(id);
+                var humidity = await _humidityRepository.GetById(id);
 
                 if (humidity is not null)
                 {
@@ -65,16 +67,16 @@ namespace SmartHomeAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $"{ERROR_OCCURED_MESSAGE} {ex.Message}");
             }
         }
 
         [HttpGet("humidityByDateRange")]
-        public ActionResult<List<HumidityDTO>> GetHumidityByDateRange(DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<List<HumidityDTO>>> GetHumidityByDateRange(DateTime startDate, DateTime endDate)
         {
             try
             {
-                var humidityList = _humidityRepository.GetByDateRange(startDate, endDate);
+                var humidityList = await _humidityRepository.GetByDateRange(startDate, endDate);
                 List<HumidityDTO> humidityListDTO = new List<HumidityDTO>();
 
                 humidityList.ForEach(humidity =>
@@ -95,7 +97,7 @@ namespace SmartHomeAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $"{ERROR_OCCURED_MESSAGE} {ex.Message}");
             }
         }
 

@@ -34,8 +34,7 @@ namespace Infrastructure.Infrastructure
                 });
                 services.AddTransient<IHumidityMapper<HumidityEfDTO>, HumidityEfMapper>();
                 services.AddTransient<ITemperatureMapper<TemperatureEfDTO>, TemperatureEfMapper>();
-            }
-           
+            }       
             return services;
         }
     }

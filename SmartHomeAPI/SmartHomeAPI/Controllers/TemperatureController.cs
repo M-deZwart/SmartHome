@@ -44,7 +44,7 @@ namespace SmartHomeAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -95,7 +95,7 @@ namespace SmartHomeAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, ex.Message);
             }
         }
 
