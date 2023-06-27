@@ -1,6 +1,10 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces;
+﻿using Amazon.Runtime.Internal.Util;
+using ApplicationCore.ApplicationCore.Interfaces;
 using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
 using Infrastructure.Infrastructure.DTOs;
+using Infrastructure.Infrastructure.Mappers;
+using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using SmartHomeAPI.ApplicationCore.Entities;
 
@@ -8,55 +12,91 @@ namespace SmartHomeAPI.Infrastructure.Repositories
 {
     public class TemperatureRepositoryMongo : ITemperatureRepository
     {
-        private readonly ITemperatureMapper<TemperatureMongoDTO> _temperatureMapper;
-        private readonly IMongoCollection<TemperatureMongoDTO> _temperatureCollection;
+        private readonly TemperatureMongoMapper _temperatureMapper;
+        private readonly IMongoCollection<BsonDocument> _temperatureCollection;
+        private readonly ILogger<TemperatureRepositoryMongo> _logger;
 
-        public TemperatureRepositoryMongo(IMongoDatabase db, ITemperatureMapper<TemperatureMongoDTO> temperatureMapper)
+        public TemperatureRepositoryMongo(
+            IMongoDatabase db, 
+            TemperatureMongoMapper temperatureMapper,
+            ILogger<TemperatureRepositoryMongo> logger)
         {
-            _temperatureCollection = db.GetCollection<TemperatureMongoDTO>("Temperature");
+            _temperatureCollection = db.GetCollection<BsonDocument>("Temperature");
             _temperatureMapper = temperatureMapper;
+            _logger = logger;
         }
 
-        public void Create(Temperature temperature)
+        public async Task Create(Temperature temperature)
         {
-            var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
-            temperature.Date = temperature.Date.ToUniversalTime().AddHours(2);
-            _temperatureCollection.InsertOne(temperatureDTO);
+            try
+            {
+                var temperatureBsonDocument = _temperatureMapper.MapToBsonDocument(temperature);
+                await _temperatureCollection.InsertOneAsync(temperatureBsonDocument);
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = "Failed to create temperature:";
+                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
+                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
+            }
+            
         }
 
-        public List<Temperature> GetByDateRange(DateTime startDate, DateTime endDate)
+        public async Task<List<Temperature>> GetByDateRange(DateTime startDate, DateTime endDate)
         {
-            var filter = Builders<TemperatureMongoDTO>.Filter.And(
-                    Builders<TemperatureMongoDTO>.Filter.Gte(t => t.Date, startDate),
-                    Builders<TemperatureMongoDTO>.Filter.Lte(t => t.Date, endDate)
+            try
+            {
+                var filter = Builders<BsonDocument>.Filter.And(
+                    Builders<BsonDocument>.Filter.Gte("Date", startDate),
+                    Builders<BsonDocument>.Filter.Lte("Date", endDate)
                 );
 
-            var temperatureListDTO = _temperatureCollection
-                .Find(filter)
-                .ToList();
+                var temperatureBsonDocumentList = await _temperatureCollection
+                    .Find(filter)
+                    .ToListAsync();
 
-            List<Temperature> temperatureList = new List<Temperature>();
+                List<Temperature> temperatureList = new List<Temperature>();
 
-            temperatureListDTO.ForEach(temperatureDTO =>
-            {
-                var temperature = _temperatureMapper.MapToEntity(temperatureDTO);
-                temperatureList.Add(temperature);
-            });
+                temperatureBsonDocumentList.ForEach(temperatureBsonDocument =>
+                {
+                    var temperature = _temperatureMapper.MapFromBsonDocument(temperatureBsonDocument);
+                    temperatureList.Add(temperature);
+                });
 
-            return temperatureList;
-        }
-
-        public Temperature GetById(Guid id)
-        {
-            var filter = Builders<TemperatureMongoDTO>.Filter.Eq(t => t.ID, id);
-            var temperatureDTO = _temperatureCollection.Find(filter).FirstOrDefault();
-            
-            if (temperatureDTO is not null)
-            {
-                return _temperatureMapper.MapToEntity(temperatureDTO);
+                return temperatureList;
             }
-
-            throw new InvalidOperationException("Temperature not found");
+            catch(Exception ex)
+            {
+                var errorMessage = "Failed to get temperature by date range:";
+                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
+                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
+            }
+            
         }
+
+        public async Task<Temperature> GetById(Guid id)
+        {
+            try
+            {
+                var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
+                var temperatureBsonDocument = await _temperatureCollection.Find(filter).FirstOrDefaultAsync();
+
+                if (temperatureBsonDocument is not null)
+                {
+                    return _temperatureMapper.MapFromBsonDocument(temperatureBsonDocument);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Temperature not found");
+                }            
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = "Failed to get temperature by ID:";
+                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
+                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
+            }
+        }
+
     }
 }

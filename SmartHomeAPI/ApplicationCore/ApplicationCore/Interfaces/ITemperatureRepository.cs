@@ -4,8 +4,8 @@ namespace ApplicationCore.ApplicationCore.Interfaces
 {
     public interface ITemperatureRepository
     {
-        void Create(Temperature temperature);
-        public Temperature GetById(Guid id);
-        List<Temperature> GetByDateRange(DateTime startDate, DateTime endDate);
+        Task Create(Temperature temperature);
+        Task<Temperature> GetById(Guid id);
+        Task<List<Temperature>> GetByDateRange(DateTime startDate, DateTime endDate);
     }
 }

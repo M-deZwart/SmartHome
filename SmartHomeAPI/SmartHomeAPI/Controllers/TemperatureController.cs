@@ -27,7 +27,7 @@ namespace SmartHomeAPI.Controllers
         }
 
         [HttpGet("{celsius}")]
-        public IActionResult SetTemperature([FromRoute] float celsius)
+        public async Task<IActionResult> SetTemperature([FromRoute] float celsius)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace SmartHomeAPI.Controllers
                     Date = DateTime.Now
                 };
 
-                _temperatureRepository.Create(temperature);
+                await _temperatureRepository.Create(temperature);
 
                 _requestLogger.LogRequest("SetTemperature", temperature.Celsius, temperature.Date);
                 return Ok(temperature);
@@ -49,11 +49,11 @@ namespace SmartHomeAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TemperatureDTO> GetCurrentTemperature(Guid id)
+        public async Task<ActionResult<TemperatureDTO>> GetCurrentTemperature(Guid id)
         {
             try
             {
-                var temperature = _temperatureRepository.GetById(id);
+                var temperature = await _temperatureRepository.GetById(id);
 
                 if (temperature is not null)
                 {
@@ -70,11 +70,11 @@ namespace SmartHomeAPI.Controllers
         }
 
         [HttpGet("temperatureByDateRange")]
-        public ActionResult<List<TemperatureDTO>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
+        public async Task <ActionResult<List<TemperatureDTO>>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
         {
             try
             {
-                var temperatureList = _temperatureRepository.GetByDateRange(startDate, endDate);
+                var temperatureList = await _temperatureRepository.GetByDateRange(startDate, endDate);
                 List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
 
                 temperatureList.ForEach(temperature =>

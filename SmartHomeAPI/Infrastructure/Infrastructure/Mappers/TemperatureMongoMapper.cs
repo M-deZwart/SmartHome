@@ -1,27 +1,35 @@
 ﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
 using Infrastructure.Infrastructure.DTOs;
+using MongoDB.Bson;
 using SmartHomeAPI.ApplicationCore.Entities;
 
 namespace Infrastructure.Infrastructure.Mappers
 {
-    internal class TemperatureMongoMapper : ITemperatureMapper<TemperatureMongoDTO>
+    public class TemperatureMongoMapper 
     {
-        public TemperatureMongoDTO MapToDTO(Temperature temperature)
+        public BsonDocument MapToBsonDocument(Temperature temperature)
         {
-            return new TemperatureMongoDTO
+            var document = new BsonDocument
             {
-                Celsius = temperature.Celsius,
-                Date = temperature.Date
+                { "_id", BsonValue.Create(temperature.Id) },
+                { "Percentage", temperature.Celsius},
+                { "Date", temperature.Date }
             };
+
+            return document;
         }
 
-        public Temperature MapToEntity(TemperatureMongoDTO temperatureDTO)
+        public Temperature MapFromBsonDocument(BsonDocument document)
         {
-            return new Temperature
+            var temperature = new Temperature
             {
-                Celsius = temperatureDTO.Celsius,
-                Date = temperatureDTO.Date
+                Id = document["_id"].AsGuid,
+                Celsius = document["Celsius"].AsDouble,
+                Date = document["Date"].ToUniversalTime().AddHours(2)
             };
+
+            return temperature;
         }
+
     }
 }

@@ -1,27 +1,41 @@
 ﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
 using Infrastructure.Infrastructure.DTOs;
+using Microsoft.Identity.Client;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using SmartHomeAPI.ApplicationCore.Entities;
 
 namespace Infrastructure.Infrastructure.Mappers
 {
-    public class HumidityMongoMapper : IHumidityMapper<HumidityMongoDTO>
+    public class HumidityMongoMapper
     {
-        public HumidityMongoDTO MapToDTO(Humidity humidity)
+        public BsonDocument MapToBsonDocument(Humidity humidity)
         {
-            return new HumidityMongoDTO
+            var document = new BsonDocument
             {
-                Percentage = humidity.Percentage,
-                Date = humidity.Date
+                { "_id", BsonValue.Create(humidity.Id) },
+                { "Percentage", humidity.Percentage},
+                { "Date", humidity.Date }
             };
+
+            return document;
         }
 
-        public Humidity MapToEntity(HumidityMongoDTO humidityDTO)
+        public Humidity MapFromBsonDocument(BsonDocument document)
         {
-            return new Humidity
+            var humidity = new Humidity
             {
-                Percentage = humidityDTO.Percentage,
-                Date = humidityDTO.Date
+                Id = document["_id"].AsGuid,
+                Percentage = document["Percentage"].AsDouble,
+                Date = document["Date"].ToUniversalTime().AddHours(2)
             };
+
+            return humidity;
         }
+
     }
 }
+
+
+
+

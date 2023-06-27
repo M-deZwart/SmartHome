@@ -20,8 +20,6 @@ namespace Infrastructure.Infrastructure
                 var mongoClient = new MongoClient(mongoConnectionString);
                 var mongoDatabase = mongoClient.GetDatabase("smarthome-db");
                 services.AddSingleton(mongoDatabase);
-                services.AddTransient<IHumidityMapper<HumidityMongoDTO>, HumidityMongoMapper>();
-                services.AddTransient<ITemperatureMapper<TemperatureMongoDTO>, TemperatureMongoMapper>();
             }
             if (databaseType is "EF")
             {

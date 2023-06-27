@@ -1,25 +1,24 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces.InfraMappers;
-using Infrastructure.Infrastructure.DTOs;
+﻿using Infrastructure.Infrastructure.Mappers;
 using Interfaces.Interfaces;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using SmartHomeAPI.ApplicationCore.Entities;
-using System.Linq;
 
 namespace SmartHomeAPI.Infrastructure.Repositories
 {
     public class HumidityRepositoryMongo : IHumidityRepository
     {
-        private readonly IHumidityMapper<HumidityMongoDTO> _humidityMapper;
-        private readonly IMongoCollection<HumidityMongoDTO> _humidityCollection;
+        private readonly HumidityMongoMapper _humidityMapper;
+        private readonly IMongoCollection<BsonDocument> _humidityCollection;
         private readonly ILogger<HumidityRepositoryMongo> _logger;
 
         public HumidityRepositoryMongo(
             IMongoDatabase db, 
-            IHumidityMapper<HumidityMongoDTO> humidityMapper,
+            HumidityMongoMapper humidityMapper,
             ILogger<HumidityRepositoryMongo> logger)
         {
-            _humidityCollection = db.GetCollection<HumidityMongoDTO>("Humidity");
+            _humidityCollection = db.GetCollection<BsonDocument>("Humidity");
             _humidityMapper = humidityMapper;
             _logger = logger;
         }
@@ -28,9 +27,8 @@ namespace SmartHomeAPI.Infrastructure.Repositories
         {  
             try
             {
-                var humidityDTO = _humidityMapper.MapToDTO(humidity);
-                humidityDTO.Date = humidity.Date.ToUniversalTime().AddHours(2);
-                await _humidityCollection.InsertOneAsync(humidityDTO);
+                var humidityBsonDocument = _humidityMapper.MapToBsonDocument(humidity);
+                await _humidityCollection.InsertOneAsync(humidityBsonDocument);
             }
             catch(Exception ex)
             {
@@ -44,20 +42,20 @@ namespace SmartHomeAPI.Infrastructure.Repositories
         {
             try
             {
-                var filter = Builders<HumidityMongoDTO>.Filter.And(
-                    Builders<HumidityMongoDTO>.Filter.Gte(h => h.Date, startDate),
-                    Builders<HumidityMongoDTO>.Filter.Lte(h => h.Date, endDate)
+                var filter = Builders<BsonDocument>.Filter.And(
+                    Builders<BsonDocument>.Filter.Gte("Date", startDate),
+                    Builders<BsonDocument>.Filter.Lte("Date", endDate)
                 );
 
-                var humidityListDTO = await _humidityCollection
+                var humidityBsonDocumentList = await _humidityCollection
                     .Find(filter)
                     .ToListAsync();
 
                 List<Humidity> humidityList = new List<Humidity>();
 
-                humidityListDTO.ForEach(humidityDTO =>
+                humidityBsonDocumentList.ForEach(humidityBsonDocument =>
                 {
-                    var humidity = _humidityMapper.MapToEntity(humidityDTO);
+                    var humidity = _humidityMapper.MapFromBsonDocument(humidityBsonDocument);
                     humidityList.Add(humidity);
                 });
 
@@ -75,12 +73,12 @@ namespace SmartHomeAPI.Infrastructure.Repositories
         {
             try
             {
-                var filter = Builders<HumidityMongoDTO>.Filter.Eq(h => h.ID, id);
-                var humidityDTO = await _humidityCollection.Find(filter).FirstOrDefaultAsync();
+                var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
+                var humidityBsonDocument = await _humidityCollection.Find(filter).FirstOrDefaultAsync();
 
-                if (humidityDTO is not null)
+                if (humidityBsonDocument is not null)
                 {
-                    return _humidityMapper.MapToEntity(humidityDTO);
+                    return _humidityMapper.MapFromBsonDocument(humidityBsonDocument);
                 }
                 else
                 {
