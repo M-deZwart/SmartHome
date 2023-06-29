@@ -10,7 +10,7 @@ namespace Infrastructure.Infrastructure.Mappers
             var document = new BsonDocument
             {
                 { "_id", BsonValue.Create(temperature.Id) },
-                { "Percentage", temperature.Celsius},
+                { "Celsius", temperature.Celsius},
                 { "Date", temperature.Date }
             };
 
