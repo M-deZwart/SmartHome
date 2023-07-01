@@ -1,7 +1,7 @@
 ﻿using Interfaces.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHomeAPI.ApplicationCore.Entities;
+using SmartHomeAPI.Application.Entities;
 
 namespace Infrastructure.Infrastructure.Repositories
 {

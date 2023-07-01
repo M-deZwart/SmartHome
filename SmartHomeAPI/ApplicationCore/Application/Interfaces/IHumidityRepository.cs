@@ -1,5 +1,4 @@
-﻿
-using SmartHomeAPI.ApplicationCore.Entities;
+﻿using SmartHomeAPI.Application.Entities;
 
 namespace Interfaces.Interfaces
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SmartHomeAPI.ApplicationCore.Entities
+namespace SmartHomeAPI.Application.Entities
 {
     public class Temperature
     {

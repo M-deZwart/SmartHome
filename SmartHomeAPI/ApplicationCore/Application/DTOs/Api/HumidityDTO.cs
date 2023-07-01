@@ -1,4 +1,4 @@
-﻿namespace ApplicationCore.ApplicationCore.DTOs
+﻿namespace Application.Application.DTOs
 {
     public class HumidityDTO
     {

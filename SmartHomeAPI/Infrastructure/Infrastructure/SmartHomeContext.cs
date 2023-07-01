@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SmartHomeAPI.ApplicationCore.Entities;
+using SmartHomeAPI.Application.Entities;
 
 namespace Infrastructure.Infrastructure
 {

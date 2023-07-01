@@ -1,5 +1,5 @@
 ﻿using MongoDB.Bson;
-using SmartHomeAPI.ApplicationCore.Entities;
+using SmartHomeAPI.Application.Entities;
 
 namespace Infrastructure.Infrastructure.Mappers
 {

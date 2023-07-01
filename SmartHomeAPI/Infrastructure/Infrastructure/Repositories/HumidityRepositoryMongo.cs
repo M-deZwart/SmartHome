@@ -3,7 +3,7 @@ using Interfaces.Interfaces;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using SmartHomeAPI.ApplicationCore.Entities;
+using SmartHomeAPI.Application.Entities;
 
 namespace SmartHomeAPI.Infrastructure.Repositories
 {
