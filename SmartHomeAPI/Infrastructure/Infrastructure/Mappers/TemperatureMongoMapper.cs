@@ -3,7 +3,7 @@ using SmartHomeAPI.Application.Entities;
 
 namespace Infrastructure.Infrastructure.Mappers
 {
-    public class TemperatureMongoMapper 
+    public class TemperatureMongoMapper : ITemperatureMongoMapper
     {
         public BsonDocument MapToBsonDocument(Temperature temperature)
         {

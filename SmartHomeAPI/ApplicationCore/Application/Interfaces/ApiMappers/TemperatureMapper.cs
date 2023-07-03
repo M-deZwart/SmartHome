@@ -2,7 +2,7 @@
 using SmartHomeAPI.Application.Entities;
 using SmartHomeAPI.MappersAPI;
 
-namespace SmartHomeAPI.Mappers
+namespace Application.Application.Mappers
 {
     public class TemperatureMapper :ITemperatureMapper
     {

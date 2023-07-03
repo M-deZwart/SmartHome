@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SmartHomeAPI.Application.Entities;
 using Application.Application.Interfaces;
 using SmartHomeAPI.MappersAPI;
+using Application.Application.Services;
 
 namespace SmartHomeAPI.Controllers
 {
@@ -11,68 +12,53 @@ namespace SmartHomeAPI.Controllers
     [ApiController]
     public class HumidityController : ControllerBase
     {
-        private readonly IHumidityRepository _humidityRepository;
-        private readonly IHumidityMapper _humidityMapper;
-        private readonly IRequestLogger _requestLogger;
+        private readonly IHumidityService _humidityService;
 
-        public HumidityController(
-            IHumidityRepository humidityRepository,
-            IHumidityMapper humidityMapper,
-            IRequestLogger requestLogger
-          )
+        public HumidityController(IHumidityService humidityService)
         {
-            _humidityRepository = humidityRepository;
-            _humidityMapper = humidityMapper;
-            _requestLogger = requestLogger;
+            _humidityService = humidityService;
         }
 
         [HttpGet("{percentage}")]
         public async Task<IActionResult> SetHumidity([FromRoute] double percentage)
         {
-            Humidity humidity = new Humidity
+            try
             {
-                Percentage = percentage,
-                Date = DateTime.Now
-            };
-
-            await _humidityRepository.Create(humidity);
-
-            _requestLogger.LogRequest("SetHumidity", humidity.Percentage, humidity.Date);
-            return Ok(humidity);
+                await _humidityService.SetHumidity(percentage);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Humidity could not be set: {ex.Message}");
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<HumidityDTO>> GetCurrentHumidity(Guid id)
         {
-            var humidity = await _humidityRepository.GetById(id);
-
-            if (humidity is not null)
+            try
             {
-                var humidityDTO = _humidityMapper.MapToDTO(humidity);
-                _requestLogger.LogRequest("GetCurrentHumidity", humidityDTO.Percentage, humidityDTO.Date);
+                var humidityDTO = await _humidityService.GetCurrentHumidity(id);
                 return Ok(humidityDTO);
             }
-            return NotFound("Humidity not found");
+            catch (Exception ex)
+            {
+                return NotFound($"Humidity could not be found: {ex.Message}");
+            }
         }
 
         [HttpGet("humidityByDateRange")]
         public async Task<ActionResult<List<HumidityDTO>>> GetHumidityByDateRange(DateTime startDate, DateTime endDate)
         {
-            var humidityList = await _humidityRepository.GetByDateRange(startDate, endDate);
-            List<HumidityDTO> humidityListDTO = new List<HumidityDTO>();
-
-            humidityList.ForEach(humidity =>
+            try
             {
-                var humidityDTO = _humidityMapper.MapToDTO(humidity);
-                humidityListDTO.Add(humidityDTO);
-                _requestLogger.LogRequest("GetHumidityByDateRange", humidityDTO.Percentage, humidityDTO.Date);
-            });
-
-            if (humidityListDTO.Count > 0)
-            {
+                var humidityListDTO = await _humidityService.GetHumidityByDateRange(startDate, endDate);
                 return Ok(humidityListDTO);
             }
-            return NotFound("No humidity data found for the specified date range");
+            catch (Exception ex)
+            {
+                return NotFound($"Date range for humidities could not be found: {ex.Message}");
+            }
         }
 
     }

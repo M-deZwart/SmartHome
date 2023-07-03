@@ -5,7 +5,7 @@ using SmartHomeAPI.Application.Entities;
 
 namespace Infrastructure.Infrastructure.Mappers
 {
-    public class HumidityMongoMapper
+    public class HumidityMongoMapper : IHumidityMongoMapper
     {
         public BsonDocument MapToBsonDocument(Humidity humidity)
         {

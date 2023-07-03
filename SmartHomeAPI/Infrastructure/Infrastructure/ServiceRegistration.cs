@@ -1,6 +1,8 @@
 ﻿using Application.Application.Interfaces;
 using Infrastructure.Infrastructure.Logging;
 using Infrastructure.Infrastructure.Mappers;
+using Infrastructure.Infrastructure.Repositories;
+using Interfaces.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +24,8 @@ namespace Infrastructure.Infrastructure
                 var mongoClient = new MongoClient(mongoConnectionString);
                 var mongoDatabase = mongoClient.GetDatabase("smarthome-db");
                 services.AddSingleton(mongoDatabase);
+                services.AddTransient<IHumidityMongoMapper, HumidityMongoMapper>();
+                services.AddTransient<ITemperatureMongoMapper, TemperatureMongoMapper>();
             }
             if (databaseType is "EF")
             {
@@ -33,6 +37,10 @@ namespace Infrastructure.Infrastructure
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
             }
+
+            services.AddScoped<IHumidityRepository, HumidityRepositoryEF>();
+            services.AddScoped<ITemperatureRepository, TemperatureRepositoryEF>();
+
             services.AddScoped<IRequestLogger>(provider =>
             {
                 var logger = provider.GetRequiredService<ILogger>();

@@ -1,4 +1,4 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces;
+﻿using Application.Application.Interfaces;
 using Infrastructure.Infrastructure.Mappers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;

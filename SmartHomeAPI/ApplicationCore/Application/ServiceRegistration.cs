@@ -1,19 +1,18 @@
 ﻿using SmartHomeAPI.MappersAPI;
-using SmartHomeAPI.Mappers;
-using Interfaces.Interfaces;
-using Infrastructure.Infrastructure.Repositories;
-using ApplicationCore.ApplicationCore.Interfaces;
+using Application.Application.Mappers;
+using Microsoft.Extensions.DependencyInjection;
+using Application.Application.Services;
 
-namespace SmartHomeAPI
+namespace Application.Application
 {
     public static class ServiceRegistration
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
-        {
-            services.AddTransient<IHumidityRepository, HumidityRepositoryEF>();
-            services.AddTransient<ITemperatureRepository, TemperatureRepositoryEF>();
+        {     
             services.AddTransient<IHumidityMapper, HumidityMapper>();
             services.AddTransient<ITemperatureMapper, TemperatureMapper>();
+            services.AddScoped<ITemperatureService, TemperatureService>();
+            services.AddScoped<IHumidityService, HumidityService>();
             
             return services;
         }

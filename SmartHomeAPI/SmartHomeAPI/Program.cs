@@ -1,5 +1,5 @@
+using Application.Application;
 using Infrastructure.Infrastructure;
-using SmartHomeAPI;
 using SmartHomeAPI.Middleware;
 using System.Text.Json.Serialization;
 

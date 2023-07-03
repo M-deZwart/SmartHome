@@ -1,8 +1,8 @@
 ﻿using Application.Application.DTOs;
-using ApplicationCore.ApplicationCore.Interfaces;
+using Application.Application.Interfaces;
+using Application.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using SmartHomeAPI.Application.Entities;
-using Application.Application.Interfaces;
 using SmartHomeAPI.MappersAPI;
 
 namespace SmartHomeAPI.Controllers
@@ -11,68 +11,55 @@ namespace SmartHomeAPI.Controllers
     [ApiController]
     public class TemperatureController : ControllerBase
     {
-        private readonly ITemperatureRepository _temperatureRepository;
-        private readonly ITemperatureMapper _temperatureMapper;
-        private readonly IRequestLogger _requestLogger;
+        private readonly ITemperatureService _temperatureService;
 
         public TemperatureController(
-            ITemperatureRepository temperatureRepository,
-            ITemperatureMapper temperatureMapper,
-            IRequestLogger requestLogger
+            ITemperatureService temperatureService
           )
         {
-            _temperatureRepository = temperatureRepository;
-            _temperatureMapper = temperatureMapper;
-            _requestLogger = requestLogger;
+            _temperatureService = temperatureService;
         }
 
         [HttpGet("{celsius}")]
-        public async Task<IActionResult> SetTemperature([FromRoute] float celsius)
+        public async Task<IActionResult> SetTemperature([FromRoute] double celsius)
         {
-            Temperature temperature = new Temperature
+            try
             {
-                Celsius = celsius,
-                Date = DateTime.Now
-            };
-
-            await _temperatureRepository.Create(temperature);
-
-            _requestLogger.LogRequest("SetTemperature", temperature.Celsius, temperature.Date);
-            return Ok(temperature);
+                await _temperatureService.SetTemperature(celsius);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Temperature could not be set: {ex.Message}");
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TemperatureDTO>> GetCurrentTemperature(Guid id)
         {
-            var temperature = await _temperatureRepository.GetById(id);
-
-            if (temperature is not null)
+            try
             {
-                var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
-                _requestLogger.LogRequest("GetCurrentTemperature", temperatureDTO.Celsius, temperatureDTO.Date);
+                var temperatureDTO = await _temperatureService.GetCurrentTemperature(id);
                 return Ok(temperatureDTO);
             }
-            return NotFound("Temperature not found");
+            catch (Exception ex)
+            {
+                return NotFound($"Temperature could not be found: {ex.Message}");
+            }
         }
 
         [HttpGet("temperatureByDateRange")]
         public async Task<ActionResult<List<TemperatureDTO>>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
         {
-            var temperatureList = await _temperatureRepository.GetByDateRange(startDate, endDate);
-            List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
-
-            temperatureList.ForEach(temperature =>
+            try
             {
-                var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
-                temperatureListDTO.Add(temperatureDTO);
-                _requestLogger.LogRequest("GetTemperatureByDateRange", temperatureDTO.Celsius, temperatureDTO.Date);
-            });
-
-            if (temperatureListDTO.Count > 0)
-            {
-                return Ok(temperatureListDTO);
+                var humidityListDTO = await _temperatureService.GetTemperatureByDateRange(startDate, endDate);
+                return Ok(humidityListDTO);
             }
-            return NotFound("No temperature data found for the specified date range");
+            catch (Exception ex)
+            {
+                return NotFound($"Date range for temperatures could not be found: {ex.Message}");
+            }
         }
 
     }

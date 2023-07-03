@@ -16,4 +16,8 @@
     <ProjectReference Include="..\ApplicationCore\Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mappers\" />
+  </ItemGroup>
+
 </Project>

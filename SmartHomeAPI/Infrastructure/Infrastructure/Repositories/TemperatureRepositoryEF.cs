@@ -1,4 +1,4 @@
-﻿using ApplicationCore.ApplicationCore.Interfaces;
+﻿using Application.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SmartHomeAPI.Application.Entities;
