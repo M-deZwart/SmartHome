@@ -1,8 +1,6 @@
 ﻿using Application.Application.DTOs;
 using Application.Application.Exceptions;
 using Application.Application.Interfaces;
-using SmartHomeAPI.Application.Entities;
-using SmartHomeAPI.MappersAPI;
 
 namespace Application.Application.Services;
 public class TemperatureService : ITemperatureService

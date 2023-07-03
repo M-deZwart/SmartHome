@@ -1,7 +1,7 @@
-﻿using Microsoft.Identity.Client;
+﻿using Application.Application.DTOs;
+using Microsoft.Identity.Client;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using SmartHomeAPI.Application.Entities;
 
 namespace Infrastructure.Infrastructure.Mappers
 {

@@ -1,8 +1,8 @@
-﻿using Application.Application.Exceptions;
-using Interfaces.Interfaces;
+﻿using Application.Application.DTOs;
+using Application.Application.Exceptions;
+using Application.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHomeAPI.Application.Entities;
 
 namespace Infrastructure.Infrastructure.Repositories
 {

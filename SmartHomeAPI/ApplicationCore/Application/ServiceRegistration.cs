@@ -1,7 +1,7 @@
-﻿using SmartHomeAPI.MappersAPI;
-using Application.Application.Mappers;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Application.Application.Services;
+using Application.Application.Interfaces;
+using Application.Application.ApiMappers;
 
 namespace Application.Application
 {

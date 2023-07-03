@@ -1,9 +1,9 @@
-﻿using Infrastructure.Infrastructure.Mappers;
-using Interfaces.Interfaces;
+﻿using Application.Application.DTOs;
+using Application.Application.Interfaces;
+using Infrastructure.Infrastructure.Mappers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using SmartHomeAPI.Application.Entities;
 
 namespace SmartHomeAPI.Infrastructure.Repositories
 {

@@ -1,10 +1,9 @@
 ﻿using Application.Application.DTOs;
-using SmartHomeAPI.Application.Entities;
-using SmartHomeAPI.MappersAPI;
+using Application.Application.Interfaces;
 
-namespace Application.Application.Mappers
+namespace Application.Application.ApiMappers
 {
-    public class TemperatureMapper :ITemperatureMapper
+    public class TemperatureMapper : ITemperatureMapper
     {
         public TemperatureDTO MapToDTO(Temperature temperature)
         {

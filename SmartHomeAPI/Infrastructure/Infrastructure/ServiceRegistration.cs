@@ -2,7 +2,6 @@
 using Infrastructure.Infrastructure.Logging;
 using Infrastructure.Infrastructure.Mappers;
 using Infrastructure.Infrastructure.Repositories;
-using Interfaces.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

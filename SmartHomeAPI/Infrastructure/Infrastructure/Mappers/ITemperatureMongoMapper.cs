@@ -1,5 +1,5 @@
-﻿using MongoDB.Bson;
-using SmartHomeAPI.Application.Entities;
+﻿using Application.Application.DTOs;
+using MongoDB.Bson;
 
 namespace Infrastructure.Infrastructure.Mappers;
 public interface ITemperatureMongoMapper

@@ -1,9 +1,6 @@
 ﻿using Application.Application.DTOs;
 using Application.Application.Exceptions;
 using Application.Application.Interfaces;
-using Interfaces.Interfaces;
-using SmartHomeAPI.Application.Entities;
-using SmartHomeAPI.MappersAPI;
 
 namespace Application.Application.Services;
 public class HumidityService : IHumidityService

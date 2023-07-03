@@ -1,8 +1,7 @@
 ﻿using Application.Application.DTOs;
-using SmartHomeAPI.Application.Entities;
-using SmartHomeAPI.MappersAPI;
+using Application.Application.Interfaces;
 
-namespace Application.Application.Mappers
+namespace Application.Application.ApiMappers
 {
     public class HumidityMapper : IHumidityMapper
     {

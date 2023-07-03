@@ -1,6 +1,6 @@
-﻿using SmartHomeAPI.Application.Entities;
+﻿using Application.Application.DTOs;
 
-namespace Interfaces.Interfaces
+namespace Application.Application.Interfaces
 {
     public interface IHumidityRepository
     {

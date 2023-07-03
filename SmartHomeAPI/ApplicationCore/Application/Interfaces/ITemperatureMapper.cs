@@ -1,7 +1,6 @@
 ﻿using Application.Application.DTOs;
-using SmartHomeAPI.Application.Entities;
 
-namespace SmartHomeAPI.MappersAPI
+namespace Application.Application.Interfaces
 {
     public interface ITemperatureMapper
     {

@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SmartHomeAPI.Application.Entities
+namespace Application.Application.DTOs
 {
-    public class Humidity
+    public class Temperature
     {
         public Guid Id { get; set; }
-        public double Percentage { get; set; }
+        public double Celsius { get; set; }
         public DateTime Date { get; set; }
     }
 }

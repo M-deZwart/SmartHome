@@ -1,4 +1,4 @@
-﻿using SmartHomeAPI.Application.Entities;
+﻿using Application.Application.DTOs;
 
 namespace Application.Application.Interfaces
 {
