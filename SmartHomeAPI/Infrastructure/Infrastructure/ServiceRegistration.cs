@@ -1,7 +1,11 @@
-﻿using Infrastructure.Infrastructure.Mappers;
+﻿using Application.Application.Interfaces;
+using Infrastructure.Infrastructure.Logging;
+using Infrastructure.Infrastructure.Mappers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace Infrastructure.Infrastructure
@@ -28,7 +32,15 @@ namespace Infrastructure.Infrastructure
                     .EnableSensitiveDataLogging()
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
-            }       
+            }
+            services.AddScoped<IRequestLogger>(provider =>
+            {
+                var logger = provider.GetRequiredService<ILogger>();
+                var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+
+                return new RequestLogger(logger, httpContextAccessor);
+            });
+
             return services;
         }
     }

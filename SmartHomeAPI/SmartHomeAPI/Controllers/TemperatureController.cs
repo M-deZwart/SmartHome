@@ -1,8 +1,8 @@
-﻿using ApplicationCore.ApplicationCore.DTOs;
+﻿using Application.Application.DTOs;
 using ApplicationCore.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using SmartHomeAPI.ApplicationCore.Entities;
-using SmartHomeAPI.Interfaces;
+using SmartHomeAPI.Application.Entities;
+using Application.Application.Interfaces;
 using SmartHomeAPI.MappersAPI;
 
 namespace SmartHomeAPI.Controllers
@@ -29,74 +29,50 @@ namespace SmartHomeAPI.Controllers
         [HttpGet("{celsius}")]
         public async Task<IActionResult> SetTemperature([FromRoute] float celsius)
         {
-            try
+            Temperature temperature = new Temperature
             {
-                Temperature temperature = new Temperature
-                {
-                    Celsius = celsius,
-                    Date = DateTime.Now
-                };
+                Celsius = celsius,
+                Date = DateTime.Now
+            };
 
-                await _temperatureRepository.Create(temperature);
+            await _temperatureRepository.Create(temperature);
 
-                _requestLogger.LogRequest("SetTemperature", temperature.Celsius, temperature.Date);
-                return Ok(temperature);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            _requestLogger.LogRequest("SetTemperature", temperature.Celsius, temperature.Date);
+            return Ok(temperature);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TemperatureDTO>> GetCurrentTemperature(Guid id)
         {
-            try
-            {
-                var temperature = await _temperatureRepository.GetById(id);
+            var temperature = await _temperatureRepository.GetById(id);
 
-                if (temperature is not null)
-                {
-                    var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
-                    _requestLogger.LogRequest("GetCurrentTemperature", temperatureDTO.Celsius, temperatureDTO.Date);
-                    return Ok(temperatureDTO);
-                }
-                return NotFound("Temperature not found");
-            }
-            catch (Exception ex)
+            if (temperature is not null)
             {
-                return StatusCode(500, ex.Message);
+                var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
+                _requestLogger.LogRequest("GetCurrentTemperature", temperatureDTO.Celsius, temperatureDTO.Date);
+                return Ok(temperatureDTO);
             }
+            return NotFound("Temperature not found");
         }
 
         [HttpGet("temperatureByDateRange")]
-        public async Task <ActionResult<List<TemperatureDTO>>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<List<TemperatureDTO>>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
         {
-            try
-            {
-                var temperatureList = await _temperatureRepository.GetByDateRange(startDate, endDate);
-                List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
+            var temperatureList = await _temperatureRepository.GetByDateRange(startDate, endDate);
+            List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
 
-                temperatureList.ForEach(temperature =>
-                {
-                    var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
-                    temperatureListDTO.Add(temperatureDTO);
-                    _requestLogger.LogRequest("GetTemperatureByDateRange", temperatureDTO.Celsius, temperatureDTO.Date);
-                });
-
-                if (temperatureListDTO.Count > 0)
-                {
-                    return Ok(temperatureListDTO);
-                }
-                else
-                {
-                    return NotFound("No temperature data found for the specified date range");
-                }
-            }
-            catch (Exception ex)
+            temperatureList.ForEach(temperature =>
             {
-                return StatusCode(500, ex.Message);
+                var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
+                temperatureListDTO.Add(temperatureDTO);
+                _requestLogger.LogRequest("GetTemperatureByDateRange", temperatureDTO.Celsius, temperatureDTO.Date);
+            });
+
+            if (temperatureListDTO.Count > 0)
+            {
+                return Ok(temperatureListDTO);
             }
+            return NotFound("No temperature data found for the specified date range");
         }
 
     }

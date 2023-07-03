@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using SmartHomeAPI.Interfaces;
+﻿using Application.Application.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
-namespace SmartHomeAPI.Services
+namespace Infrastructure.Infrastructure.Logging
 {
-    public class RequestLoggerService : IRequestLogger
+    public class RequestLogger : IRequestLogger
     {
         private readonly ILogger _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RequestLoggerService(ILogger logger, IHttpContextAccessor httpContextAccessor)
+        public RequestLogger(ILogger logger, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;

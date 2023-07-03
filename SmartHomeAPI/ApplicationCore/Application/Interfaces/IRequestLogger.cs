@@ -1,4 +1,4 @@
-﻿namespace SmartHomeAPI.Interfaces
+﻿namespace Application.Application.Interfaces
 {
     public interface IRequestLogger
     {
