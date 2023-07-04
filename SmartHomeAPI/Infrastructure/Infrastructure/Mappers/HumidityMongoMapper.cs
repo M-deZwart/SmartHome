@@ -1,7 +1,5 @@
 ﻿using Application.Application.DTOs;
-using Microsoft.Identity.Client;
 using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace Infrastructure.Infrastructure.Mappers
 {

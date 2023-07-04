@@ -29,7 +29,7 @@ namespace SmartHomeAPI.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("getCurrentHumidity/{id}")]
         public async Task<ActionResult<HumidityDTO>> GetCurrentHumidity(Guid id)
         {
             try

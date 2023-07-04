@@ -31,7 +31,7 @@ namespace SmartHomeAPI.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("getCurrentTemperature/{id}")]
         public async Task<ActionResult<TemperatureDTO>> GetCurrentTemperature(Guid id)
         {
             try

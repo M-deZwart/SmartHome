@@ -24,9 +24,9 @@ namespace Infrastructure.Infrastructure.Logging
 
             var responseBody = result.ToString();
 
-            _logger.LogInformation("Request: {requestMethod} {requestPath} {requestBody}");
-            _logger.LogInformation("Response: {responseBody}");
-            _logger.LogInformation("Timestamp: {timestamp}");
+            _logger.LogInformation($"Request: {requestMethod} {requestPath} {requestBody}");
+            _logger.LogInformation($"Response: {responseBody}");
+            _logger.LogInformation($"Timestamp: {timestamp}");
         }
     }
 }

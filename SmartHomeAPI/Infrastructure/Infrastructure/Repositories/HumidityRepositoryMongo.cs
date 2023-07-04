@@ -9,13 +9,13 @@ namespace SmartHomeAPI.Infrastructure.Repositories
 {
     public class HumidityRepositoryMongo : IHumidityRepository
     {
-        private readonly HumidityMongoMapper _humidityMapper;
+        private readonly IHumidityMongoMapper _humidityMapper;
         private readonly IMongoCollection<BsonDocument> _humidityCollection;
         private readonly ILogger<HumidityRepositoryMongo> _logger;
 
         public HumidityRepositoryMongo(
             IMongoDatabase db, 
-            HumidityMongoMapper humidityMapper,
+            IHumidityMongoMapper humidityMapper,
             ILogger<HumidityRepositoryMongo> logger)
         {
             _humidityCollection = db.GetCollection<BsonDocument>("Humidity");

@@ -9,13 +9,13 @@ namespace SmartHomeAPI.Infrastructure.Repositories
 {
     public class TemperatureRepositoryMongo : ITemperatureRepository
     {
-        private readonly TemperatureMongoMapper _temperatureMapper;
+        private readonly ITemperatureMongoMapper _temperatureMapper;
         private readonly IMongoCollection<BsonDocument> _temperatureCollection;
         private readonly ILogger<TemperatureRepositoryMongo> _logger;
 
         public TemperatureRepositoryMongo(
             IMongoDatabase db, 
-            TemperatureMongoMapper temperatureMapper,
+            ITemperatureMongoMapper temperatureMapper,
             ILogger<TemperatureRepositoryMongo> logger)
         {
             _temperatureCollection = db.GetCollection<BsonDocument>("Temperature");

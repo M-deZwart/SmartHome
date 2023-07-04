@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using SmartHomeAPI.Infrastructure.Repositories;
 
 namespace Infrastructure.Infrastructure
 {
@@ -23,8 +24,12 @@ namespace Infrastructure.Infrastructure
                 var mongoClient = new MongoClient(mongoConnectionString);
                 var mongoDatabase = mongoClient.GetDatabase("smarthome-db");
                 services.AddSingleton(mongoDatabase);
+
                 services.AddTransient<IHumidityMongoMapper, HumidityMongoMapper>();
                 services.AddTransient<ITemperatureMongoMapper, TemperatureMongoMapper>();
+
+                services.AddScoped<IHumidityRepository, HumidityRepositoryMongo>();
+                services.AddScoped<ITemperatureRepository, TemperatureRepositoryMongo>();
             }
             if (databaseType is "EF")
             {
@@ -33,16 +38,17 @@ namespace Infrastructure.Infrastructure
                     var connectionString = configuration.GetConnectionString("EF");
                     options.UseSqlServer(connectionString)
                     .EnableSensitiveDataLogging()
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);                
                 });
+                services.AddScoped<IHumidityRepository, HumidityRepositoryEF>();
+                services.AddScoped<ITemperatureRepository, TemperatureRepositoryEF>();
             }
 
-            services.AddScoped<IHumidityRepository, HumidityRepositoryEF>();
-            services.AddScoped<ITemperatureRepository, TemperatureRepositoryEF>();
-
+            services.AddLogging();
+            services.AddHttpContextAccessor();
             services.AddScoped<IRequestLogger>(provider =>
             {
-                var logger = provider.GetRequiredService<ILogger>();
+                var logger = provider.GetRequiredService<ILogger<RequestLogger>>();
                 var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
 
                 return new RequestLogger(logger, httpContextAccessor);
