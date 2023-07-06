@@ -23,7 +23,6 @@ namespace Infrastructure.Infrastructure.Repositories
         {
             try
             {
-
                 humidity.Date = humidity.Date.ToUniversalTime().AddHours(2);
                 _smartHomeContext.Humidities.Add(humidity);
                 await _smartHomeContext.SaveChangesAsync();
