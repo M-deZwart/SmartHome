@@ -48,6 +48,11 @@ namespace SmartHomeAPI.Controllers
         {
             try
             {
+                if (startDate > endDate)
+                {
+                    return BadRequest("Invalid date range. The start date must be less than the end date.");
+                }
+
                 var humidityListDTO = await _humidityService.GetHumidityByDateRange(startDate, endDate);
                 return Ok(humidityListDTO);
             }

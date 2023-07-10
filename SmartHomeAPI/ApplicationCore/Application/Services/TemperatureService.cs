@@ -67,6 +67,8 @@ public class TemperatureService : ITemperatureService
     {
         try
         {
+            ValidateTemperature(celsius);
+
             Temperature temperature = new Temperature
             {
                 Celsius = celsius,
@@ -80,6 +82,14 @@ public class TemperatureService : ITemperatureService
         catch (Exception ex)
         {
             throw new InvalidOperationException($"Failure while setting the temperature: {ex.Message}", ex);
+        }
+    }
+
+    private void ValidateTemperature(double celsius)
+    {
+        if (celsius < 10 || celsius > 40)
+        {
+            throw new OutOfRangeException("Invalid temperature value. The temperature in Celsius should be between 10 and 40.");
         }
     }
 }

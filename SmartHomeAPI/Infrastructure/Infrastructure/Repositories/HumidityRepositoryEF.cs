@@ -64,7 +64,7 @@ namespace Infrastructure.Infrastructure.Repositories
                 }
                 else
                 {
-                    throw new NotFoundException("Humidity could not be found");
+                    throw new NotFoundException($"Humidity with ID: {id} could not be found");
                 }
             }
             catch (Exception ex)

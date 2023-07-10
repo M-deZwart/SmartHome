@@ -82,7 +82,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
                 }
                 else
                 {
-                    throw new InvalidOperationException("Humidity not found");
+                    throw new InvalidOperationException($"Humidity with ID: {id} could not be found");
                 }            
             } 
             catch (Exception ex)

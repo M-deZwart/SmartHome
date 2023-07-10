@@ -63,7 +63,7 @@ namespace Infrastructure.Infrastructure.Repositories
                     return temperature;
                 }
 
-                throw new InvalidOperationException("Temperature not found");
+                throw new InvalidOperationException($"Temperature with ID: {id} could not be found");
             }
             catch (Exception ex)
             {

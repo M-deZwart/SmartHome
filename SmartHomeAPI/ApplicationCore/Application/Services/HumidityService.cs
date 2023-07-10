@@ -67,6 +67,8 @@ public class HumidityService : IHumidityService
     {
         try
         {
+            ValidateHumidity(percentage);
+
             Humidity humidity = new Humidity
             {
                 Percentage = percentage,
@@ -80,6 +82,14 @@ public class HumidityService : IHumidityService
         catch (Exception ex)
         {
             throw new InvalidOperationException($"Failure while setting the humidity: {ex.Message}", ex);
+        }
+    }
+
+    private void ValidateHumidity(double percentage)
+    {
+        if (percentage < 0 || percentage > 100)
+        {
+            throw new OutOfRangeException("Invalid humidity value. The humidity percentage should be between 0 and 100.");
         }
     }
 }
