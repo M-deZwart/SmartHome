@@ -1,6 +1,7 @@
 ﻿using Application.Application.DTOs;
 using Application.Application.Exceptions;
 using Application.Application.Interfaces;
+using Application.Application.Validators;
 
 namespace Application.Application.Services;
 public class TemperatureService : ITemperatureService
@@ -8,6 +9,7 @@ public class TemperatureService : ITemperatureService
     private readonly ITemperatureRepository _temperatureRepository;
     private readonly ITemperatureMapper _temperatureMapper;
     private readonly IRequestLogger _requestLogger;
+    private readonly TemperatureValidator _temperatureValidator;
 
     public TemperatureService(
         ITemperatureRepository temperatureRepository,
@@ -17,6 +19,7 @@ public class TemperatureService : ITemperatureService
         _temperatureRepository = temperatureRepository;
         _temperatureMapper = temperatureMapper;
         _requestLogger = requestLogger;
+        _temperatureValidator = new TemperatureValidator();
     }
 
     public async Task<TemperatureDTO> GetCurrentTemperature(Guid id)
@@ -67,17 +70,24 @@ public class TemperatureService : ITemperatureService
     {
         try
         {
-            ValidateTemperature(celsius);
-
             Temperature temperature = new Temperature
             {
                 Celsius = celsius,
                 Date = DateTime.Now
             };
 
-            await _temperatureRepository.Create(temperature);
+            var validationResult = await _temperatureValidator.ValidateAsync(temperature);
 
-            _requestLogger.LogRequest("SetTemperature", temperature.Celsius, temperature.Date);
+            if (validationResult.IsValid)
+            {
+                await _temperatureRepository.Create(temperature);
+                _requestLogger.LogRequest("SetTemperature", temperature.Celsius, temperature.Date);
+            }
+            else
+            {
+                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
+                throw new OutOfRangeException($"Validation errors occurred: {validationErrors}");
+            }
         }
         catch (Exception ex)
         {
@@ -85,11 +95,4 @@ public class TemperatureService : ITemperatureService
         }
     }
 
-    private void ValidateTemperature(double celsius)
-    {
-        if (celsius < 10 || celsius > 40)
-        {
-            throw new OutOfRangeException("Invalid temperature value. The temperature in Celsius should be between 10 and 40.");
-        }
-    }
 }

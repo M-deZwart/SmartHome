@@ -1,6 +1,7 @@
 ﻿using Application.Application.DTOs;
 using Application.Application.Exceptions;
 using Application.Application.Interfaces;
+using Application.Application.Validators;
 
 namespace Application.Application.Services;
 public class HumidityService : IHumidityService
@@ -8,6 +9,7 @@ public class HumidityService : IHumidityService
     private readonly IHumidityRepository _humidityRepository;
     private readonly IHumidityMapper _humidityMapper;
     private readonly IRequestLogger _requestLogger;
+    private readonly HumidityValidator _humidityValidator;
 
     public HumidityService(
         IHumidityRepository humidityRepository,
@@ -17,6 +19,7 @@ public class HumidityService : IHumidityService
         _humidityRepository = humidityRepository;
         _humidityMapper = humidityMapper;
         _requestLogger = requestLogger;
+        _humidityValidator = new HumidityValidator();
     }
 
     public async Task<HumidityDTO> GetCurrentHumidity(Guid id)
@@ -67,17 +70,24 @@ public class HumidityService : IHumidityService
     {
         try
         {
-            ValidateHumidity(percentage);
-
             Humidity humidity = new Humidity
             {
                 Percentage = percentage,
                 Date = DateTime.Now
             };
 
-            await _humidityRepository.Create(humidity);
+            var validationResult = await _humidityValidator.ValidateAsync(humidity);
 
-            _requestLogger.LogRequest("SetHumidity", humidity.Percentage, humidity.Date);
+            if (validationResult.IsValid)
+            {
+                await _humidityRepository.Create(humidity);
+                _requestLogger.LogRequest("SetHumidity", humidity.Percentage, humidity.Date);
+            }
+            else
+            {
+                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
+                throw new OutOfRangeException($"Validation errors occurred: {validationErrors}");
+            }
         }
         catch (Exception ex)
         {
@@ -85,11 +95,4 @@ public class HumidityService : IHumidityService
         }
     }
 
-    private void ValidateHumidity(double percentage)
-    {
-        if (percentage < 0 || percentage > 100)
-        {
-            throw new OutOfRangeException("Invalid humidity value. The humidity percentage should be between 0 and 100.");
-        }
-    }
 }

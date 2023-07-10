@@ -1,0 +1,13 @@
+﻿using Application.Application.DTOs;
+using FluentValidation;
+
+namespace Application.Application.Validators;
+public class HumidityValidator : AbstractValidator<Humidity>
+{
+    public HumidityValidator()
+    {
+        RuleFor(humidity => humidity.Percentage)
+            .InclusiveBetween(0, 100)
+            .WithMessage("Invalid humidity value. The humidity percentage should be between 0 and 100.");
+    }
+}
