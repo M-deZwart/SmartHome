@@ -70,11 +70,11 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             }
         }
 
-        public async Task<Humidity> GetById(Guid id)
+        public async Task<Humidity> GetByDateTime(DateTime dateTime)
         {
             try
             {
-                var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
+                var filter = Builders<BsonDocument>.Filter.Eq("Date", dateTime);
                 var humidityBsonDocument = await _humidityCollection.Find(filter).FirstOrDefaultAsync();
 
                 if (humidityBsonDocument is not null)
@@ -83,12 +83,12 @@ namespace SmartHomeAPI.Infrastructure.Repositories
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Humidity with ID: {id} could not be found");
+                    throw new InvalidOperationException($"Humidity with DateTime: {dateTime} could not be found");
                 }            
             } 
             catch (Exception ex)
             {
-                var errorMessage = "Failed to get humidity by ID:";
+                var errorMessage = "Failed to get humidity by DateTime:";
                 _logger.LogError(ex, $"{errorMessage} {ex.Message}");
                 throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
             }        

@@ -72,11 +72,11 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             
         }
 
-        public async Task<Temperature> GetById(Guid id)
+        public async Task<Temperature> GetByDateTime(DateTime dateTime)
         {
             try
             {
-                var filter = Builders<BsonDocument>.Filter.Eq("_id", id);
+                var filter = Builders<BsonDocument>.Filter.Eq("Date", dateTime);
                 var temperatureBsonDocument = await _temperatureCollection.Find(filter).FirstOrDefaultAsync();
 
                 if (temperatureBsonDocument is not null)
@@ -85,12 +85,12 @@ namespace SmartHomeAPI.Infrastructure.Repositories
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Temperature with ID: {id} could not be found");
+                    throw new InvalidOperationException($"Temperature with DateTime: {dateTime} could not be found");
                 }            
             }
             catch (Exception ex)
             {
-                var errorMessage = "Failed to get temperature by ID:";
+                var errorMessage = "Failed to get temperature by DateTime:";
                 _logger.LogError(ex, $"{errorMessage} {ex.Message}");
                 throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
             }

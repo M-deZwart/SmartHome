@@ -5,7 +5,7 @@ namespace Application.Application.Interfaces
     public interface IHumidityRepository
     {
         Task Create(Humidity humidity);
-        Task<Humidity> GetById(Guid id);
+        Task<Humidity> GetByDateTime(DateTime dateTime);
         Task<List<Humidity>> GetByDateRange(DateTime startDate, DateTime endDate);
     }
 }

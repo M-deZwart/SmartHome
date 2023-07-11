@@ -29,12 +29,12 @@ namespace SmartHomeAPI.Controllers
             }
         }
 
-        [HttpGet("getCurrentHumidity/{id}")]
-        public async Task<ActionResult<HumidityDTO>> GetCurrentHumidity(Guid id)
+        [HttpGet("getCurrentHumidity/{dateTime}")]
+        public async Task<ActionResult<HumidityDTO>> GetCurrentHumidity(DateTime dateTime)
         {
             try
             {
-                var humidityDTO = await _humidityService.GetCurrentHumidity(id);
+                var humidityDTO = await _humidityService.GetCurrentHumidity(dateTime);
                 return Ok(humidityDTO);
             }
             catch (Exception ex)

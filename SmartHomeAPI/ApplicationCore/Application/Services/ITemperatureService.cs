@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Application.Application.Services;
 public interface ITemperatureService
 {
-    Task<TemperatureDTO> GetCurrentTemperature(Guid id);
+    Task<TemperatureDTO> GetCurrentTemperature(DateTime dateTime);
     Task<List<TemperatureDTO>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate);
     Task SetTemperature(double celsius);
 }

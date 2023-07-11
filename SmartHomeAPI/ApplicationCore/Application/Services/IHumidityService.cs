@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Application.Application.Services;
 public interface IHumidityService
 {
-    Task<HumidityDTO> GetCurrentHumidity(Guid id);
+    Task<HumidityDTO> GetCurrentHumidity(DateTime dateTime);
     Task<List<HumidityDTO>> GetHumidityByDateRange(DateTime startDate, DateTime endDate);
     Task SetHumidity(double percentage);
 }

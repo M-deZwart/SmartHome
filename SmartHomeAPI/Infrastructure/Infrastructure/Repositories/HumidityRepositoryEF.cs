@@ -53,23 +53,23 @@ namespace Infrastructure.Infrastructure.Repositories
             }
         }
 
-        public async Task<Humidity> GetById(Guid id)
+        public async Task<Humidity> GetByDateTime(DateTime dateTime)
         {
             try
             {
-                var humidity = await _smartHomeContext.Humidities.FirstOrDefaultAsync(h => h.Id == id);
+                var humidity = await _smartHomeContext.Humidities.FirstOrDefaultAsync(h => h.Date == dateTime);
                 if (humidity is not null)
                 {
                     return humidity;
                 }
                 else
                 {
-                    throw new NotFoundException($"Humidity with ID: {id} could not be found");
+                    throw new NotFoundException($"Humidity with DateTime: {dateTime} could not be found");
                 }
             }
             catch (Exception ex)
             {
-                var errorMessage = "Failed to get humidity by ID:";
+                var errorMessage = "Failed to get humidity by DateTime:";
                 _logger.LogError(ex, $"{errorMessage} {ex.Message}");
                 throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
             }

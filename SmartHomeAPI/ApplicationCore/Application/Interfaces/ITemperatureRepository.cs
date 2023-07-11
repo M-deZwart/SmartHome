@@ -5,7 +5,7 @@ namespace Application.Application.Interfaces
     public interface ITemperatureRepository
     {
         Task Create(Temperature temperature);
-        Task<Temperature> GetById(Guid id);
+        Task<Temperature> GetByDateTime(DateTime dateTime);
         Task<List<Temperature>> GetByDateRange(DateTime startDate, DateTime endDate);
     }
 }

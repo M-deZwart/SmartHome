@@ -22,11 +22,11 @@ public class HumidityService : IHumidityService
         _humidityValidator = new HumidityValidator();
     }
 
-    public async Task<HumidityDTO> GetCurrentHumidity(Guid id)
+    public async Task<HumidityDTO> GetCurrentHumidity(DateTime dateTime)
     {
         try
         {
-            var humidity = await _humidityRepository.GetById(id);
+            var humidity = await _humidityRepository.GetByDateTime(dateTime);
 
             if (humidity is not null)
             {
