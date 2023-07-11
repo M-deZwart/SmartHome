@@ -24,8 +24,8 @@ void loop() {
 }
 
 void sendSensorData(double temperature, double humidity) {
-  String serverUrlT = "http://192.168.2.13:5233/api/temperature/" + String(temperature);
-  String serverUrlH = "http://192.168.2.13:5233/api/humidity/" + String(humidity);
+  String serverUrlT = "http://192.168.2.11:5233/api/temperature/" + String(temperature);
+  String serverUrlH = "http://192.168.2.11:5233/api/humidity/" + String(humidity);
 
   http.begin(wifiClient, serverUrlT);
   int httpResponseCodeT = http.GET();

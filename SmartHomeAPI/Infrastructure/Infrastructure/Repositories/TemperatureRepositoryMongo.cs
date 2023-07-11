@@ -27,6 +27,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
         {
             try
             {
+                temperature.Date = temperature.Date.ToUniversalTime().AddHours(2);
                 var temperatureBsonDocument = _temperatureMapper.MapToBsonDocument(temperature);
                 await _temperatureCollection.InsertOneAsync(temperatureBsonDocument);
             }

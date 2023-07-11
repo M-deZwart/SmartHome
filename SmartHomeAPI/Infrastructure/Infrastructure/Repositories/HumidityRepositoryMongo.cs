@@ -27,6 +27,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
         {  
             try
             {
+                humidity.Date = humidity.Date.ToUniversalTime().AddHours(2);
                 var humidityBsonDocument = _humidityMapper.MapToBsonDocument(humidity);
                 await _humidityCollection.InsertOneAsync(humidityBsonDocument);
             }

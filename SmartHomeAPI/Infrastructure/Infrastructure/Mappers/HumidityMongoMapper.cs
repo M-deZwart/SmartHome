@@ -23,7 +23,7 @@ namespace Infrastructure.Infrastructure.Mappers
             {
                 Id = document["_id"].AsGuid,
                 Percentage = document["Percentage"].AsDouble,
-                Date = document["Date"].ToUniversalTime().AddHours(2)
+                Date = document["Date"].ToUniversalTime()
             };
 
             return humidity;

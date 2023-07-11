@@ -23,7 +23,7 @@ namespace Infrastructure.Infrastructure.Mappers
             {
                 Id = document["_id"].AsGuid,
                 Celsius = document["Celsius"].AsDouble,
-                Date = document["Date"].ToUniversalTime().AddHours(2)
+                Date = document["Date"].ToUniversalTime()
             };
 
             return temperature;
