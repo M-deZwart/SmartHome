@@ -22,11 +22,11 @@ public class TemperatureService : ITemperatureService
         _temperatureValidator = new TemperatureValidator();
     }
 
-    public async Task<TemperatureDTO> GetCurrentTemperature(DateTime dateTime)
+    public async Task<TemperatureDTO> GetCurrentTemperature()
     {
         try
         {
-            var temperature = await _temperatureRepository.GetByDateTime(dateTime);
+            var temperature = await _temperatureRepository.GetLatestTemperature();
 
             if (temperature is not null)
             {

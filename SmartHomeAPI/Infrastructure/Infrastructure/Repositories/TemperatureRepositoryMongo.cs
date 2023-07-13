@@ -36,8 +36,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
                 var errorMessage = "Failed to create temperature:";
                 _logger.LogError(ex, $"{errorMessage} {ex.Message}");
                 throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
-            }
-            
+            }   
         }
 
         public async Task<List<Temperature>> GetByDateRange(DateTime startDate, DateTime endDate)
@@ -68,29 +67,29 @@ namespace SmartHomeAPI.Infrastructure.Repositories
                 var errorMessage = "Failed to get temperature by date range:";
                 _logger.LogError(ex, $"{errorMessage} {ex.Message}");
                 throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
-            }
-            
+            }        
         }
 
-        public async Task<Temperature> GetByDateTime(DateTime dateTime)
+        public async Task<Temperature> GetLatestTemperature()
         {
             try
             {
-                var filter = Builders<BsonDocument>.Filter.Eq("Date", dateTime);
-                var temperatureBsonDocument = await _temperatureCollection.Find(filter).FirstOrDefaultAsync();
+                var latestTemperatureDocument = await _temperatureCollection.Find(_ => true)
+                    .SortByDescending(document => document["Date"])
+                    .FirstOrDefaultAsync();
 
-                if (temperatureBsonDocument is not null)
+                if (latestTemperatureDocument is not null)
                 {
-                    return _temperatureMapper.MapFromBsonDocument(temperatureBsonDocument);
+                    return _temperatureMapper.MapFromBsonDocument(latestTemperatureDocument);
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Temperature with DateTime: {dateTime} could not be found");
+                    throw new InvalidOperationException($"Temperature was not found");
                 }            
             }
             catch (Exception ex)
             {
-                var errorMessage = "Failed to get temperature by DateTime:";
+                var errorMessage = "Failed to get current temperature:";
                 _logger.LogError(ex, $"{errorMessage} {ex.Message}");
                 throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
             }

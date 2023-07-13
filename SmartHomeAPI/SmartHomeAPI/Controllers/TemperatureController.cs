@@ -31,12 +31,12 @@ namespace SmartHomeAPI.Controllers
             }
         }
 
-        [HttpGet("getCurrentTemperature/{dateTime}")]
-        public async Task<ActionResult<TemperatureDTO>> GetCurrentTemperature(DateTime dateTime)
+        [HttpGet("getCurrentTemperature")]
+        public async Task<ActionResult<TemperatureDTO>> GetCurrentTemperature()
         {
             try
             {
-                var temperatureDTO = await _temperatureService.GetCurrentTemperature(dateTime);
+                var temperatureDTO = await _temperatureService.GetCurrentTemperature();
                 return Ok(temperatureDTO);
             }
             catch (Exception ex)

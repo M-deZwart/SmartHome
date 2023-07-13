@@ -52,22 +52,24 @@ namespace Infrastructure.Infrastructure.Repositories
             }  
         }
 
-        public async Task<Temperature> GetByDateTime(DateTime dateTime)
+        public async Task<Temperature> GetLatestTemperature()
         {
             try
             {
-                var temperature = await _smartHomeContext.Temperatures.FirstOrDefaultAsync(t => t.Date == dateTime);
+                var latestTemperature = await _smartHomeContext.Temperatures
+                    .OrderByDescending(t => t.Date)
+                    .FirstOrDefaultAsync();
 
-                if (temperature is not null)
+                if (latestTemperature is not null)
                 {
-                    return temperature;
+                    return latestTemperature;
                 }
 
-                throw new InvalidOperationException($"Temperature with DateTime: {dateTime} could not be found");
+                throw new InvalidOperationException($"Temperature was not found");
             }
             catch (Exception ex)
             {
-                var errorMessage = "Failed to get temperature by DateTime:";
+                var errorMessage = "Failed to get current temperature:";
                 _logger.LogError(ex, $"{errorMessage} {ex.Message}");
                 throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
             }

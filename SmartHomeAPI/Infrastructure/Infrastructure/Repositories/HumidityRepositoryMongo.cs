@@ -1,4 +1,5 @@
 ﻿using Application.Application.DTOs;
+using Application.Application.Exceptions;
 using Application.Application.Interfaces;
 using Infrastructure.Infrastructure.Mappers;
 using Microsoft.Extensions.Logging;
@@ -70,25 +71,26 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             }
         }
 
-        public async Task<Humidity> GetByDateTime(DateTime dateTime)
+        public async Task<Humidity> GetLatestHumidity()
         {
             try
             {
-                var filter = Builders<BsonDocument>.Filter.Eq("Date", dateTime);
-                var humidityBsonDocument = await _humidityCollection.Find(filter).FirstOrDefaultAsync();
-
-                if (humidityBsonDocument is not null)
+                var latestHumidityDocument = await _humidityCollection.Find(_ => true)
+                    .SortByDescending(document => document["Date"])
+                    .FirstOrDefaultAsync();
+                
+                if (latestHumidityDocument is not null)
                 {
-                    return _humidityMapper.MapFromBsonDocument(humidityBsonDocument);
+                    return _humidityMapper.MapFromBsonDocument(latestHumidityDocument);
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Humidity with DateTime: {dateTime} could not be found");
+                    throw new NotFoundException($"Humidity was not found");
                 }            
             } 
             catch (Exception ex)
             {
-                var errorMessage = "Failed to get humidity by DateTime:";
+                var errorMessage = "Failed to get current humidity:";
                 _logger.LogError(ex, $"{errorMessage} {ex.Message}");
                 throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
             }        

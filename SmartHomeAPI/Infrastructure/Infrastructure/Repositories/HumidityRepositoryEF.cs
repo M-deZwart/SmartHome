@@ -53,23 +53,26 @@ namespace Infrastructure.Infrastructure.Repositories
             }
         }
 
-        public async Task<Humidity> GetByDateTime(DateTime dateTime)
+        public async Task<Humidity> GetLatestHumidity()
         {
             try
             {
-                var humidity = await _smartHomeContext.Humidities.FirstOrDefaultAsync(h => h.Date == dateTime);
-                if (humidity is not null)
+                var latestHumidity = await _smartHomeContext.Humidities
+                    .OrderByDescending(h => h.Date)
+                    .FirstOrDefaultAsync();
+
+                if (latestHumidity is not null)
                 {
-                    return humidity;
+                    return latestHumidity;
                 }
                 else
                 {
-                    throw new NotFoundException($"Humidity with DateTime: {dateTime} could not be found");
+                    throw new NotFoundException($"Humidity was not found");
                 }
             }
             catch (Exception ex)
             {
-                var errorMessage = "Failed to get humidity by DateTime:";
+                var errorMessage = "Failed to get current humidity:";
                 _logger.LogError(ex, $"{errorMessage} {ex.Message}");
                 throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
             }
