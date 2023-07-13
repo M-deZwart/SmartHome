@@ -1,4 +1,4 @@
-﻿using Application.Application.Interfaces;
+﻿using Application.Application.Contracts;
 using Domain.Domain.Contracts;
 using Infrastructure.Infrastructure.Logging;
 using Infrastructure.Infrastructure.Mappers;

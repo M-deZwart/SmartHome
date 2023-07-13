@@ -1,7 +1,7 @@
 ﻿using Domain.Domain.Entities;
 using FluentValidation;
 
-namespace Application.Application.Validators;
+namespace Domain.Domain.Validators;
 
 public class TemperatureValidator : AbstractValidator<Temperature>
 {

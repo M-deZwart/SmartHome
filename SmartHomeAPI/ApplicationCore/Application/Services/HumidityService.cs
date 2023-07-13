@@ -1,7 +1,7 @@
 ﻿using Application.Application.DTOs;
 using Application.Application.Exceptions;
-using Application.Application.Interfaces;
-using Application.Application.Validators;
+using Application.Application.Contracts;
+using Domain.Domain.Validators;
 using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 

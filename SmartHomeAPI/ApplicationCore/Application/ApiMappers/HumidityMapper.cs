@@ -1,5 +1,5 @@
 ﻿using Application.Application.DTOs;
-using Application.Application.Interfaces;
+using Application.Application.Contracts;
 using Domain.Domain.Entities;
 
 namespace Application.Application.ApiMappers

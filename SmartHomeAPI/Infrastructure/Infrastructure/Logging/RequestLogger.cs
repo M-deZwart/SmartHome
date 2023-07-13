@@ -1,4 +1,4 @@
-﻿using Application.Application.Interfaces;
+﻿using Application.Application.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 

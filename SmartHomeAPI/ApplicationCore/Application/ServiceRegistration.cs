@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Application.Application.Services;
-using Application.Application.Interfaces;
+using Application.Application.Contracts;
 using Application.Application.ApiMappers;
 
 namespace Application.Application

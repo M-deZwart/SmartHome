@@ -1,4 +1,4 @@
-﻿namespace Application.Application.Interfaces
+﻿namespace Application.Application.Contracts
 {
     public interface IRequestLogger
     {

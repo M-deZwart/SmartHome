@@ -1,7 +1,7 @@
 ﻿using Application.Application.DTOs;
 using Domain.Domain.Entities;
 
-namespace Application.Application.Interfaces
+namespace Application.Application.Contracts
 {
     public interface ITemperatureMapper
     {
