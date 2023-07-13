@@ -2,6 +2,7 @@
 using Application.Application.Exceptions;
 using Application.Application.Interfaces;
 using Application.Application.Validators;
+using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 
 namespace Application.Application.Services;

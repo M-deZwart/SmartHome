@@ -1,4 +1,4 @@
-﻿using Application.Application.Interfaces;
+﻿using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Infrastructure.Infrastructure.Mappers;
 using Microsoft.Extensions.Logging;

@@ -1,6 +1,5 @@
-﻿using Application.Application.DTOs;
-using Application.Application.Exceptions;
-using Application.Application.Interfaces;
+﻿using Application.Application.Exceptions;
+using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

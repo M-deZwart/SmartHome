@@ -1,6 +1,6 @@
 ﻿using Domain.Domain.Entities;
 
-namespace Application.Application.Interfaces
+namespace Domain.Domain.Contracts
 {
     public interface ITemperatureRepository
     {
