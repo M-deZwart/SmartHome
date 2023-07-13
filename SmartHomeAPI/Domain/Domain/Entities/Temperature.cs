@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Application.DTOs
+namespace Domain.Domain.Entities
 {
     public class Temperature
     {

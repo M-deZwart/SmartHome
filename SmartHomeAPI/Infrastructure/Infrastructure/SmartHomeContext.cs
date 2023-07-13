@@ -1,4 +1,4 @@
-﻿using Application.Application.DTOs;
+﻿using Domain.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Infrastructure

@@ -1,6 +1,6 @@
-﻿using Application.Application.DTOs;
-using Application.Application.Exceptions;
+﻿using Application.Application.Exceptions;
 using Application.Application.Interfaces;
+using Domain.Domain.Entities;
 using Infrastructure.Infrastructure.Mappers;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
