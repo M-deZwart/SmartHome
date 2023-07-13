@@ -64,7 +64,7 @@ void sendSensorData(double temperature, double humidity) {
 }
 
 void responseCode(int httpResponseCode) {
-  if (httpResponseCode > 0) {
+  if (httpResponseCode >= 200 && httpResponseCode <= 299) {
     String response = http.getString();
     Serial.println(httpResponseCode);
     Serial.println(response);
