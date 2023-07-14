@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Http.Json;
+using System.Text;
 
 namespace SensorStub
 {
@@ -13,9 +14,15 @@ namespace SensorStub
 
     class ArduinoMock
     {
-        private readonly static HttpClient _client = new HttpClient();
-        private readonly string _serverUrlT = "http://192.168.2.11:5233/api/temperature/setTemperature";
-        private readonly string _serverUrlH = "http://192.168.2.11:5233/api/humidity/setHumidity";
+        private readonly HttpClient _client;
+        private readonly string _temperatureEndpoint = "temperature/setTemperature";
+        private readonly string _humidityEndpoint = "humidity/setHumidity";
+
+        public ArduinoMock()
+        {
+            _client = new HttpClient();
+            _client.BaseAddress = new Uri("http://192.168.2.11:5233/api/");
+        }
 
         public async Task Run()
         {
@@ -24,21 +31,18 @@ namespace SensorStub
                 double temperature = 12;
                 double humidity = 25;
 
-                await SendSensorData(_serverUrlT, temperature);
-                await SendSensorData(_serverUrlH, humidity);
+                await SendSensorData(_temperatureEndpoint, temperature);
+                await SendSensorData(_humidityEndpoint, humidity);
 
                 await Task.Delay(5000);
             }
         }
 
-        private static async Task SendSensorData(string serverUrl, double sensorValue)
+        private async Task SendSensorData(string serverUrl, double sensorValue)
         {        
             try
-            {
-                var payload = sensorValue;
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.PostAsync(serverUrl, content);
+            {           
+                HttpResponseMessage response = await _client.PostAsJsonAsync(serverUrl, sensorValue);
                 response.EnsureSuccessStatusCode();
                 Console.WriteLine("Data sent successfully");
             }

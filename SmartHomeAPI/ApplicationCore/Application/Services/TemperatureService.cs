@@ -33,7 +33,7 @@ public class TemperatureService : ITemperatureService
             if (temperature is not null)
             {
                 var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
-                _requestLogger.LogRequest("GetCurrentTemperature", temperatureDTO.Celsius, temperatureDTO.Date);
+                _requestLogger.LogRequest(nameof(GetCurrentTemperature), temperatureDTO.Celsius, temperatureDTO.Date);
                 return temperatureDTO;
             }
             else
@@ -58,7 +58,7 @@ public class TemperatureService : ITemperatureService
             {
                 var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
                 temperatureListDTO.Add(temperatureDTO);
-                _requestLogger.LogRequest("GetTemperatureByDateRange", temperatureDTO.Celsius, temperatureDTO.Date);
+                _requestLogger.LogRequest(nameof(GetTemperatureByDateRange), temperatureDTO.Celsius, temperatureDTO.Date);
             });
             return temperatureListDTO;
         }
@@ -83,7 +83,7 @@ public class TemperatureService : ITemperatureService
             if (validationResult.IsValid)
             {
                 await _temperatureRepository.Create(temperature);
-                _requestLogger.LogRequest("SetTemperature", temperature.Celsius, temperature.Date);
+                _requestLogger.LogRequest(nameof(SetTemperature), temperature.Celsius, temperature.Date);
             }
             else
             {

@@ -33,7 +33,7 @@ public class HumidityService : IHumidityService
             if (humidity is not null)
             {
                 var humidityDTO = _humidityMapper.MapToDTO(humidity);
-                _requestLogger.LogRequest("GetCurrentHumidity", humidityDTO.Percentage, humidityDTO.Date);
+                _requestLogger.LogRequest(nameof(GetCurrentHumidity), humidityDTO.Percentage, humidityDTO.Date);
                 return humidityDTO;
             }
             else
@@ -58,7 +58,7 @@ public class HumidityService : IHumidityService
             {
                 var humidityDTO = _humidityMapper.MapToDTO(humidity);
                 humidityListDTO.Add(humidityDTO);
-                _requestLogger.LogRequest("GetHumidityByDateRange", humidityDTO.Percentage, humidityDTO.Date);
+                _requestLogger.LogRequest(nameof(GetHumidityByDateRange), humidityDTO.Percentage, humidityDTO.Date);
             });
             return humidityListDTO;
         }
@@ -83,7 +83,7 @@ public class HumidityService : IHumidityService
             if (validationResult.IsValid)
             {
                 await _humidityRepository.Create(humidity);
-                _requestLogger.LogRequest("SetHumidity", humidity.Percentage, humidity.Date);
+                _requestLogger.LogRequest(nameof(SetHumidity), humidity.Percentage, humidity.Date);
             }
             else
             {
