@@ -1,11 +1,13 @@
 ﻿
+using System.Text;
+
 namespace SensorStub
 {
     class ArduinoMock
     {
         private readonly static HttpClient _client = new HttpClient();
-        private readonly string _serverUrlT = "http://192.168.2.11:5233/api/temperature/";
-        private readonly string _serverUrlH = "http://192.168.2.11:5233/api/humidity/";
+        private readonly string _serverUrlT = "http://192.168.2.11:5233/api/setTemperature/";
+        private readonly string _serverUrlH = "http://192.168.2.11:5233/api/setHumidity/";
 
         public async Task Run()
         {
@@ -25,7 +27,8 @@ namespace SensorStub
         {
             try
             {
-                HttpResponseMessage response = await _client.GetAsync(serverUrl + sensorValue);
+                var content = new StringContent($"value={sensorValue}", Encoding.UTF8, "application/x-www-form-urlencoded");
+                HttpResponseMessage response = await _client.PostAsync(serverUrl, content);
                 response.EnsureSuccessStatusCode();
 
                 Console.WriteLine("Data sent successfully");
