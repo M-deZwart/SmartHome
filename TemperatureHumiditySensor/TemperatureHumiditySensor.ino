@@ -51,16 +51,22 @@ void loop() {
 }
 
 void sendSensorData(double temperature, double humidity) {
-  String serverUrlT = "http://" + String(serverIP) + ":" + String(serverPort) + "/api/setTemperature";
-  String serverUrlH = "http://" + String(serverIP) + ":" + String(serverPort) + "/api/setHumidity";
+  String serverUrlT = "http://" + String(serverIP) + ":" + String(serverPort) + "/api/temperature/setTemperature";
+  String serverUrlH = "http://" + String(serverIP) + ":" + String(serverPort) + "/api/humidity/setHumidity";
 
+  // send temperature
   http.begin(serverUrlT);
-  int httpResponseCodeT = http.POST("value=" + String(temperature));
+  http.addHeader("Content-Type", "application/json");
+
+  int httpResponseCodeT = http.POST(String(temperature));
   responseCode(httpResponseCodeT);
   http.end();
 
+  // send humidity
   http.begin(serverUrlH);
-  int httpResponseCodeH = http.POST("value=" + String(humidity));
+  http.addHeader("Content-Type", "application/json");
+
+  int httpResponseCodeH = http.POST(String(humidity));
   responseCode(httpResponseCodeH);
   http.end();
 }
