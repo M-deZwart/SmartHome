@@ -9,6 +9,8 @@
 
 const char* ssid = "H369A8E1A7C";
 const char* password = "653C3DDC7A62";
+const char* serverIP = "192.168.2.11";
+const int serverPort = 5233;
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -49,16 +51,16 @@ void loop() {
 }
 
 void sendSensorData(double temperature, double humidity) {
-  String serverUrlT = "http://192.168.2.11:5233/api/temperature/" + String(temperature);
-  String serverUrlH = "http://192.168.2.11:5233/api/humidity/" + String(humidity);
+  String serverUrlT = "http://" + String(serverIP) + ":" + String(serverPort) + "/api/setTemperature";
+  String serverUrlH = "http://" + String(serverIP) + ":" + String(serverPort) + "/api/setHumidity";
 
-  http.begin(wifiClient, serverUrlT);
-  int httpResponseCodeT = http.GET();
+  http.begin(serverUrlT);
+  int httpResponseCodeT = http.POST("value=" + String(temperature));
   responseCode(httpResponseCodeT);
   http.end();
-  
-  http.begin(wifiClient, serverUrlH);
-  int httpResponseCodeH = http.GET();
+
+  http.begin(serverUrlH);
+  int httpResponseCodeH = http.POST("value=" + String(humidity));
   responseCode(httpResponseCodeH);
   http.end();
 }

@@ -15,8 +15,8 @@ namespace SmartHomeAPI.Controllers
             _humidityService = humidityService;
         }
 
-        [HttpGet("{percentage}")]
-        public async Task<IActionResult> SetHumidity([FromRoute] double percentage)
+        [HttpPost("setHumidity")]
+        public async Task<IActionResult> SetHumidity([FromBody] double percentage)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace SmartHomeAPI.Controllers
             }
         }
 
-        [HttpGet("humidityByDateRange")]
+        [HttpGet("humidityByDateRange/{startDate}/{endDate}")]
         public async Task<ActionResult<List<HumidityDTO>>> GetHumidityByDateRange(DateTime startDate, DateTime endDate)
         {
             try

@@ -17,8 +17,8 @@ namespace SmartHomeAPI.Controllers
             _temperatureService = temperatureService;
         }
 
-        [HttpGet("{celsius}")]
-        public async Task<IActionResult> SetTemperature([FromRoute] double celsius)
+        [HttpPost("setTemperature")]
+        public async Task<IActionResult> SetTemperature([FromBody] double celsius)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace SmartHomeAPI.Controllers
             }
         }
 
-        [HttpGet("temperatureByDateRange")]
+        [HttpGet("temperatureByDateRange/{startDate}/{endDate}")]
         public async Task<ActionResult<List<TemperatureDTO>>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
         {
             try
