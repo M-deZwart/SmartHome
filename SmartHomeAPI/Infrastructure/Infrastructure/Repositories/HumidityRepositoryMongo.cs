@@ -1,4 +1,4 @@
-﻿using Domain.Domain.Exceptions;
+﻿using Application.Application.Exceptions;
 using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Infrastructure.Infrastructure.Mappers;
