@@ -9,7 +9,7 @@ public class ExceptionMiddleware
     private readonly ILogger<ExceptionMiddleware> _logger;
 
     public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
-    {   
+    {
         _next = next;
         _logger = logger;
     }
@@ -27,16 +27,43 @@ public class ExceptionMiddleware
         }
     }
 
-    private async Task HandleException(HttpContext context, Exception exception)
+    private ErrorDetails GetErrorDetails(Exception ex)
+    {
+        var errorDetails = new ErrorDetails()
+        {
+            Message = ex.Message,
+            ClassName = ex.GetType().Name.Split('.').Reverse().First(),
+            StackTrace = ex.StackTrace?.Split(Environment.NewLine).ToList()
+        };
+
+        if (ex.InnerException is not null)
+        {
+            errorDetails.InnerException = GetErrorDetails(ex.InnerException);
+        }
+
+        return errorDetails;
+    }
+
+    private async Task HandleException(HttpContext context, Exception ex)
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        await context.Response.WriteAsync(new ErrorDetails()
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        var isDevelopment = environment == Environments.Development;
+
+        if (isDevelopment && ex is not null)
         {
-            StatusCode = context.Response.StatusCode,
-            Message = "Internal server error from the custom middleware."
-        }.ToString());
+            await context.Response.WriteAsync(GetErrorDetails(ex).ToString());
+        }
+        else
+        {
+            await context.Response.WriteAsync(new ErrorDetails()
+            {
+                Message = "Internal Server Error",
+                ClassName = "Exception"
+            }.ToString());
+        }
     }
 
 }

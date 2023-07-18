@@ -1,5 +1,5 @@
 ﻿using Application.Application.DTOs;
-using Application.Application.Exceptions;
+using Domain.Domain.Exceptions;
 using Application.Application.Contracts;
 using Domain.Domain.Validators;
 using Domain.Domain.Contracts;

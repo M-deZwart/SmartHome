@@ -1,4 +1,4 @@
-﻿namespace Application.Application.Exceptions;
+﻿namespace Domain.Domain.Exceptions;
 
 public class OutOfRangeException : Exception
 {
