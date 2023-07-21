@@ -17,11 +17,7 @@ public class HumidityValidatorTests : IClassFixture<HumidityValidator>
     public void TestValidHumidity_ShouldBeTrue()
     {
         // arrange
-        var humidity = new HumidityBuilder()
-            .WithId(Guid.NewGuid())
-            .WithPercentage(70)
-            .WithDate(DateTime.Now)
-            .Build();
+        var humidity = new HumidityBuilder().Build();
 
         // act
         var validationResult = _validator.Validate(humidity).IsValid;
@@ -35,9 +31,7 @@ public class HumidityValidatorTests : IClassFixture<HumidityValidator>
     {
         // arrange
         var humidity = new HumidityBuilder()
-            .WithId(Guid.NewGuid())
             .WithPercentage(-0.000001)
-            .WithDate(DateTime.Now)
             .Build();
 
         // act
@@ -52,9 +46,7 @@ public class HumidityValidatorTests : IClassFixture<HumidityValidator>
     {
         // act
         var humidity = new HumidityBuilder()
-            .WithId(Guid.NewGuid())
             .WithPercentage(100.000001)
-            .WithDate(DateTime.Now)
             .Build();
 
         // act

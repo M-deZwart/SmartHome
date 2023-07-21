@@ -11,7 +11,6 @@ public class HumidityBuilderTests
     {
         // arrange
         Humidity humidity = new HumidityBuilder()
-            .WithId(Guid.NewGuid())
             .WithPercentage(80.5)
             .WithDate(DateTime.Now.AddDays(-1));
 

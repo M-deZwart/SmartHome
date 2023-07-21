@@ -13,7 +13,7 @@ public class TemperatureBuilder
     public TemperatureBuilder()
     {
         _id = Guid.NewGuid();
-        _celsius = 0;
+        _celsius = 20;
         _date = DateTime.Now;
     }
 

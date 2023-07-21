@@ -11,7 +11,6 @@ public class TemperatureBuilderTests
     {
         // arrange
         Temperature temperature = new TemperatureBuilder()
-            .WithId(Guid.NewGuid())
             .WithCelsius(25.5)
             .WithDate(DateTime.Now.AddDays(+1))
             .Build();  

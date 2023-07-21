@@ -13,7 +13,7 @@ public class HumidityBuilder
     public HumidityBuilder()
     {
         _id = Guid.NewGuid();
-        _percentage = 0;
+        _percentage = 50;
         _date = DateTime.Now;
     }
 

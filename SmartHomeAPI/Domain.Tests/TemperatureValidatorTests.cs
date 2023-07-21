@@ -17,11 +17,7 @@ public class TemperatureValidatorTests : IClassFixture<TemperatureValidator>
     public void TestValidTemperature_ShouldBeTrue()
     {
         // arrange
-        var temperature = new TemperatureBuilder()
-            .WithId(Guid.NewGuid())
-            .WithCelsius(21)
-            .WithDate(DateTime.Now)
-            .Build();
+        var temperature = new TemperatureBuilder().Build();
 
         // act
         var validationResult = _validator.Validate(temperature).IsValid;
@@ -35,9 +31,7 @@ public class TemperatureValidatorTests : IClassFixture<TemperatureValidator>
     {
         // arrange
         var temperature = new TemperatureBuilder()
-            .WithId(Guid.NewGuid())
             .WithCelsius(9.99)
-            .WithDate(DateTime.Now)
             .Build();
 
         // act
@@ -52,9 +46,7 @@ public class TemperatureValidatorTests : IClassFixture<TemperatureValidator>
     {
         // arrange
         var temperature = new TemperatureBuilder()
-            .WithId(Guid.NewGuid())
             .WithCelsius(40.00001)
-            .WithDate(DateTime.Now)
             .Build();
 
         // act
