@@ -20,9 +20,9 @@ namespace Infrastructure.Infrastructure.Logging
             var request = _httpContextAccessor?.HttpContext?.Request;
             var requestMethod = request?.Method ?? "Unknown Method";
             var requestPath = request?.Path ?? "Unknown Path";
-            var requestBody = request?.Body.ToString() ?? "Unknown Body";
+            var requestBody = request?.Body.ToString() ?? "Unknown request Body";
 
-            var responseBody = result.ToString();
+            var responseBody = result?.ToString() ?? "Unknown response Body";
 
             _logger.LogInformation("Request: {requestMethod} {requestPath} {requestBody}", requestMethod, requestPath, requestBody);
             _logger.LogInformation("Response: {responseBody}", responseBody);

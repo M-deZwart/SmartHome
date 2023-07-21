@@ -3,7 +3,7 @@ using FluentAssertions;
 using Infrastructure.Infrastructure.Mappers;
 using MongoDB.Bson;
 
-namespace Infrastructure.Tests;
+namespace Infrastructure.Tests.UnitTests;
 
 public class TemperatureMongoMapperTests
 {
@@ -19,7 +19,7 @@ public class TemperatureMongoMapperTests
     {
         // arrange
         var temperature = new TemperatureBuilder().Build();
-        BsonDocument bsonTemperature = temperature.ToBsonDocument();
+        var bsonTemperature = temperature.ToBsonDocument();
 
         // act
         var mappedTemperature = _mapper.MapToBsonDocument(temperature);
@@ -32,7 +32,7 @@ public class TemperatureMongoMapperTests
     public void TestMapTemperatureFromBsonDocument()
     {
         // arrange
-        BsonDocument bsonTemperature = new BsonDocument() {
+        var bsonTemperature = new BsonDocument() {
             { "_id", BsonValue.Create(Guid.NewGuid()) },
             { "Celsius", 19.5 },
             { "Date", BsonValue.Create(DateTime.UtcNow) }

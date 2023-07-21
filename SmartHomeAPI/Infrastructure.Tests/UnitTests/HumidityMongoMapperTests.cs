@@ -3,7 +3,7 @@ using FluentAssertions;
 using Infrastructure.Infrastructure.Mappers;
 using MongoDB.Bson;
 
-namespace Infrastructure.Tests;
+namespace Infrastructure.Tests.UnitTests;
 
 public class HumidityMongoMapperTests
 {
@@ -19,7 +19,7 @@ public class HumidityMongoMapperTests
     {
         //arrange
         var humidity = new HumidityBuilder().Build();
-        BsonDocument bsonHumidity = humidity.ToBsonDocument();
+        var bsonHumidity = humidity.ToBsonDocument();
 
         // act
         var mappedHumidity = _mapper.MapToBsonDocument(humidity);
@@ -32,7 +32,7 @@ public class HumidityMongoMapperTests
     public void TestMapHumidityFromBsonDocument()
     {
         // arrange
-        BsonDocument bsonHumidity = new BsonDocument
+        var bsonHumidity = new BsonDocument
         {
             { "_id", BsonValue.Create(Guid.NewGuid()) },
             { "Percentage", 80.5 },
