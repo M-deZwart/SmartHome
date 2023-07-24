@@ -68,7 +68,7 @@ public class TemperatureRepositoryEFTests
     }
 
     [Fact]
-    public async Task GetByDateRange_Should_Return_Temperatures_Within_Given_Range()
+    public async Task GetByDateRange_Should_Return_Temperatures_WithinDateRange()
     {
         // arrange
         var (context, logger) = CreateTestContextAndLogger();

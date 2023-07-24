@@ -1,0 +1,107 @@
+﻿using Domain.Domain.Contracts;
+using Domain.Domain.Entities;
+using Domain.Tests.Builders;
+using FluentAssertions;
+using Infrastructure.Infrastructure.Mappers;
+using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using Moq;
+using SmartHomeAPI.Infrastructure.Repositories;
+
+namespace Infrastructure.Tests.IntegrationTests;
+
+public class HumidityRepositoryMongoTests : IClassFixture<MongoFixture>, IDisposable
+{
+    private readonly MongoFixture _mongoFixture;
+    private readonly IHumidityRepository _humidityRepository;
+
+    public HumidityRepositoryMongoTests(MongoFixture mongoFixture)
+    {
+        _mongoFixture = mongoFixture;
+
+        var humidityMapper = new HumidityMongoMapper();
+        var logger = new Mock<ILogger<HumidityRepositoryMongo>>().Object;
+
+        _humidityRepository = new HumidityRepositoryMongo(
+            _mongoFixture.MongoDatabase,
+            humidityMapper,
+            logger
+        );
+    }
+
+    [Fact]
+    public async Task Create_Should_Add_Humidity_To_Database()
+    {
+        // arrange
+        var humidity = new HumidityBuilder().Build();
+
+        // act
+        await _humidityRepository.Create(humidity);
+
+        // assert
+        var bsonDocument = new BsonDocument
+    {
+        { "_id", humidity.Id },
+        { "Percentage", humidity.Percentage },
+        { "Date", humidity.Date.ToUniversalTime() }
+    };
+
+        var filter = Builders<BsonDocument>.Filter.Eq("_id", humidity.Id);
+        var result = await _mongoFixture.MongoDatabase.GetCollection<BsonDocument>("Humidity").Find(filter).FirstOrDefaultAsync();
+
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(bsonDocument);
+    }
+
+    [Fact]
+    public async Task GetByDateRange_Should_Return_HumidityList_WithinDateRange()
+    {
+        // arrange
+        var startDate = DateTime.UtcNow.AddHours(-24);
+        var endDate = DateTime.UtcNow;
+
+        var humidity1 = new HumidityBuilder().WithDate(startDate.AddMinutes(30).ToUniversalTime()).Build();
+        var humidity2 = new HumidityBuilder().WithDate(startDate.AddMinutes(60).ToUniversalTime()).Build();
+        var humidity3 = new HumidityBuilder().WithDate(endDate.AddHours(-30).ToUniversalTime()).Build();
+
+        await _mongoFixture.MongoDatabase
+            .GetCollection<Humidity>("Humidity")
+            .InsertManyAsync(new List<Humidity> { humidity1, humidity2, humidity3 });
+
+        // act
+        var result = await _humidityRepository.GetByDateRange(startDate, endDate);
+
+        // assert
+        result.Should().NotBeNull();
+        result.Should().HaveCount(2);
+        result.All(h => h.Date >= startDate && h.Date <= endDate).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GetLatestHumidity_Should_Return_Latest_Humidity()
+    {
+        // arrange
+        var startDate = DateTime.UtcNow.AddMinutes(-30);
+        var endDate = DateTime.UtcNow;
+
+        var humidity1 = new HumidityBuilder().WithDate(startDate).Build();
+        var humidity2 = new HumidityBuilder().WithDate(endDate).Build();
+
+        var humidityCollection = _mongoFixture.MongoDatabase.GetCollection<BsonDocument>("Humidity");
+        await humidityCollection.InsertManyAsync(new List<BsonDocument> 
+            { humidity1.ToBsonDocument(), humidity2.ToBsonDocument() });
+
+        // act
+        var result = await _humidityRepository.GetLatestHumidity();
+
+        // assert
+        result.Should().NotBeNull();
+        result.Date.Should().BeCloseTo(humidity2.Date, precision: TimeSpan.FromSeconds(1));
+    }
+
+    public void Dispose()
+    {
+        _mongoFixture.Dispose();
+    }
+}

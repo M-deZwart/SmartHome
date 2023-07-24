@@ -68,7 +68,7 @@ public class HumidityRepositoryEFTests
     }
 
     [Fact]
-    public async Task GetByDateRange_Should_Return_Humidities_Within_Given_Range()
+    public async Task GetByDateRange_Should_Return_Humidities_WithinDateRange()
     {
         // arrange
         var (context, logger) = CreateTestContextAndLogger();
