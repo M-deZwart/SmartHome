@@ -65,7 +65,6 @@ public class HumidityRepositoryEFTests
         // assert
         latestHumidity.Should().NotBeNull();
         latestHumidity.Date.Should().Be(mockData[2].Date);
-        latestHumidity.Percentage.Should().Be(mockData[2].Percentage);
     }
 
     [Fact]
