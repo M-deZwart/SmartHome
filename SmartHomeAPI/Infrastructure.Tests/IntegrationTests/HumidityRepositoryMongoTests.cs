@@ -15,17 +15,19 @@ namespace Infrastructure.Tests.IntegrationTests;
 public class HumidityRepositoryMongoTests : IDisposable
 {
     private readonly MongoFixture _mongoFixture;
-    private readonly IHumidityRepository _humidityRepository;
 
     public HumidityRepositoryMongoTests(MongoFixture mongoFixture)
     {
         _mongoFixture = mongoFixture;
         _mongoFixture.WaitForConnection();
+    }
 
+    private IHumidityRepository CreateHumidityRepository()
+    {
         var humidityMapper = new HumidityMongoMapper();
         var logger = new Mock<ILogger<HumidityRepositoryMongo>>().Object;
 
-        _humidityRepository = new HumidityRepositoryMongo(
+        return new HumidityRepositoryMongo(
             _mongoFixture.MongoDatabase,
             humidityMapper,
             logger
@@ -37,9 +39,10 @@ public class HumidityRepositoryMongoTests : IDisposable
     {
         // arrange
         var humidity = new HumidityBuilder().Build();
+        var humidityRepository = CreateHumidityRepository();
 
         // act
-        await _humidityRepository.Create(humidity);
+        await humidityRepository.Create(humidity);
 
         // assert
         var bsonDocument = new BsonDocument
@@ -60,6 +63,7 @@ public class HumidityRepositoryMongoTests : IDisposable
     public async Task GetByDateRange_Should_Return_HumidityList_WithinDateRange()
     {
         // arrange
+        var humidityRepository = CreateHumidityRepository();
         var startDate = DateTime.UtcNow.AddHours(-24);
         var endDate = DateTime.UtcNow;
 
@@ -72,7 +76,7 @@ public class HumidityRepositoryMongoTests : IDisposable
             .InsertManyAsync(new List<Humidity> { humidity1, humidity2, humidity3 });
 
         // act
-        var result = await _humidityRepository.GetByDateRange(startDate, endDate);
+        var result = await humidityRepository.GetByDateRange(startDate, endDate);
 
         // assert
         result.Should().NotBeNull();
@@ -84,6 +88,7 @@ public class HumidityRepositoryMongoTests : IDisposable
     public async Task GetLatestHumidity_Should_Return_Latest_Humidity()
     {
         // arrange
+        var humidityRepository = CreateHumidityRepository();
         var startDate = DateTime.UtcNow.AddMinutes(-30);
         var endDate = DateTime.UtcNow;
 
@@ -95,7 +100,7 @@ public class HumidityRepositoryMongoTests : IDisposable
             { humidity1.ToBsonDocument(), humidity2.ToBsonDocument() });
 
         // act
-        var result = await _humidityRepository.GetLatestHumidity();
+        var result = await humidityRepository.GetLatestHumidity();
 
         // assert
         result.Should().NotBeNull();
@@ -105,8 +110,11 @@ public class HumidityRepositoryMongoTests : IDisposable
     [Fact]
     public async Task GetLatestHumidity_Should_Throw_InvalidOperationException_If_No_Humidity_Found()
     {
+        // arrange
+        var humidityRepository = CreateHumidityRepository();
+
         // act
-        var act = _humidityRepository.GetLatestHumidity;
+        var act = humidityRepository.GetLatestHumidity;
 
         // assert
         await act.Should().ThrowAsync<InvalidOperationException>()
@@ -116,8 +124,11 @@ public class HumidityRepositoryMongoTests : IDisposable
     [Fact]
     public async Task Create_NullValue_ThrowsInvalidOperationException()
     {
+        // arrange
+        var humidityRepository = CreateHumidityRepository();
+
         // act & assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _humidityRepository.Create(null));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => humidityRepository.Create(null));
     }
 
     public void Dispose()

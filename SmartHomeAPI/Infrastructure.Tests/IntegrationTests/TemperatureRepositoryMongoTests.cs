@@ -15,17 +15,19 @@ namespace Infrastructure.Tests.IntegrationTests;
 public class TemperatureRepositoryMongoTests : IDisposable
 {
     private readonly MongoFixture _mongoFixture;
-    private readonly ITemperatureRepository _temperatureRepository;
 
     public TemperatureRepositoryMongoTests(MongoFixture mongoFixture)
     {
         _mongoFixture = mongoFixture;
         _mongoFixture.WaitForConnection();
+    }
 
+    private ITemperatureRepository CreateTemperatureRepository()
+    {
         var temperatureMapper = new TemperatureMongoMapper();
         var logger = new Mock<ILogger<TemperatureRepositoryMongo>>().Object;
 
-        _temperatureRepository = new TemperatureRepositoryMongo(
+        return new TemperatureRepositoryMongo(
             _mongoFixture.MongoDatabase,
             temperatureMapper,
             logger
@@ -36,10 +38,11 @@ public class TemperatureRepositoryMongoTests : IDisposable
     public async Task Create_Should_Add_Temperature_To_Database()
     {
         // arrange
+        var temperatureRepository = CreateTemperatureRepository();
         var temperature = new TemperatureBuilder().Build();
 
         // act
-        await _temperatureRepository.Create(temperature);
+        await temperatureRepository.Create(temperature);
 
         // assert
         var bsonDocument = new BsonDocument
@@ -60,6 +63,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
     public async Task GetByDateRange_Should_Return_TemperatureList_WithinDateRange()
     {
         // arrange
+        var temperatureRepository = CreateTemperatureRepository();
         var startDate = DateTime.UtcNow.AddHours(-24);
         var endDate = DateTime.UtcNow;
 
@@ -72,7 +76,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
             .InsertManyAsync(new List<Temperature> { temperature1, temperature2, temperature3 });
 
         // act
-        var result = await _temperatureRepository.GetByDateRange(startDate, endDate);
+        var result = await temperatureRepository.GetByDateRange(startDate, endDate);
 
         // assert
         result.Should().NotBeNull();
@@ -84,6 +88,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
     public async Task GetLatestTemperature_Should_Return_Latest_Temperature()
     {
         // arrange
+        var temperatureRepository = CreateTemperatureRepository();
         var startDate = DateTime.UtcNow.AddMinutes(-30);
         var endDate = DateTime.UtcNow;
 
@@ -95,7 +100,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
             { temperature1.ToBsonDocument(), temperature2.ToBsonDocument() });
 
         // act
-        var result = await _temperatureRepository.GetLatestTemperature();
+        var result = await temperatureRepository.GetLatestTemperature();
 
         // assert
         result.Should().NotBeNull();
@@ -105,8 +110,11 @@ public class TemperatureRepositoryMongoTests : IDisposable
     [Fact]
     public async Task GetLatestTemperature_Should_Throw_InvalidOperationException_If_Humidity_NotFound()
     {
+        // arrange
+        var temperatureRepository = CreateTemperatureRepository();
+
         // act
-        var act = _temperatureRepository.GetLatestTemperature;
+        var act = temperatureRepository.GetLatestTemperature;
 
         // assert
         await act.Should().ThrowAsync<InvalidOperationException>()
@@ -116,8 +124,11 @@ public class TemperatureRepositoryMongoTests : IDisposable
     [Fact]
     public async Task Create_NullValue_ThrowsInvalidOperationException()
     {
+        // arrange
+        var temperatureRepository = CreateTemperatureRepository();
+
         // act & assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _temperatureRepository.Create(null));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => temperatureRepository.Create(null));
     }
 
     public void Dispose()
