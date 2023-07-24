@@ -1,7 +1,4 @@
-﻿using Application.Application.ApiMappers;
-using Application.Application.Contracts;
-using Application.Application.Services;
-using Domain.Domain.Contracts;
+﻿using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
