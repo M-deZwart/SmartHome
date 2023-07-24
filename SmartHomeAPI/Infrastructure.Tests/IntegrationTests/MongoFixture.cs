@@ -1,13 +1,11 @@
-﻿using Domain.Domain.Entities;
-using Mongo2Go;
-using MongoDB.Bson;
+﻿using Mongo2Go;
 using MongoDB.Driver;
 
 namespace Infrastructure.Tests.IntegrationTests;
 
 public class MongoFixture : IDisposable
 {
-    private static MongoDbRunner _runner;
+    private readonly MongoDbRunner _runner;
     public IMongoClient MongoClient { get; }
     public IMongoDatabase MongoDatabase { get; }
 
@@ -20,7 +18,28 @@ public class MongoFixture : IDisposable
         MongoDatabase = MongoClient.GetDatabase("test_database");
     }
 
-    public void Dispose ()
+    public void WaitForConnection()
+    {
+        var timeout = TimeSpan.FromSeconds(30);
+        var startTime = DateTime.UtcNow;
+
+        while (DateTime.UtcNow - startTime < timeout)
+        {
+            try
+            {
+                MongoClient.ListDatabaseNames();
+                return;
+            }
+            catch (Exception)
+            {
+                Thread.Sleep(1000);
+            }
+        }
+
+        throw new TimeoutException("Could not make a connection with MongoDB-server.");
+    }
+
+    public void Dispose()
     {
         _runner?.Dispose();
     }

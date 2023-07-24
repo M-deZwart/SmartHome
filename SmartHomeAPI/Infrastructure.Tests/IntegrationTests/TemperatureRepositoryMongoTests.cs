@@ -11,7 +11,8 @@ using SmartHomeAPI.Infrastructure.Repositories;
 
 namespace Infrastructure.Tests.IntegrationTests;
 
-public class TemperatureRepositoryMongoTests : IClassFixture<MongoFixture>, IDisposable
+[Collection("MongoCollection")]
+public class TemperatureRepositoryMongoTests : IDisposable
 {
     private readonly MongoFixture _mongoFixture;
     private readonly ITemperatureRepository _temperatureRepository;
@@ -19,6 +20,7 @@ public class TemperatureRepositoryMongoTests : IClassFixture<MongoFixture>, IDis
     public TemperatureRepositoryMongoTests(MongoFixture mongoFixture)
     {
         _mongoFixture = mongoFixture;
+        _mongoFixture.WaitForConnection();
 
         var temperatureMapper = new TemperatureMongoMapper();
         var logger = new Mock<ILogger<TemperatureRepositoryMongo>>().Object;
@@ -98,6 +100,24 @@ public class TemperatureRepositoryMongoTests : IClassFixture<MongoFixture>, IDis
         // assert
         result.Should().NotBeNull();
         result.Date.Should().BeCloseTo(temperature2.Date, precision: TimeSpan.FromSeconds(1));
+    }
+
+    [Fact]
+    public async Task GetLatestTemperature_Should_Throw_InvalidOperationException_If_Humidity_NotFound()
+    {
+        // act
+        var act = _temperatureRepository.GetLatestTemperature;
+
+        // assert
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Failed to get current temperature: Temperature was not found");
+    }
+
+    [Fact]
+    public async Task Create_NullValue_ThrowsInvalidOperationException()
+    {
+        // act & assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _temperatureRepository.Create(null));
     }
 
     public void Dispose()

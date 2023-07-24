@@ -1,4 +1,6 @@
-﻿using Domain.Domain.Entities;
+﻿using Amazon.Runtime.Internal.Util;
+using Domain.Domain.Contracts;
+using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
 using Infrastructure.Infrastructure;
@@ -97,5 +99,31 @@ public class TemperatureRepositoryEFTests
         temperaturesInRange.Should().NotBeNull();
         temperaturesInRange.Should().HaveCount(3);
         temperaturesInRange.All(h => h.Date >= startDate && h.Date <= endDate).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GetLatestTemperature_Should_Throw_InvalidOperationException_If_Humidity_NotFound()
+    {
+        // arrange
+        var (context, logger) = CreateTestContextAndLogger();
+        var temperatureRepository = new TemperatureRepositoryEF(context, logger);
+
+        // act
+        var act = temperatureRepository.GetLatestTemperature;
+
+        // assert
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Failed to get current temperature: Temperature was not found");
+    }
+
+    [Fact]
+    public async Task Create_NullValue_ThrowsInvalidOperationException()
+    {
+        // arrange
+        var (context, logger) = CreateTestContextAndLogger();
+        var temperatureRepository = new TemperatureRepositoryEF(context, logger);
+
+        // act & assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => temperatureRepository.Create(null));
     }
 }

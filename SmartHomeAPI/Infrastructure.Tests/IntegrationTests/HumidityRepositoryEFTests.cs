@@ -98,4 +98,30 @@ public class HumidityRepositoryEFTests
         humiditiesInRange.Should().HaveCount(3);
         humiditiesInRange.All(h => h.Date >= startDate && h.Date <= endDate).Should().BeTrue();
     }
+
+    [Fact]
+    public async Task GetLatestHumidity_Should_Throw_InvalidOperationException_If_Humidity_NotFound()
+    {
+        // arrange
+        var (context, logger) = CreateTestContextAndLogger();
+        var humidityRepository = new HumidityRepositoryEF(context, logger);
+
+        // act
+        var act = humidityRepository.GetLatestHumidity;
+
+        // assert
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Failed to get current humidity: Humidity was not found");
+    }
+
+    [Fact]
+    public async Task Create_NullValue_ThrowsInvalidOperationException()
+    {
+        // arrange
+        var (context, logger) = CreateTestContextAndLogger();
+        var humidityRepository = new HumidityRepositoryEF(context, logger);
+
+        // act & assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => humidityRepository.Create(null));
+    }
 }
