@@ -19,7 +19,6 @@ public class TemperatureRepositoryMongoTests : IDisposable
     public TemperatureRepositoryMongoTests(MongoFixture mongoFixture)
     {
         _mongoFixture = mongoFixture;
-        _mongoFixture.WaitForConnection();
     }
 
     private ITemperatureRepository CreateTemperatureRepository()

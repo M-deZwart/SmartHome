@@ -19,7 +19,6 @@ public class HumidityRepositoryMongoTests : IDisposable
     public HumidityRepositoryMongoTests(MongoFixture mongoFixture)
     {
         _mongoFixture = mongoFixture;
-        _mongoFixture.WaitForConnection();
     }
 
     private IHumidityRepository CreateHumidityRepository()
