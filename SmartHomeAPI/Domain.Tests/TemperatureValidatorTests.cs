@@ -14,7 +14,7 @@ public class TemperatureValidatorTests : IClassFixture<TemperatureValidator>
     }
 
     [Fact]
-    public void TestValidTemperature_ShouldBeTrue()
+    public void Valid_Temperature_Should_Be_True()
     {
         // arrange
         var temperature = new TemperatureBuilder().Build();
@@ -27,7 +27,7 @@ public class TemperatureValidatorTests : IClassFixture<TemperatureValidator>
     }
 
     [Fact]
-    public void TestInvalidTemperature_ShouldBeFalse()
+    public void Invalid_Temperature_Should_Be_False()
     {
         // arrange
         var temperature = new TemperatureBuilder()
@@ -42,7 +42,7 @@ public class TemperatureValidatorTests : IClassFixture<TemperatureValidator>
     }
 
     [Fact]
-    public void TestInvalidTemperatureMessage()
+    public void Invalid_Temperature_Should_Return_Error_Message()
     {
         // arrange
         var temperature = new TemperatureBuilder()

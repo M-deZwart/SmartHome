@@ -7,7 +7,7 @@ namespace Domain.Tests;
 public class HumidityBuilderTests
 {
     [Fact]
-    public void TestHumidityBuilder()
+    public void HumidityBuilder_Should_Return_Humidity()
     {
         // arrange
         Humidity humidity = new HumidityBuilder()

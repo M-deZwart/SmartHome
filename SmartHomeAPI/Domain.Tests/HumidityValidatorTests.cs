@@ -14,7 +14,7 @@ public class HumidityValidatorTests : IClassFixture<HumidityValidator>
     }
 
     [Fact]
-    public void TestValidHumidity_ShouldBeTrue()
+    public void Valid_Humidity_Should_Be_True()
     {
         // arrange
         var humidity = new HumidityBuilder().Build();
@@ -27,7 +27,7 @@ public class HumidityValidatorTests : IClassFixture<HumidityValidator>
     }
 
     [Fact]
-    public void TestInvalidHumidity_ShouldBeFalse()
+    public void Invalid_Humidity_Should_Be_False()
     {
         // arrange
         var humidity = new HumidityBuilder()
@@ -42,7 +42,7 @@ public class HumidityValidatorTests : IClassFixture<HumidityValidator>
     }
 
     [Fact]
-    public void TestInvalidHumidityMessage()
+    public void Invalid_Humidity_Should_Return_Error_Message()
     {
         // act
         var humidity = new HumidityBuilder()

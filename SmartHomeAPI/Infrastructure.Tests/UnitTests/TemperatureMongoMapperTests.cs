@@ -15,7 +15,7 @@ public class TemperatureMongoMapperTests
     }
 
     [Fact]
-    public void TestMapTemperatureToBsonDocument()
+    public void MapTemperatureToBsonDocument_Should_Be_BsonDocument()
     {
         // arrange
         var temperature = new TemperatureBuilder().Build();
@@ -29,7 +29,7 @@ public class TemperatureMongoMapperTests
     }
 
     [Fact]
-    public void TestMapTemperatureFromBsonDocument()
+    public void MapTemperatureFromBsonDocument_Should_Be_Temperature()
     {
         // arrange
         var bsonTemperature = new BsonDocument() {
@@ -48,6 +48,6 @@ public class TemperatureMongoMapperTests
         var mappedTemperature = _mapper.MapFromBsonDocument(bsonTemperature);
 
         // assert
-        mappedTemperature.Should().BeEquivalentTo(mappedTemperature);
+        mappedTemperature.Should().BeEquivalentTo(temperature);
     }
 }

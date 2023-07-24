@@ -7,7 +7,7 @@ namespace Domain.Tests;
 public class TemperatureBuilderTests
 {
     [Fact]
-    public void TestTemperatureBuilder()
+    public void TemperatureBuilder_Should_Return_Temperature()
     {
         // arrange
         Temperature temperature = new TemperatureBuilder()

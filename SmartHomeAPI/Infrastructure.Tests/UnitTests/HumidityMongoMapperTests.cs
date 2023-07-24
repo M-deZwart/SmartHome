@@ -15,7 +15,7 @@ public class HumidityMongoMapperTests
     }
 
     [Fact]
-    public void TestMapHumidityToBsonDocument()
+    public void MapHumidityToBsonDocument_Should_Be_BsonDocument()
     {
         //arrange
         var humidity = new HumidityBuilder().Build();
@@ -29,7 +29,7 @@ public class HumidityMongoMapperTests
     }
 
     [Fact]
-    public void TestMapHumidityFromBsonDocument()
+    public void MapHumidityFromBsonDocument_Should_Be_Humidity()
     {
         // arrange
         var bsonHumidity = new BsonDocument
