@@ -32,7 +32,7 @@ public class MongoFixture : IAsyncLifetime
         {
             if (network.Name == MONGO_NETWORK_NAME)
             {
-                return; // Network already exists, no need to create.
+                return; 
             }
         }
 
