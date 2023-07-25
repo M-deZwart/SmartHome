@@ -54,7 +54,7 @@ public class MongoFixture : IAsyncLifetime
                     {
                         { "27017", new List<PortBinding> { new PortBinding { HostPort = "27017" } } }
                     },
-                NetworkMode = MONGO_NETWORK_NAME // Attach container to the custom network
+                NetworkMode = MONGO_NETWORK_NAME 
             },
             ExposedPorts = new Dictionary<string, EmptyStruct>
                 {
