@@ -2,6 +2,7 @@
 using Domain.Tests.Builders;
 using FluentAssertions;
 using Infrastructure.Infrastructure.Mappers;
+using Infrastructure.Tests.IntegrationTests.TestInfra;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -17,11 +18,13 @@ public class TemperatureRepositoryMongoTests : IDisposable
     private readonly ITemperatureRepository _temperatureRepository;
     private readonly IMongoCollection<BsonDocument> _temperatureCollection;
     private readonly MongoClient _mongoClient;
+    private readonly string _databaseName;
 
-    public TemperatureRepositoryMongoTests()
+    public TemperatureRepositoryMongoTests(MongoFixture mongoFixture)
     {
-        _mongoClient = new MongoClient("mongodb://localhost:27017");
-        _database = _mongoClient.GetDatabase("smarthome");
+        _mongoClient = new MongoClient(mongoFixture.ConnectionString);
+        _databaseName = mongoFixture.Database;
+        _database = _mongoClient.GetDatabase(_databaseName);
 
         var temperatureMapper = new TemperatureMongoMapper();
         var logger = new Mock<ILogger<TemperatureRepositoryMongo>>().Object;
@@ -123,6 +126,6 @@ public class TemperatureRepositoryMongoTests : IDisposable
 
     public async void Dispose()
     {
-        await _mongoClient.DropDatabaseAsync("smarthome");
+        _mongoClient.DropDatabase(_databaseName);
     }
 }
