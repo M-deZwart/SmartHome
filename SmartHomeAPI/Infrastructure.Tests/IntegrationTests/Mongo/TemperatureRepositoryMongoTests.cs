@@ -11,16 +11,17 @@ using SmartHomeAPI.Infrastructure.Repositories;
 namespace Infrastructure.Tests.IntegrationTests.Mongo;
 
 [Collection("MongoCollection")]
-public class TemperatureRepositoryMongoTests 
+public class TemperatureRepositoryMongoTests : IDisposable
 {
     private readonly IMongoDatabase _database;
     private readonly ITemperatureRepository _temperatureRepository;
     private readonly IMongoCollection<BsonDocument> _temperatureCollection;
+    private readonly MongoClient _mongoClient;
 
     public TemperatureRepositoryMongoTests()
     {
-        var mongoClient = new MongoClient("mongodb://localhost:27017");
-        _database = mongoClient.GetDatabase("smarthome");
+        _mongoClient = new MongoClient("mongodb://localhost:27017");
+        _database = _mongoClient.GetDatabase("smarthome");
 
         var temperatureMapper = new TemperatureMongoMapper();
         var logger = new Mock<ILogger<TemperatureRepositoryMongo>>().Object;
@@ -120,4 +121,8 @@ public class TemperatureRepositoryMongoTests
         await Assert.ThrowsAsync<InvalidOperationException>(() => _temperatureRepository.Create(null));
     }
 
+    public async void Dispose()
+    {
+        await _mongoClient.DropDatabaseAsync("smarthome");
+    }
 }

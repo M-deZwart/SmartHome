@@ -11,16 +11,17 @@ using SmartHomeAPI.Infrastructure.Repositories;
 namespace Infrastructure.Tests.IntegrationTests.Mongo;
 
 [Collection("MongoCollection")]
-public class HumidityRepositoryMongoTests 
+public class HumidityRepositoryMongoTests : IDisposable
 {
     private readonly IMongoDatabase _database;
     private readonly IHumidityRepository _humidityRepository;
     private readonly IMongoCollection<BsonDocument> _humidityCollection;
+    private readonly MongoClient _mongoClient;
 
     public HumidityRepositoryMongoTests()
     {
-        var mongoClient = new MongoClient("mongodb://localhost:27017");
-        _database = mongoClient.GetDatabase("smarthome");
+        _mongoClient = new MongoClient("mongodb://localhost:27017");
+        _database = _mongoClient.GetDatabase("smarthome");
 
         var humidityMapper = new HumidityMongoMapper();
         var logger = new Mock<ILogger<HumidityRepositoryMongo>>().Object;
@@ -120,4 +121,8 @@ public class HumidityRepositoryMongoTests
         await Assert.ThrowsAsync<InvalidOperationException>(() => _humidityRepository.Create(null));
     }
 
+    public async void Dispose()
+    {
+        await _mongoClient.DropDatabaseAsync("smarthome");
+    }
 }
