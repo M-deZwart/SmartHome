@@ -1,5 +1,4 @@
 ﻿using Domain.Domain.Contracts;
-using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
 using Infrastructure.Infrastructure.Mappers;
@@ -9,32 +8,30 @@ using MongoDB.Driver;
 using Moq;
 using SmartHomeAPI.Infrastructure.Repositories;
 
-namespace Infrastructure.Tests.IntegrationTests;
+namespace Infrastructure.Tests.IntegrationTests.Mongo;
 
 [Collection("MongoCollection")]
-public class HumidityRepositoryMongoTests : IDisposable
+public class HumidityRepositoryMongoTests 
 {
-    private readonly MongoFixture _mongoFixture;
+    private readonly IMongoDatabase _database;
     private readonly IHumidityRepository _humidityRepository;
     private readonly IMongoCollection<BsonDocument> _humidityCollection;
 
-    public HumidityRepositoryMongoTests(MongoFixture mongoFixture)
+    public HumidityRepositoryMongoTests()
     {
-        _mongoFixture = mongoFixture;
-        _humidityRepository = CreateHumidityRepository();
-        _humidityCollection = mongoFixture.HumidityCollection;
-    }
+        var mongoClient = new MongoClient("mongodb://localhost:27017");
+        _database = mongoClient.GetDatabase("smarthome");
 
-    private IHumidityRepository CreateHumidityRepository()
-    {
         var humidityMapper = new HumidityMongoMapper();
         var logger = new Mock<ILogger<HumidityRepositoryMongo>>().Object;
 
-        return new HumidityRepositoryMongo(
-            _mongoFixture.MongoDatabase,
-            humidityMapper,
-            logger
-        );
+        _humidityRepository = new HumidityRepositoryMongo(
+                _database,
+                humidityMapper,
+                logger
+            );
+
+        _humidityCollection = _database.GetCollection<BsonDocument>("Humidity");
     }
 
     [Fact]
@@ -123,8 +120,4 @@ public class HumidityRepositoryMongoTests : IDisposable
         await Assert.ThrowsAsync<InvalidOperationException>(() => _humidityRepository.Create(null));
     }
 
-    public void Dispose()
-    {
-        _mongoFixture.Dispose();
-    }
 }

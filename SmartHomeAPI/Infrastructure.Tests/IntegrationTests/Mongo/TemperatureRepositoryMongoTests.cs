@@ -1,5 +1,4 @@
 ﻿using Domain.Domain.Contracts;
-using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
 using Infrastructure.Infrastructure.Mappers;
@@ -9,32 +8,30 @@ using MongoDB.Driver;
 using Moq;
 using SmartHomeAPI.Infrastructure.Repositories;
 
-namespace Infrastructure.Tests.IntegrationTests;
+namespace Infrastructure.Tests.IntegrationTests.Mongo;
 
 [Collection("MongoCollection")]
-public class TemperatureRepositoryMongoTests : IDisposable
+public class TemperatureRepositoryMongoTests 
 {
-    private readonly MongoFixture _mongoFixture;
+    private readonly IMongoDatabase _database;
     private readonly ITemperatureRepository _temperatureRepository;
     private readonly IMongoCollection<BsonDocument> _temperatureCollection;
 
-    public TemperatureRepositoryMongoTests(MongoFixture mongoFixture)
+    public TemperatureRepositoryMongoTests()
     {
-        _mongoFixture = mongoFixture;
-        _temperatureRepository = CreateTemperatureRepository();
-        _temperatureCollection = mongoFixture.TemperatureCollection;
-    }
+        var mongoClient = new MongoClient("mongodb://localhost:27017");
+        _database = mongoClient.GetDatabase("smarthome");
 
-    private ITemperatureRepository CreateTemperatureRepository()
-    {
         var temperatureMapper = new TemperatureMongoMapper();
         var logger = new Mock<ILogger<TemperatureRepositoryMongo>>().Object;
 
-        return new TemperatureRepositoryMongo(
-            _mongoFixture.MongoDatabase,
-            temperatureMapper,
-            logger
-        );
+        _temperatureRepository = new TemperatureRepositoryMongo(
+                _database,
+                temperatureMapper,
+                logger
+            );
+
+        _temperatureCollection = _database.GetCollection<BsonDocument>("Temperature");
     }
 
     [Fact]
@@ -123,8 +120,4 @@ public class TemperatureRepositoryMongoTests : IDisposable
         await Assert.ThrowsAsync<InvalidOperationException>(() => _temperatureRepository.Create(null));
     }
 
-    public void Dispose()
-    {
-        _mongoFixture.Dispose();
-    }
 }
