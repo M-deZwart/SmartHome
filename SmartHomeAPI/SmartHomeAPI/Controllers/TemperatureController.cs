@@ -1,5 +1,7 @@
 ﻿using Application.Application.DTOs;
+using Application.Application.Exceptions;
 using Application.Application.Services;
+using Application.Application.Validators;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SmartHomeAPI.Controllers
@@ -9,12 +11,13 @@ namespace SmartHomeAPI.Controllers
     public class TemperatureController : ControllerBase
     {
         private readonly ITemperatureService _temperatureService;
+        private readonly CelsiusValidator _celsiusValidator;
 
         public TemperatureController(
-            ITemperatureService temperatureService
-          )
+            ITemperatureService temperatureService)
         {
             _temperatureService = temperatureService;
+            _celsiusValidator = new CelsiusValidator();
         }
 
         [HttpPost("setTemperature")]
@@ -22,8 +25,18 @@ namespace SmartHomeAPI.Controllers
         {
             try
             {
-                await _temperatureService.SetTemperature(celsius);
-                return Ok();
+                var validationResult = await _celsiusValidator.ValidateAsync(celsius);
+
+                if (validationResult.IsValid)
+                {
+                    await _temperatureService.SetTemperature(celsius);
+                    return Ok();
+                }
+                else
+                {
+                    var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
+                    throw new OutOfRangeException($"Validation errors occurred: {validationErrors}");
+                }
             }
             catch (Exception ex)
             {

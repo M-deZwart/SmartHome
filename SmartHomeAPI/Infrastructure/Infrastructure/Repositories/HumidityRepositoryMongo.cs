@@ -10,90 +10,47 @@ namespace SmartHomeAPI.Infrastructure.Repositories
 {
     public class HumidityRepositoryMongo : IHumidityRepository
     {
-        private readonly IHumidityMongoMapper _humidityMapper;
-        private readonly IMongoCollection<BsonDocument> _humidityCollection;
-        private readonly ILogger<HumidityRepositoryMongo> _logger;
+        private readonly IMongoCollection<Humidity> _humidityCollection;
 
-        public HumidityRepositoryMongo(
-            IMongoDatabase db, 
-            IHumidityMongoMapper humidityMapper,
-            ILogger<HumidityRepositoryMongo> logger)
+        public HumidityRepositoryMongo(IMongoDatabase db)
         {
-            _humidityCollection = db.GetCollection<BsonDocument>("Humidity");
-            _humidityMapper = humidityMapper;
-            _logger = logger;
+            _humidityCollection = db.GetCollection<Humidity>("Humidity");
         }
 
         public async Task Create(Humidity humidity)
-        {  
-            try
-            {
-                humidity.Date = humidity.Date.ToUniversalTime().AddHours(2);
-                var humidityBsonDocument = _humidityMapper.MapToBsonDocument(humidity);
-                await _humidityCollection.InsertOneAsync(humidityBsonDocument);
-            }
-            catch(Exception ex)
-            {
-                var errorMessage = "Failed to create humidity:";
-                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
-                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
-            }
+        {
+            humidity.Date = humidity.Date.ToUniversalTime().AddHours(2);
+            await _humidityCollection.InsertOneAsync(humidity);
         }
 
         public async Task<List<Humidity>> GetByDateRange(DateTime startDate, DateTime endDate)
         {
-            try
-            {
-                var filter = Builders<BsonDocument>.Filter.And(
-                    Builders<BsonDocument>.Filter.Gte("Date", startDate),
-                    Builders<BsonDocument>.Filter.Lte("Date", endDate)
-                );
+            var filter = Builders<Humidity>.Filter.And(
+                Builders<Humidity>.Filter.Gte("Date", startDate),
+                Builders<Humidity>.Filter.Lte("Date", endDate)
+            );
 
-                var humidityBsonDocumentList = await _humidityCollection
-                    .Find(filter)
-                    .ToListAsync();
+            var humidityList = await _humidityCollection
+                .Find(filter)
+                .ToListAsync();
 
-                List<Humidity> humidityList = new List<Humidity>();
-
-                humidityBsonDocumentList.ForEach(humidityBsonDocument =>
-                {
-                    var humidity = _humidityMapper.MapFromBsonDocument(humidityBsonDocument);
-                    humidityList.Add(humidity);
-                });
-
-                return humidityList;
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = "Failed to get humidity by date range:";
-                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
-                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
-            }
+            return humidityList;
         }
 
         public async Task<Humidity> GetLatestHumidity()
         {
-            try
+            var latestHumidity = await _humidityCollection.Find(_ => true)
+                .SortByDescending(humidity => humidity.Date)
+                .FirstOrDefaultAsync();
+
+            if (latestHumidity is not null)
             {
-                var latestHumidityDocument = await _humidityCollection.Find(_ => true)
-                    .SortByDescending(document => document["Date"])
-                    .FirstOrDefaultAsync();
-                
-                if (latestHumidityDocument is not null)
-                {
-                    return _humidityMapper.MapFromBsonDocument(latestHumidityDocument);
-                }
-                else
-                {
-                    throw new NotFoundException($"Humidity was not found");
-                }            
-            } 
-            catch (Exception ex)
+                return latestHumidity;
+            }
+            else
             {
-                var errorMessage = "Failed to get current humidity:";
-                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
-                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
-            }        
+                throw new NotFoundException($"Humidity was not found");
+            }
         }
 
     }

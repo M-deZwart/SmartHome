@@ -54,6 +54,6 @@ public class HumidityValidatorTests : IClassFixture<HumidityValidator>
 
         // assert
         validationResult.Errors.Should().ContainSingle();
-        validationResult.Errors[0].ErrorMessage.Should().Be("Invalid humidity value. The humidity percentage should be between 0 and 100.");
+        validationResult.Errors[0].ErrorMessage.Should().Be("Invalid percentage value. The humidity percentage should be between 0 and 100.");
     }
 }

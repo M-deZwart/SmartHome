@@ -9,72 +9,42 @@ namespace Infrastructure.Infrastructure.Repositories
     public class HumidityRepositoryEF : IHumidityRepository
     {
         private readonly SmartHomeContext _smartHomeContext;
-        private readonly ILogger<HumidityRepositoryEF> _logger;
 
-        public HumidityRepositoryEF(
-            SmartHomeContext smartHomeContext,
-            ILogger<HumidityRepositoryEF> logger)
+        public HumidityRepositoryEF(SmartHomeContext smartHomeContext)
         {
             _smartHomeContext = smartHomeContext;
-            _logger = logger;
         }
 
         public async Task Create(Humidity humidity)
         {
-            try
-            {
-                humidity.Date = humidity.Date.ToUniversalTime().AddHours(2);
-                _smartHomeContext.Humidities.Add(humidity);
-                await _smartHomeContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = "Failed to create humidity:";
-                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
-                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
-            }
+            // zomer en wintertijd moet automatisch zijn
+            humidity.Date = humidity.Date.ToUniversalTime().AddHours(2);
+            _smartHomeContext.Humidities.Add(humidity);
+            await _smartHomeContext.SaveChangesAsync();
         }
 
         public async Task<List<Humidity>> GetByDateRange(DateTime startDate, DateTime endDate)
         {
-            try
-            {
-                var humidityList = await _smartHomeContext.Humidities
-                .Where(h => h.Date >= startDate && h.Date <= endDate)
-                .ToListAsync();
+            var humidityList = await _smartHomeContext.Humidities
+            .Where(h => h.Date >= startDate && h.Date <= endDate)
+            .ToListAsync();
 
-                return humidityList;
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = "Failed to get humidity by date range:";
-                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
-                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
-            }
+            return humidityList;
         }
 
         public async Task<Humidity> GetLatestHumidity()
         {
-            try
-            {
-                var latestHumidity = await _smartHomeContext.Humidities
-                    .OrderByDescending(h => h.Date)
-                    .FirstOrDefaultAsync();
+            var latestHumidity = await _smartHomeContext.Humidities
+                .OrderByDescending(h => h.Date)
+                .FirstOrDefaultAsync();
 
-                if (latestHumidity is not null)
-                {
-                    return latestHumidity;
-                }
-                else
-                {
-                    throw new NotFoundException($"Humidity was not found");
-                }
-            }
-            catch (Exception ex)
+            if (latestHumidity is not null)
             {
-                var errorMessage = "Failed to get current humidity:";
-                _logger.LogError(ex, $"{errorMessage} {ex.Message}");
-                throw new InvalidOperationException($"{errorMessage} {ex.Message}", ex);
+                return latestHumidity;
+            }
+            else
+            {
+                throw new NotFoundException($"Humidity was not found");
             }
         }
 

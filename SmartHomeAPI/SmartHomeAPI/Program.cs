@@ -30,6 +30,8 @@ app.UseAuthorization();
 
 app.UseExceptionMiddleware();
 
+app.UseHttpLogging();
+
 app.MapControllers();
 
 app.Run();

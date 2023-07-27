@@ -1,4 +1,4 @@
-﻿using Application.Application.Models;
+﻿using SmartHomeAPI.Models;
 using System.Net;
 
 namespace SmartHomeAPI.Middleware;

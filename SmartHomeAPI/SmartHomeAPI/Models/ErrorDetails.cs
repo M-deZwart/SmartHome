@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Application.Application.Models;
+namespace SmartHomeAPI.Models;
 
 public class ErrorDetails
 {

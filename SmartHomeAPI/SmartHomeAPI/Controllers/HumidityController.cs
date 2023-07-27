@@ -1,6 +1,8 @@
 ﻿using Application.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Application.Application.Services;
+using Application.Application.Validators;
+using Application.Application.Exceptions;
 
 namespace SmartHomeAPI.Controllers
 {
@@ -9,10 +11,12 @@ namespace SmartHomeAPI.Controllers
     public class HumidityController : ControllerBase
     {
         private readonly IHumidityService _humidityService;
+        private readonly PercentageValidator _percentageValidator;
 
         public HumidityController(IHumidityService humidityService)
         {
             _humidityService = humidityService;
+            _percentageValidator = new PercentageValidator();
         }
 
         [HttpPost("setHumidity")]
@@ -20,8 +24,19 @@ namespace SmartHomeAPI.Controllers
         {
             try
             {
-                await _humidityService.SetHumidity(percentage);
-                return Ok();
+                var validationResult = await _percentageValidator.ValidateAsync(percentage);
+
+                if (validationResult.IsValid)
+                {
+                    await _humidityService.SetHumidity(percentage);
+                    return Ok();
+                }
+                else
+                {
+                    var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
+                    throw new OutOfRangeException($"Validation errors occurred: {validationErrors}");
+                }
+                
             }
             catch (Exception ex)
             {
@@ -42,8 +57,8 @@ namespace SmartHomeAPI.Controllers
                 return NotFound($"Humidity could not be found: {ex.Message}");
             }
         }
-
-        [HttpGet("humidityByDateRange/{startDate}/{endDate}")]
+       
+        [HttpGet("humidityByDateRange")]
         public async Task<ActionResult<List<HumidityDTO>>> GetHumidityByDateRange(DateTime startDate, DateTime endDate)
         {
             try

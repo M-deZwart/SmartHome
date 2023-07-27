@@ -54,7 +54,7 @@ public class TemperatureValidatorTests : IClassFixture<TemperatureValidator>
 
         // assert
         validationResult.Errors.Should().ContainSingle();
-        validationResult.Errors[0].ErrorMessage.Should().Be("Invalid temperature value. The temperature in Celsius should be between 10 and 40 degrees.");
+        validationResult.Errors[0].ErrorMessage.Should().Be("Invalid Celsius value. The temperature in Celsius should be between 10 and 40 degrees.");
     }
 
 }
