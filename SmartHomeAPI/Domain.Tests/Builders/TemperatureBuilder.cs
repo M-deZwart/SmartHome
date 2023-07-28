@@ -6,22 +6,8 @@ public class TemperatureBuilder
 {
     public static implicit operator Temperature(TemperatureBuilder builder) => builder.Build();
 
-    private Guid _id;
-    private double _celsius;
-    private DateTime _date;
-
-    public TemperatureBuilder()
-    {
-        _id = Guid.NewGuid();
-        _celsius = 20;
-        _date = DateTime.Now;
-    }
-
-    public TemperatureBuilder WithId(Guid id)
-    {
-        _id = id;
-        return this;
-    }
+    private double _celsius = 20;
+    private DateTime _date = DateTime.UtcNow;
 
     public TemperatureBuilder WithCelsius(double celsius)
     {
@@ -37,11 +23,6 @@ public class TemperatureBuilder
 
     public Temperature Build()
     {
-        return new Temperature
-        {
-            Id = _id,
-            Celsius = _celsius,
-            Date = _date
-        };
+        return new Temperature(_celsius, _date);
     }
 }

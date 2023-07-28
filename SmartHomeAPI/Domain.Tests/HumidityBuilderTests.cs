@@ -15,7 +15,6 @@ public class HumidityBuilderTests
             .WithDate(DateTime.Now.AddDays(-1));
 
         // assert
-        humidity.Id.Should().NotBeEmpty();
         humidity.Percentage.Should().Be(80.5);
         humidity.Date.Date.Should().Be(DateTime.Now.AddDays(-1).Date);
     }

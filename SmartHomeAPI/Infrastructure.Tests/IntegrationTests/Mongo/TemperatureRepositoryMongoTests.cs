@@ -1,12 +1,9 @@
 ﻿using Domain.Domain.Contracts;
+using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
-using Infrastructure.Infrastructure.Mappers;
 using Infrastructure.Tests.IntegrationTests.TestInfra;
-using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using Moq;
 using SmartHomeAPI.Infrastructure.Repositories;
 
 namespace Infrastructure.Tests.IntegrationTests.Mongo;
@@ -16,7 +13,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
 {
     private readonly IMongoDatabase _database;
     private readonly ITemperatureRepository _temperatureRepository;
-    private readonly IMongoCollection<BsonDocument> _temperatureCollection;
+    private readonly IMongoCollection<Temperature> _temperatureCollection;
     private readonly MongoClient _mongoClient;
     private readonly string _databaseName;
 
@@ -26,16 +23,8 @@ public class TemperatureRepositoryMongoTests : IDisposable
         _databaseName = mongoFixture.Database;
         _database = _mongoClient.GetDatabase(_databaseName);
 
-        var temperatureMapper = new TemperatureMongoMapper();
-        var logger = new Mock<ILogger<TemperatureRepositoryMongo>>().Object;
-
-        _temperatureRepository = new TemperatureRepositoryMongo(
-                _database,
-                temperatureMapper,
-                logger
-            );
-
-        _temperatureCollection = _database.GetCollection<BsonDocument>("Temperature");
+        _temperatureRepository = new TemperatureRepositoryMongo(_database);
+        _temperatureCollection = _database.GetCollection<Temperature>("Temperature");
     }
 
     [Fact]
@@ -48,18 +37,12 @@ public class TemperatureRepositoryMongoTests : IDisposable
         await _temperatureRepository.Create(temperature);
 
         // assert
-        var bsonDocument = new BsonDocument
-        {
-            { "_id", temperature.Id },
-            { "Celsius", temperature.Celsius },
-            { "Date", temperature.Date.ToUniversalTime() }
-        };
-
-        var filter = Builders<BsonDocument>.Filter.Eq("_id", temperature.Id);
+        var filter = Builders<Temperature>.Filter.Eq("Celsius", temperature.Celsius);
         var result = await _temperatureCollection.Find(filter).FirstOrDefaultAsync();
 
         result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(bsonDocument);
+        result.Date.Should().BeCloseTo(temperature.Date, precision: TimeSpan.FromSeconds(1));
+        result.Should().BeEquivalentTo(temperature, options => options.Excluding(x => x.Date));
     }
 
     [Fact]
@@ -69,12 +52,12 @@ public class TemperatureRepositoryMongoTests : IDisposable
         var startDate = DateTime.UtcNow.AddHours(-24);
         var endDate = DateTime.UtcNow;
 
-        var temperature1 = new TemperatureBuilder().WithDate(startDate.AddMinutes(30).ToUniversalTime()).Build().ToBsonDocument();
-        var temperature2 = new TemperatureBuilder().WithDate(startDate.AddMinutes(60).ToUniversalTime()).Build().ToBsonDocument();
-        var temperature3 = new TemperatureBuilder().WithDate(endDate.AddHours(-30).ToUniversalTime()).Build().ToBsonDocument();
+        var temperature1 = new TemperatureBuilder().WithDate(startDate.AddMinutes(30).ToUniversalTime()).Build();
+        var temperature2 = new TemperatureBuilder().WithDate(startDate.AddMinutes(60).ToUniversalTime()).Build();
+        var temperature3 = new TemperatureBuilder().WithDate(endDate.AddHours(-30).ToUniversalTime()).Build();
 
         await _temperatureCollection
-              .InsertManyAsync(new List<BsonDocument> { temperature1, temperature2, temperature3 });
+              .InsertManyAsync(new List<Temperature> { temperature1, temperature2, temperature3 });
 
         // act
         var result = await _temperatureRepository.GetByDateRange(startDate, endDate);
@@ -95,8 +78,8 @@ public class TemperatureRepositoryMongoTests : IDisposable
         var temperature1 = new TemperatureBuilder().WithDate(startDate).Build();
         var temperature2 = new TemperatureBuilder().WithDate(endDate).Build();
 
-        await _temperatureCollection.InsertManyAsync(new List<BsonDocument>
-                { temperature1.ToBsonDocument(), temperature2.ToBsonDocument() });
+        await _temperatureCollection.InsertManyAsync(new List<Temperature>
+                { temperature1, temperature2 });
 
         // act
         var result = await _temperatureRepository.GetLatestTemperature();
@@ -106,25 +89,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
         result.Date.Should().BeCloseTo(temperature2.Date, precision: TimeSpan.FromSeconds(1));
     }
 
-    [Fact]
-    public async Task GetLatestTemperature_Should_Throw_InvalidOperationException_If_Humidity_NotFound()
-    {
-        // act
-        var act = _temperatureRepository.GetLatestTemperature;
-
-        // assert
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("Failed to get current temperature: Temperature was not found");
-    }
-
-    [Fact]
-    public async Task Create_NullValue_ThrowsInvalidOperationException()
-    {
-        // act & assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _temperatureRepository.Create(null));
-    }
-
-    public async void Dispose()
+    public void Dispose()
     {
         _mongoClient.DropDatabase(_databaseName);
     }

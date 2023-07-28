@@ -6,22 +6,8 @@ public class HumidityBuilder
 {
     public static implicit operator Humidity(HumidityBuilder builder) => builder.Build();
 
-    private Guid _id;
-    private double _percentage;
-    private DateTime _date;
-
-    public HumidityBuilder()
-    {
-        _id = Guid.NewGuid();
-        _percentage = 50;
-        _date = DateTime.Now;
-    }
-
-    public HumidityBuilder WithId(Guid id)
-    {
-        _id = id;
-        return this;
-    }
+    private double _percentage = 50;
+    private DateTime _date = DateTime.UtcNow;
 
     public HumidityBuilder WithPercentage(double percentage)
     {
@@ -37,11 +23,6 @@ public class HumidityBuilder
 
     public Humidity Build()
     {
-        return new Humidity
-        {
-            Id = _id,
-            Percentage = _percentage,
-            Date = _date
-        };
+        return new Humidity(_percentage, _date);
     }
 }

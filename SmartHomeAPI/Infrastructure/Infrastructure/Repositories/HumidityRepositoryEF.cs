@@ -2,7 +2,6 @@
 using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Infrastructure.Repositories
 {
@@ -18,7 +17,6 @@ namespace Infrastructure.Infrastructure.Repositories
         public async Task Create(Humidity humidity)
         {
             // zomer en wintertijd moet automatisch zijn
-            humidity.Date = humidity.Date.ToUniversalTime().AddHours(2);
             _smartHomeContext.Humidities.Add(humidity);
             await _smartHomeContext.SaveChangesAsync();
         }

@@ -1,9 +1,6 @@
 ﻿using Application.Application.Exceptions;
 using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
-using Infrastructure.Infrastructure.Mappers;
-using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace SmartHomeAPI.Infrastructure.Repositories
@@ -19,7 +16,6 @@ namespace SmartHomeAPI.Infrastructure.Repositories
 
         public async Task Create(Humidity humidity)
         {
-            humidity.Date = humidity.Date.ToUniversalTime().AddHours(2);
             await _humidityCollection.InsertOneAsync(humidity);
         }
 

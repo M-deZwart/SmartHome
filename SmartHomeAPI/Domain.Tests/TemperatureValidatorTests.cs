@@ -1,4 +1,5 @@
-﻿using Domain.Domain.Validators;
+﻿using Domain.Domain.Exceptions;
+using Domain.Domain.Validators;
 using Domain.Tests.Builders;
 using FluentAssertions;
 
@@ -27,34 +28,28 @@ public class TemperatureValidatorTests : IClassFixture<TemperatureValidator>
     }
 
     [Fact]
-    public void Invalid_Temperature_Should_Be_False()
+    public void Invalid_Celsius_Should_Throw_DomainException()
     {
-        // arrange
-        var temperature = new TemperatureBuilder()
-            .WithCelsius(9.99)
-            .Build();
 
-        // act
-        var validationResult = _validator.Validate(temperature).IsValid;
-
-        // assert
-        validationResult.Should().BeFalse();
+        // act and assert
+        Assert.Throws<DomainException>(() =>
+        {
+            var temperature = new TemperatureBuilder()
+                .WithCelsius(9.99)
+                .Build();
+        });
     }
 
     [Fact]
-    public void Invalid_Temperature_Should_Return_Error_Message()
+    public void Invalid_Date_Should_Throw_DomainException()
     {
-        // arrange
-        var temperature = new TemperatureBuilder()
-            .WithCelsius(40.00001)
-            .Build();
-
-        // act
-        var validationResult = _validator.Validate(temperature);
-
-        // assert
-        validationResult.Errors.Should().ContainSingle();
-        validationResult.Errors[0].ErrorMessage.Should().Be("Invalid Celsius value. The temperature in Celsius should be between 10 and 40 degrees.");
+        // act and assert
+        Assert.Throws<DomainException>(() =>
+        {
+            var temperature = new TemperatureBuilder()
+                .WithDate(DateTime.UtcNow.AddDays(2))
+                .Build();
+        });
     }
 
 }

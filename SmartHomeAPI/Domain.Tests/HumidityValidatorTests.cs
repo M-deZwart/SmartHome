@@ -1,4 +1,5 @@
-﻿using Domain.Domain.Validators;
+﻿using Domain.Domain.Exceptions;
+using Domain.Domain.Validators;
 using Domain.Tests.Builders;
 using FluentAssertions;
 
@@ -27,33 +28,26 @@ public class HumidityValidatorTests : IClassFixture<HumidityValidator>
     }
 
     [Fact]
-    public void Invalid_Humidity_Should_Be_False()
+    public void Invalid_Percentage_Should_Throw_DomainException()
     {
-        // arrange
-        var humidity = new HumidityBuilder()
-            .WithPercentage(-0.000001)
-            .Build();
-
-        // act
-        var validationResult = _validator.Validate(humidity).IsValid;
-
-        // assert
-        validationResult.Should().BeFalse();
+        // act and assert
+        Assert.Throws<DomainException>(() =>
+        {
+            var humidity = new HumidityBuilder()
+                .WithPercentage(100.000001)
+                .Build();
+        });
     }
 
     [Fact]
-    public void Invalid_Humidity_Should_Return_Error_Message()
+    public void Invalid_Date_Percentage_Should_Throw_DomainException()
     {
-        // act
-        var humidity = new HumidityBuilder()
-            .WithPercentage(100.000001)
-            .Build();
-
-        // act
-        var validationResult = _validator.Validate(humidity);
-
-        // assert
-        validationResult.Errors.Should().ContainSingle();
-        validationResult.Errors[0].ErrorMessage.Should().Be("Invalid percentage value. The humidity percentage should be between 0 and 100.");
+        // act and assert
+        Assert.Throws<DomainException>(() =>
+        {
+            var humidity = new HumidityBuilder()
+                .WithDate(DateTime.UtcNow.AddDays(1))
+                .Build();
+        });
     }
 }

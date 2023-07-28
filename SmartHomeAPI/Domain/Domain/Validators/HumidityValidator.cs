@@ -7,7 +7,7 @@ public class HumidityValidator : AbstractValidator<Humidity>
 {
     public HumidityValidator()
     {
-        RuleFor(humidity => humidity.Percentage).InclusiveBetween(0, 100).WithMessage("Invalid percentage value. The humidity percentage should be between 0 and 100.");
+        RuleFor(humidity => humidity.Percentage).InclusiveBetween(1, 100).WithMessage("Invalid percentage value. The humidity percentage should be between 0 and 100.");
         RuleFor(humidity => humidity.Date).LessThanOrEqualTo(DateTime.Now).WithMessage("Date cannot be in the future.");
     }
 }

@@ -42,10 +42,10 @@ public class HumidityService : IHumidityService
     public async Task SetHumidity(double percentage)
     {
         Humidity humidity = new Humidity
-        {
-            Percentage = percentage,
-            Date = DateTime.Now
-        };
+        (
+            percentage: percentage,
+            date: DateTime.UtcNow
+        );
 
         await _humidityRepository.Create(humidity);
     }

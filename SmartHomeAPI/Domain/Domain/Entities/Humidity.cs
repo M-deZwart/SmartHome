@@ -7,22 +7,30 @@ namespace Domain.Domain.Entities
     public class Humidity
     {
         public Guid Id { get; set; }
-        public double Percentage { get; set; }
-        public DateTime Date { get; set; }
+        public double Percentage { get; private set; }
+        public DateTime Date { get; private set; }
 
-        public Humidity()
+        public Humidity(double percentage, DateTime date)
+        {
+            Percentage = percentage;
+            Date = date;
+
+            Validate();
+        }
+
+        private void Validate()
         {
             var validator = new HumidityValidator();
-            var validationResult = validator.Validate(this);
-            if (!validationResult.IsValid)
+            var validationresult = validator.Validate(this);
+            if (!validationresult.IsValid)
             {
-                var errorMessages = new StringBuilder();
-                foreach (var error in validationResult.Errors)
+                var errormessages = new StringBuilder();
+                foreach (var error in validationresult.Errors)
                 {
-                    errorMessages.AppendLine(error.ErrorMessage);
+                    errormessages.AppendLine(error.ErrorMessage);
                 }
 
-                throw new DomainException(errorMessages.ToString());
+                throw new DomainException(errormessages.ToString());
             }
         }
     }

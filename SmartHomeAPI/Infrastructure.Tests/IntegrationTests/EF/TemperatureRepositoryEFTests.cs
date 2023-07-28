@@ -1,18 +1,24 @@
-﻿using Amazon.Runtime.Internal.Util;
-using Domain.Domain.Contracts;
+﻿using Application.Application.Exceptions;
 using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
 using Infrastructure.Infrastructure;
 using Infrastructure.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace Infrastructure.Tests.IntegrationTests;
 
 public class TemperatureRepositoryEFTests
 {
+    private readonly SmartHomeContext _context;
+    private readonly TemperatureRepositoryEF _temperatureRepository;
+
+    public TemperatureRepositoryEFTests()
+    {
+        _context = CreateTestContext();
+        _temperatureRepository = new TemperatureRepositoryEF(_context);
+    }
+
     private DbContextOptions<SmartHomeContext> CreateNewInMemoryDatabase()
     {
         var optionsBuilder = new DbContextOptionsBuilder<SmartHomeContext>();
@@ -20,62 +26,62 @@ public class TemperatureRepositoryEFTests
         return optionsBuilder.Options;
     }
 
-    private (SmartHomeContext context, ILogger<TemperatureRepositoryEF> logger) CreateTestContextAndLogger()
+    private SmartHomeContext CreateTestContext()
     {
         var options = CreateNewInMemoryDatabase();
         var context = new SmartHomeContext(options);
-        var logger = new Mock<ILogger<TemperatureRepositoryEF>>().Object;
-        return (context, logger);
+        return context;
     }
 
     [Fact]
     public async Task Create_Should_Add_Temperature_To_Context_And_SaveChanges()
     {
         // arrange
-        var (context, logger) = CreateTestContextAndLogger();
-        var temperatureRepository = new TemperatureRepositoryEF(context, logger);
-        var temperature = new TemperatureBuilder().WithCelsius(21).Build();
+        var temperature = new TemperatureBuilder().Build();
 
         // act
-        await temperatureRepository.Create(temperature);
-        var savedTemperature = context.Temperatures.FirstOrDefault();
+        await _temperatureRepository.Create(temperature);
+        var savedTemperature = _context.Temperatures.FirstOrDefault();
 
         // assert
         savedTemperature.Should().NotBeNull();
-        savedTemperature?.Celsius.Should().Be(21);
+        savedTemperature?.Celsius.Should().Be(20);
     }
 
     [Fact]
     public async Task GetLatestTemperature_Should_Return_Latest_Temperature_When_Date_Exists()
     {
         // arrange
-        var (context, logger) = CreateTestContextAndLogger();
-        var temperatureRepository = new TemperatureRepositoryEF(context, logger);
-
         var mockData = new[]
         {
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-2)).Build(),
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-1)).Build(),
             new TemperatureBuilder().WithDate(DateTime.Now).Build()
         };
-        context.Temperatures.AddRange(mockData);
-        await context.SaveChangesAsync();
+
+        _context.Temperatures.AddRange(mockData);
+        await _context.SaveChangesAsync();
 
         // act
-        var latestTemperature = await temperatureRepository.GetLatestTemperature();
+        var latestTemperature = await _temperatureRepository.GetLatestTemperature();
 
         // assert
         latestTemperature.Should().NotBeNull();
         latestTemperature.Date.Should().Be(mockData[2].Date);
     }
 
+
+    [Fact]
+    public async Task GetLatestHumidity_Should_Throw_NotFoundException_When_No_Humidity_Exists()
+    {
+        // act and assert
+        await Assert.ThrowsAsync<NotFoundException>(_temperatureRepository.GetLatestTemperature);
+    }
+
     [Fact]
     public async Task GetByDateRange_Should_Return_Temperatures_WithinDateRange()
     {
         // arrange
-        var (context, logger) = CreateTestContextAndLogger();
-        var temperatureRepository = new TemperatureRepositoryEF(context, logger);
-
         var startDate = DateTime.Now.AddHours(-5);
         var endDate = DateTime.Now.AddHours(-1);
 
@@ -89,11 +95,11 @@ public class TemperatureRepositoryEFTests
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-0.5))
         };
 
-        context.Temperatures.AddRange(mockData);
-        await context.SaveChangesAsync();
+        _context.Temperatures.AddRange(mockData);
+        await _context.SaveChangesAsync();
 
         // act
-        var temperaturesInRange = await temperatureRepository.GetByDateRange(startDate, endDate);
+        var temperaturesInRange = await _temperatureRepository.GetByDateRange(startDate, endDate);
 
         // assert
         temperaturesInRange.Should().NotBeNull();
@@ -101,29 +107,4 @@ public class TemperatureRepositoryEFTests
         temperaturesInRange.All(h => h.Date >= startDate && h.Date <= endDate).Should().BeTrue();
     }
 
-    [Fact]
-    public async Task GetLatestTemperature_Should_Throw_InvalidOperationException_If_Humidity_NotFound()
-    {
-        // arrange
-        var (context, logger) = CreateTestContextAndLogger();
-        var temperatureRepository = new TemperatureRepositoryEF(context, logger);
-
-        // act
-        var act = temperatureRepository.GetLatestTemperature;
-
-        // assert
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("Failed to get current temperature: Temperature was not found");
-    }
-
-    [Fact]
-    public async Task Create_NullValue_ThrowsInvalidOperationException()
-    {
-        // arrange
-        var (context, logger) = CreateTestContextAndLogger();
-        var temperatureRepository = new TemperatureRepositoryEF(context, logger);
-
-        // act & assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => temperatureRepository.Create(null));
-    }
 }

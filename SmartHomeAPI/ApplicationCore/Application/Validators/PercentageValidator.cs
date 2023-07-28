@@ -7,7 +7,7 @@ public class PercentageValidator : AbstractValidator<double>
     public PercentageValidator()
     {
         RuleFor(percentage => percentage)
-            .InclusiveBetween(0, 100)
+            .InclusiveBetween(1, 100)
             .WithMessage("Invalid percentage value. The humidity percentage should be between 0 and 100.");
     }
 }

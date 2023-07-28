@@ -1,7 +1,7 @@
-﻿using Domain.Domain.Contracts;
+﻿using Application.Application.Exceptions;
+using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Infrastructure.Repositories
 {
@@ -16,7 +16,6 @@ namespace Infrastructure.Infrastructure.Repositories
 
         public async Task Create(Temperature temperature)
         {
-            temperature.Date = temperature.Date.ToUniversalTime().AddHours(2);
             _smartHomeContext.Temperatures.Add(temperature);
             await _smartHomeContext.SaveChangesAsync();
         }
@@ -41,7 +40,7 @@ namespace Infrastructure.Infrastructure.Repositories
                 return latestTemperature;
             }
 
-            throw new InvalidOperationException($"Temperature was not found");
+            throw new NotFoundException($"Temperature was not found");
         }
 
     }

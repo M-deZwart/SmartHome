@@ -1,13 +1,8 @@
-﻿using Application.Application.Contracts;
-using Domain.Domain.Contracts;
-using Infrastructure.Infrastructure.Logging;
-using Infrastructure.Infrastructure.Mappers;
+﻿using Domain.Domain.Contracts;
 using Infrastructure.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using SmartHomeAPI.Infrastructure.Repositories;
 
@@ -24,10 +19,7 @@ namespace Infrastructure.Infrastructure
                 var mongoConnectionString = configuration.GetConnectionString("MongoDB");
                 var mongoClient = new MongoClient(mongoConnectionString);
                 var mongoDatabase = mongoClient.GetDatabase("smarthome-db");
-                services.AddSingleton(mongoDatabase);
-
-                services.AddTransient<IHumidityMongoMapper, HumidityMongoMapper>();
-                services.AddTransient<ITemperatureMongoMapper, TemperatureMongoMapper>();
+                services.AddSingleton(mongoDatabase);;
 
                 services.AddScoped<IHumidityRepository, HumidityRepositoryMongo>();
                 services.AddScoped<ITemperatureRepository, TemperatureRepositoryMongo>();
@@ -44,16 +36,6 @@ namespace Infrastructure.Infrastructure
                 services.AddScoped<IHumidityRepository, HumidityRepositoryEF>();
                 services.AddScoped<ITemperatureRepository, TemperatureRepositoryEF>();
             }
-
-            services.AddLogging();
-            services.AddHttpContextAccessor();
-            services.AddScoped<IRequestLogger>(provider =>
-            {
-                var logger = provider.GetRequiredService<ILogger<RequestLogger>>();
-                var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-
-                return new RequestLogger(logger, httpContextAccessor);
-            });
 
             return services;
         }

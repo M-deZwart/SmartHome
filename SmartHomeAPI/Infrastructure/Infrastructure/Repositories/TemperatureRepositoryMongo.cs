@@ -1,8 +1,5 @@
 ﻿using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
-using Infrastructure.Infrastructure.Mappers;
-using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace SmartHomeAPI.Infrastructure.Repositories
@@ -18,7 +15,6 @@ namespace SmartHomeAPI.Infrastructure.Repositories
 
         public async Task Create(Temperature temperature)
         {
-            temperature.Date = temperature.Date.ToUniversalTime().AddHours(2);
             await _temperatureCollection.InsertOneAsync(temperature);
         }
 
