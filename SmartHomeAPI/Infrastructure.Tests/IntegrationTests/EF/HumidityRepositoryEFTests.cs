@@ -46,6 +46,7 @@ public class HumidityRepositoryEFTests
 
         // assert
         savedHumidity.Should().NotBeNull();
+        savedHumidity?.Date.Should().BeCloseTo(humidity.Date, precision: TimeSpan.FromSeconds(1));
         savedHumidity?.Percentage.Should().Be(25);
     }
 

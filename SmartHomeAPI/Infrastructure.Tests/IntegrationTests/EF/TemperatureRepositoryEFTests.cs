@@ -45,6 +45,7 @@ public class TemperatureRepositoryEFTests
 
         // assert
         savedTemperature.Should().NotBeNull();
+        savedTemperature?.Date.Should().BeCloseTo(temperature.Date, precision: TimeSpan.FromSeconds(1));
         savedTemperature?.Celsius.Should().Be(20);
     }
 

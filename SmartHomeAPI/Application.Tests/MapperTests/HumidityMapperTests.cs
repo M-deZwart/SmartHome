@@ -13,7 +13,7 @@ public class HumidityMapperTests
         var mapper = new HumidityMapper();
         var humidity = new HumidityBuilder()
             .WithPercentage(75.5)
-            .WithDate(DateTime.UtcNow)
+            .WithDate(DateTime.Now)
             .Build();
 
         // Act

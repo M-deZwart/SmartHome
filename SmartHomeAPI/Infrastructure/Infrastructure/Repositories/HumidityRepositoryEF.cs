@@ -16,7 +16,6 @@ namespace Infrastructure.Infrastructure.Repositories
 
         public async Task Create(Humidity humidity)
         {
-            // zomer en wintertijd moet automatisch zijn
             _smartHomeContext.Humidities.Add(humidity);
             await _smartHomeContext.SaveChangesAsync();
         }

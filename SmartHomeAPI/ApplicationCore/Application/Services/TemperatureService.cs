@@ -42,10 +42,10 @@ public class TemperatureService : ITemperatureService
     public async Task SetTemperature(double celsius)
     {
         Temperature temperature = new Temperature
-            (
-                celsius: celsius,
-                date: DateTime.UtcNow
-            );
+        (
+            celsius: celsius,
+            date: DateTime.Now
+        );
 
         await _temperatureRepository.Create(temperature);
     }

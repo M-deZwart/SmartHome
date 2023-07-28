@@ -47,7 +47,7 @@ public class TemperatureValidatorTests
         Assert.Throws<DomainException>(() =>
         {
             var temperature = new TemperatureBuilder()
-                .WithDate(DateTime.UtcNow.AddDays(2))
+                .WithDate(DateTime.Now.AddDays(2))
                 .Build();
         });
     }

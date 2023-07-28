@@ -46,7 +46,7 @@ public class HumidityValidatorTests
         Assert.Throws<DomainException>(() =>
         {
             var humidity = new HumidityBuilder()
-                .WithDate(DateTime.UtcNow.AddDays(1))
+                .WithDate(DateTime.Now.AddDays(1))
                 .Build();
         });
     }

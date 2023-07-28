@@ -18,9 +18,9 @@ public class TemperatureServiceTests
     {
         _temperatureData = new List<Temperature>
             {
-                new Temperature(celsius: 20, date: DateTime.UtcNow.AddDays(-1)),
-                new Temperature(celsius: 30, date: DateTime.UtcNow),
-                new Temperature (celsius : 15, date : DateTime.UtcNow.AddDays(-21))
+                new Temperature(celsius: 20, date: DateTime.Now.AddDays(-1)),
+                new Temperature(celsius: 30, date: DateTime.Now),
+                new Temperature (celsius : 15, date : DateTime.Now.AddDays(-21))
             };
 
         _mapper = CreateMockTemperatureMapper();
@@ -81,8 +81,8 @@ public class TemperatureServiceTests
     public async Task GetTemperatureByDateRange_ShouldReturnTemperatureList()
     {
         // arrange
-        var startDate = DateTime.UtcNow.AddDays(-2);
-        var endDate = DateTime.UtcNow;
+        var startDate = DateTime.Now.AddDays(-2);
+        var endDate = DateTime.Now;
 
         // act
         var result = await _temperatureService.GetTemperatureByDateRange(startDate, endDate);

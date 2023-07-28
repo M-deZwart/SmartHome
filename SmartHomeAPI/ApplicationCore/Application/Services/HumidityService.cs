@@ -44,7 +44,7 @@ public class HumidityService : IHumidityService
         Humidity humidity = new Humidity
         (
             percentage: percentage,
-            date: DateTime.UtcNow
+            date: DateTime.Now
         );
 
         await _humidityRepository.Create(humidity);

@@ -7,7 +7,7 @@ public class TemperatureBuilder
     public static implicit operator Temperature(TemperatureBuilder builder) => builder.Build();
 
     private double _celsius = 20;
-    private DateTime _date = DateTime.UtcNow;
+    private DateTime _date = DateTime.Now;
 
     public TemperatureBuilder WithCelsius(double celsius)
     {

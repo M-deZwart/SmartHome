@@ -18,7 +18,7 @@ public class TemperatureMapperTests
         var mapper = new TemperatureMapper();
         var temperature = new TemperatureBuilder()
             .WithCelsius(23.5)
-            .WithDate(DateTime.UtcNow)
+            .WithDate(DateTime.Now)
             .Build();
 
         // Act

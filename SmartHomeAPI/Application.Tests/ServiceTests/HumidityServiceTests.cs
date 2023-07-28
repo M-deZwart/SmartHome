@@ -19,9 +19,9 @@ namespace Application.Tests;
         {
             _humidityData = new List<Humidity>
             {
-                new Humidity(percentage: 50, date: DateTime.UtcNow.AddDays(-1)),
-                new Humidity(percentage: 60, date: DateTime.UtcNow),
-                new Humidity(percentage: 70, date: DateTime.UtcNow.AddDays(-21))
+                new Humidity(percentage: 50, date: DateTime.Now.AddDays(-1)),
+                new Humidity(percentage: 60, date: DateTime.Now),
+                new Humidity(percentage: 70, date: DateTime.Now.AddDays(-21))
             };
 
             _mapper = CreateMockHumidityMapper();
@@ -82,8 +82,8 @@ namespace Application.Tests;
         public async Task GetHumidityByDateRange_ShouldReturnHumidityList()
         {
             // arrange
-            var startDate = DateTime.UtcNow.AddDays(-2);
-            var endDate = DateTime.UtcNow;
+            var startDate = DateTime.Now.AddDays(-2);
+            var endDate = DateTime.Now;
 
             // act
             var result = await _humidityService.GetHumidityByDateRange(startDate, endDate);
