@@ -5,13 +5,13 @@ using FluentAssertions;
 
 namespace Domain.Tests.ValidatorTests;
 
-public class HumidityValidatorTests : IClassFixture<HumidityValidator>
+public class HumidityValidatorTests 
 {
     private readonly HumidityValidator _validator;
 
-    public HumidityValidatorTests(HumidityValidator validator)
+    public HumidityValidatorTests()
     {
-        _validator = validator;
+        _validator = new HumidityValidator();
     }
 
     [Fact]

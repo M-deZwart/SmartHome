@@ -5,13 +5,13 @@ using FluentAssertions;
 
 namespace Domain.Tests.ValidatorTests;
 
-public class TemperatureValidatorTests : IClassFixture<TemperatureValidator>
+public class TemperatureValidatorTests 
 {
     private readonly TemperatureValidator _validator;
 
-    public TemperatureValidatorTests(TemperatureValidator validator)
+    public TemperatureValidatorTests()
     {
-        _validator = validator;
+        _validator = new TemperatureValidator();
     }
 
     [Fact]
