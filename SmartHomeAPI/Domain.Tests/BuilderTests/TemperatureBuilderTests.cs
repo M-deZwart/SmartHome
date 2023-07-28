@@ -1,8 +1,7 @@
-﻿using Domain.Domain.Entities;
-using Domain.Tests.Builders;
+﻿using Domain.Tests.Builders;
 using FluentAssertions;
 
-namespace Domain.Tests;
+namespace Domain.Tests.BuilderTests;
 
 public class TemperatureBuilderTests
 {
@@ -10,11 +9,11 @@ public class TemperatureBuilderTests
     public void TemperatureBuilder_Should_Return_Temperature()
     {
         // arrange
-        Temperature temperature = new TemperatureBuilder()
+        var temperature = new TemperatureBuilder()
             .WithCelsius(25.5)
             .WithDate(DateTime.Now.AddDays(-1))
-            .Build();  
-        
+            .Build();
+
         // assert
         temperature.Celsius.Should().Be(25.5);
         temperature.Date.Date.Should().Be(DateTime.Now.AddDays(-1).Date);

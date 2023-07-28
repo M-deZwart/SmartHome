@@ -2,7 +2,7 @@
 using Domain.Tests.Builders;
 using FluentAssertions;
 
-namespace Domain.Tests;
+namespace Domain.Tests.BuilderTests;
 
 public class HumidityBuilderTests
 {

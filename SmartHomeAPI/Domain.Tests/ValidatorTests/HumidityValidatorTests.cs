@@ -3,7 +3,7 @@ using Domain.Domain.Validators;
 using Domain.Tests.Builders;
 using FluentAssertions;
 
-namespace Domain.Tests;
+namespace Domain.Tests.ValidatorTests;
 
 public class HumidityValidatorTests : IClassFixture<HumidityValidator>
 {
