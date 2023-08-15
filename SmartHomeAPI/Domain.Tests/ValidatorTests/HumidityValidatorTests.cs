@@ -7,7 +7,7 @@ namespace Domain.Tests.ValidatorTests;
 
 public class HumidityValidatorTests 
 {
-    private readonly HumidityValidator _validator;
+    private HumidityValidator _validator;
 
     public HumidityValidatorTests()
     {
