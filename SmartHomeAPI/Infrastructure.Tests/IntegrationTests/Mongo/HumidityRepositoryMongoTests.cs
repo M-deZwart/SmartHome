@@ -42,7 +42,7 @@ public class HumidityRepositoryMongoTests : IDisposable
         var result = await _humidityCollection.Find(filter).FirstOrDefaultAsync();
 
         result.Should().NotBeNull();
-        result.Date.Should().BeCloseTo(humidity.Date, precision: TimeSpan.FromSeconds(1));
+        result.Date.Should().BeCloseTo(humidity.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
         result.Should().BeEquivalentTo(humidity, options => options.Excluding(x => x.Date));
     }
 

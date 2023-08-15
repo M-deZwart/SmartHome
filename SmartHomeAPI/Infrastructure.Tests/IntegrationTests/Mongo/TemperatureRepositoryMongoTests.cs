@@ -41,7 +41,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
         var result = await _temperatureCollection.Find(filter).FirstOrDefaultAsync();
 
         result.Should().NotBeNull();
-        result.Date.Should().BeCloseTo(temperature.Date, precision: TimeSpan.FromSeconds(1));
+        result.Date.Should().BeCloseTo(temperature.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
         result.Should().BeEquivalentTo(temperature, options => options.Excluding(x => x.Date));
     }
 
