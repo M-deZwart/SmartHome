@@ -46,13 +46,13 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         [Fact]
         public async Task SetTemperature_WithValidCelsius_Should_ReturnOkAndPersistData()
         {
-            // Arrange
+            // arrange
             double validCelsius = 20;
 
-            // Act
+            // act
             var result = await _controller.SetTemperature(validCelsius);
 
-            // Assert
+            // assert
             result.Should().BeOfType<OkResult>();
 
             var persistedTemperature = await _temperatureCollection.Find(x => true).FirstOrDefaultAsync();
@@ -64,38 +64,64 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         public async Task GetCurrentTemperature_WithValidData_ShouldReturnOkResultWithTemperatureDTO()
         {
             // Arrange
+            var expectedTemperature = 20;
             var temperatureData = new TemperatureBuilder().Build();
-
             await _temperatureCollection.InsertOneAsync(temperatureData);
 
             // Act
             var result = await _controller.GetCurrentTemperature();
 
             // Assert
-            result.Should().BeOfType<ActionResult<TemperatureDTO>>();
+            var okObjectResult = result.Should().BeOfType<ActionResult<TemperatureDTO>>().Subject.Result as OkObjectResult;
+            var temperatureDto = okObjectResult?.Value as TemperatureDTO;
+            temperatureDto?.Celsius.Should().Be(expectedTemperature);
         }
 
         [Fact]
         public async Task GetTemperatureByDateRange_WithValidRange_Should_ReturnOkResultWithTemperatureDTOList()
         {
-            // Arrange
+            // arrange
             var startDate = DateTime.Now.AddHours(-24);
             var endDate = DateTime.Now;
-            var temperatureData1 = new TemperatureBuilder().WithDate(startDate.AddMinutes(30));
-            var temperatureData2 = new TemperatureBuilder().WithDate(startDate.AddMinutes(90));
-            var temperatureData3 = new TemperatureBuilder().WithDate(endDate.AddHours(-2));
+            Temperature temperatureData1 = new TemperatureBuilder().WithDate(startDate.AddMinutes(30));
+            Temperature temperatureData2 = new TemperatureBuilder().WithDate(startDate.AddMinutes(90));
+            Temperature temperatureData3 = new TemperatureBuilder().WithDate(endDate.AddHours(-2));
             await _temperatureCollection.InsertManyAsync(new List<Temperature> { temperatureData1, temperatureData2, temperatureData3 });
 
-            // Act
+            // act
             var result = await _controller.GetTemperatureByDateRange(startDate, endDate);
 
-            // Assert
-            result.Should().BeOfType<ActionResult<List<TemperatureDTO>>>();
+            // assert
+            var okObjectResult = result.Should().BeOfType<ActionResult<List<TemperatureDTO>>>().Subject.Result as OkObjectResult;
+            var temperatureDtoList = okObjectResult?.Value as List<TemperatureDTO>;
+
+            temperatureDtoList.Should().NotBeNull();
+            temperatureDtoList.Should().HaveCount(3); 
+
+            temperatureDtoList?[0].Date.Should().BeCloseTo(temperatureData1.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+            temperatureDtoList?[1].Date.Should().BeCloseTo(temperatureData2.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+            temperatureDtoList?[2].Date.Should().BeCloseTo(temperatureData3.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+        }
+
+        [Fact]
+        public async Task SetTemperature_WithInvalidCelsius_Should_ReturnBadRequestWithValidationErrors()
+        {
+            // arrange
+            double invalidCelsius = -10;
+
+            // act
+            var result = await _controller.SetTemperature(invalidCelsius);
+
+            // assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            var errorMessage = badRequestResult?.Value as string;
+            errorMessage.Should().Contain("Validation errors occurred");
         }
 
         public void Dispose()
         {
-            _database.DropCollection("Humidity");
+            _database.DropCollection("Temperature");
         }
     }
 }

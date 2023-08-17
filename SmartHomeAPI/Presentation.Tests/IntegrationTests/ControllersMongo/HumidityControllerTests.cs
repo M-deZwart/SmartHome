@@ -46,13 +46,13 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         [Fact]
         public async Task SetHumidity_WithValidPercentage_Should_ReturnOkAndPersistData()
         {
-            // Arrange
+            // arrange
             double validPercentage = 50;
 
-            // Act
+            // act
             var result = await _controller.SetHumidity(validPercentage);
 
-            // Assert
+            // assert
             result.Should().BeOfType<OkResult>();
 
             var persistedHumidity = await _humidityCollection.Find(x => true).FirstOrDefaultAsync();
@@ -63,34 +63,61 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         [Fact]
         public async Task GetCurrentHumidity_WithValidData_ShouldReturnOkResultWithHumidityDTO()
         {
-            // Arrange
-            var humidityData = new HumidityBuilder().Build();
-           
+            // arrange
+            var expectedPercentage = 50;
+            var humidityData = new HumidityBuilder().Build();      
             await _humidityCollection.InsertOneAsync(humidityData);
 
-            // Act
+            // act
             var result = await _controller.GetCurrentHumidity();
 
-            // Assert
-            result.Should().BeOfType<ActionResult<HumidityDTO>>();
+            // assert
+            var okObjectResult = result.Should().BeOfType<ActionResult<HumidityDTO>>().Subject.Result as OkObjectResult;
+            var humidityDto = okObjectResult?.Value as HumidityDTO;
+            humidityDto?.Percentage.Should().Be(expectedPercentage);
         }
 
         [Fact]
         public async Task GetHumidityByDateRange_WithValidRange_Should_ReturnOkResultWithHumidityDTOList()
         {
-            // Arrange
+            // arrange
             var startDate = DateTime.Now.AddHours(-24);
             var endDate = DateTime.Now;
-            var humidityData1 = new HumidityBuilder().WithDate(startDate.AddMinutes(30));
-            var humidityData2 = new HumidityBuilder().WithDate(startDate.AddMinutes(90));
-            var humidityData3 = new HumidityBuilder().WithDate(endDate.AddHours(-2));
+            Humidity humidityData1 = new HumidityBuilder().WithDate(startDate.AddMinutes(30));
+            Humidity humidityData2 = new HumidityBuilder().WithDate(startDate.AddMinutes(90));
+            Humidity humidityData3 = new HumidityBuilder().WithDate(endDate.AddHours(-2));
             await _humidityCollection.InsertManyAsync(new List<Humidity> { humidityData1, humidityData2, humidityData3 });
 
-            // Act
+            // act
             var result = await _controller.GetHumidityByDateRange(startDate, endDate);
 
-            // Assert
+            // assert
             result.Should().BeOfType<ActionResult<List<HumidityDTO>>>();
+            var okObjectResult = result.Should().BeOfType<ActionResult<List<HumidityDTO>>>().Subject.Result as OkObjectResult;
+            var humidityDtoList = okObjectResult?.Value as List<HumidityDTO>;
+
+            humidityDtoList.Should().NotBeNull();
+            humidityDtoList.Should().HaveCount(3); 
+
+            humidityDtoList?[0].Date.Should().BeCloseTo(humidityData1.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+            humidityDtoList?[1].Date.Should().BeCloseTo(humidityData2.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+            humidityDtoList?[2].Date.Should().BeCloseTo(humidityData3.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+        }
+
+        [Fact]
+        public async Task SetHumidity_WithInvalidPercentage_Should_ReturnBadRequestWithValidationErrors()
+        {
+            // arrange
+            double invalidPercentage = -10;
+
+            // act
+            var result = await _controller.SetHumidity(invalidPercentage);
+
+            // assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            var errorMessage = badRequestResult?.Value as string;
+            errorMessage.Should().Contain("Validation errors occurred");
         }
 
         public void Dispose()
