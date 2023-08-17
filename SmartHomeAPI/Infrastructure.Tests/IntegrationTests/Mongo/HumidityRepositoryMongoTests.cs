@@ -3,7 +3,6 @@ using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
 using Infrastructure.Tests.IntegrationTests.TestInfra;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using SmartHomeAPI.Infrastructure.Repositories;
 

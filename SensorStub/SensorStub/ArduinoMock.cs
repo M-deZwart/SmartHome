@@ -21,7 +21,7 @@ namespace SensorStub
         public ArduinoMock()
         {
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("http://192.168.2.11:5233/api/");
+            _client.BaseAddress = new Uri("http://desktop-cl4jco5:5233/api/");
         }
 
         public async Task Run()
