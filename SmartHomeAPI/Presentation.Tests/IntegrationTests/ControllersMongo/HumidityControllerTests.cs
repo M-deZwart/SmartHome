@@ -86,6 +86,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             Humidity humidityData1 = new HumidityBuilder().WithDate(startDate.AddMinutes(30));
             Humidity humidityData2 = new HumidityBuilder().WithDate(startDate.AddMinutes(90));
             Humidity humidityData3 = new HumidityBuilder().WithDate(endDate.AddHours(-2));
+
             await _humidityCollection.InsertManyAsync(new List<Humidity> { humidityData1, humidityData2, humidityData3 });
 
             // act

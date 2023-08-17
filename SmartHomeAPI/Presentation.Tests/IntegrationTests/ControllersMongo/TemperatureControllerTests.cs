@@ -86,6 +86,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             Temperature temperatureData1 = new TemperatureBuilder().WithDate(startDate.AddMinutes(30));
             Temperature temperatureData2 = new TemperatureBuilder().WithDate(startDate.AddMinutes(90));
             Temperature temperatureData3 = new TemperatureBuilder().WithDate(endDate.AddHours(-2));
+
             await _temperatureCollection.InsertManyAsync(new List<Temperature> { temperatureData1, temperatureData2, temperatureData3 });
 
             // act
