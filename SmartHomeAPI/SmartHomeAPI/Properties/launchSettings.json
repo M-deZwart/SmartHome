@@ -14,7 +14,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://desktop-cl4jco5:5233",
+      "applicationUrl": "http://NBNL865.rademaker.nl:5233",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -24,7 +24,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://desktop-cl4jco5:7257;http://desktop-cl4jco5:5233",
+      "applicationUrl": "https://NBNL865.rademaker.nl:7257;http://NBNL865.rademaker.nl:5233",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

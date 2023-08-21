@@ -4,7 +4,7 @@
 
 const char* ssid = "H369A8E1A7C";
 const char* password = "653C3DDC7A62";
-const char* serverIP = "192.168.2.11";
+const char* dns = "smarthome@NBNL865.rademaker.nl";
 const int serverPort = 5233;
 
 WiFiClient wifiClient;
@@ -26,8 +26,8 @@ void loop() {
 }
 
 void sendSensorData(double temperature, double humidity) {
-  String serverUrlT = "http://" + String(serverIP) + ":" + String(serverPort) + "/api/temperature/setTemperature";
-  String serverUrlH = "http://" + String(serverIP) + ":" + String(serverPort) + "/api/humidity/setHumidity";
+  String serverUrlT = "http://" + String(dns) + ":" + String(serverPort) + "/api/temperature/setTemperature";
+  String serverUrlH = "http://" + String(dns) + ":" + String(serverPort) + "/api/humidity/setHumidity";
 
   // send temperature
   http.begin(serverUrlT);

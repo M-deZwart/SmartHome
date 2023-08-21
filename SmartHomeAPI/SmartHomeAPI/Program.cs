@@ -3,6 +3,8 @@ using Infrastructure.Infrastructure;
 using SmartHomeAPI.Middleware;
 using System.Text.Json.Serialization;
 
+var allowFrontEnd= "_allowFrontEnd";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +17,17 @@ builder.Services.AddLogging();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
+// CORS Configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: allowFrontEnd, policy =>
+    {
+        policy.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +38,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(allowFrontEnd);
 
 app.UseAuthorization();
 
