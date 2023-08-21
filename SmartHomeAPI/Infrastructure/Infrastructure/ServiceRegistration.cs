@@ -19,7 +19,9 @@ namespace Infrastructure.Infrastructure
                 var mongoConnectionString = configuration.GetConnectionString("MongoDB");
                 var mongoClient = new MongoClient(mongoConnectionString);
                 var mongoDatabase = mongoClient.GetDatabase("smarthome-db");
-                services.AddSingleton(mongoDatabase);;
+                services.AddSingleton(mongoDatabase);
+
+                MongoDbConfig.Configure();
 
                 services.AddScoped<IHumidityRepository, HumidityRepositoryMongo>();
                 services.AddScoped<ITemperatureRepository, TemperatureRepositoryMongo>();
