@@ -58,7 +58,7 @@ namespace SmartHomeAPI.Controllers
             }
         }
 
-        [HttpGet("temperatureByDateRange/{startDate}/{endDate}")]
+        [HttpGet("temperatureByDateRange")]
         public async Task<ActionResult<List<TemperatureDTO>>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
         {
             try
