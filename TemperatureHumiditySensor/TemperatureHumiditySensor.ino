@@ -3,13 +3,13 @@
 #include <ESP8266HTTPClient.h>
 #include <DHT.h>
 
-// GPIO12 pin is D5
-#define DHTPIN 14
-#define DHTTYPE 11
+// GPIO15 pin D8
+#define DHTPIN 15
+#define DHTTYPE 22
 
 const char* ssid = "H369A8E1A7C";
 const char* password = "653C3DDC7A62";
-const char* dns = "smarthome@NBNL865.rademaker.nl";
+const char* dns = "NBNL865.rademaker.nl";
 const int serverPort = 5233;
 
 DHT dht(DHTPIN, DHTTYPE);
@@ -46,7 +46,7 @@ void loop() {
     sendSensorData(temperature, humidity);
     delay(5000);
   } else {
-    Serial.println("DHT11 sensor error!");
+    Serial.println("DHT22 sensor error!");
   }
 }
 
@@ -55,7 +55,7 @@ void sendSensorData(double temperature, double humidity) {
   String serverUrlH = "http://" + String(dns) + ":" + String(serverPort) + "/api/humidity/setHumidity";
 
   // send temperature
-  http.begin(serverUrlT);
+  http.begin(wifiClient, serverUrlT);
   http.addHeader("Content-Type", "application/json");
 
   int httpResponseCodeT = http.POST(String(temperature));
@@ -63,7 +63,7 @@ void sendSensorData(double temperature, double humidity) {
   http.end();
 
   // send humidity
-  http.begin(serverUrlH);
+  http.begin(wifiClient, serverUrlH);
   http.addHeader("Content-Type", "application/json");
 
   int httpResponseCodeH = http.POST(String(humidity));

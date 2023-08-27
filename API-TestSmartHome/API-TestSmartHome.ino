@@ -4,7 +4,7 @@
 
 const char* ssid = "H369A8E1A7C";
 const char* password = "653C3DDC7A62";
-const char* dns = "smarthome@NBNL865.rademaker.nl";
+const char* dns = "NBNL865.rademaker.nl";
 const int serverPort = 5233;
 
 WiFiClient wifiClient;
