@@ -6,6 +6,7 @@
 // GPIO15 pin D8
 #define DHTPIN 15
 #define DHTTYPE 22
+#define INTERNAL_LEDPIN 1
 
 const char* ssid = "H369A8E1A7C";
 const char* password = "653C3DDC7A62";
@@ -18,14 +19,17 @@ WiFiClient wifiClient;
 HTTPClient http;
 
 void setup() {
+  pinMode(INTERNAL_LEDPIN, OUTPUT);
   Serial.begin(9600);
+
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
-
+  blinkInternalLed(3);
+  
   dht.begin();
 }
 
@@ -44,6 +48,7 @@ void loop() {
     Serial.println(temperature, 2);
 
     sendSensorData(temperature, humidity);
+    blinkInternalLed(2);
     delay(5000);
   } else {
     Serial.println("DHT22 sensor error!");
@@ -80,4 +85,13 @@ void responseCode(int httpResponseCode) {
     Serial.print("Error code: ");
     Serial.println(httpResponseCode);
   }
+}
+
+void blinkInternalLed(int number) {
+    for (int i=0; i <=number; i++){
+    digitalWrite(INTERNAL_LEDPIN, LOW);
+    delay(1000);
+    digitalWrite(INTERNAL_LEDPIN, HIGH);
+    delay(1000);
+  } 
 }
