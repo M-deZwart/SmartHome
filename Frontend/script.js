@@ -67,7 +67,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 dataDiv.innerHTML = '';
                 data.forEach(item => {
                     const itemElement = document.createElement('p');
-                    itemElement.textContent = `Date: ${item.date}, ${valueName}: ${item[valueName.toLowerCase()]}%`;
+                    const formattedDate = new Date(item.date).toLocaleString();
+                    const formattedValue = item[valueName.toLowerCase()].toFixed(1);
+                    itemElement.textContent = `Date: ${formattedDate}, ${valueName}: ${formattedValue}%`;
                     dataDiv.appendChild(itemElement);
                 });
             } catch (error) {

@@ -1,6 +1,8 @@
 html {
     box-sizing: border-box;
     margin: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: #d6f4ed;
 }
 
 body {
@@ -16,17 +18,14 @@ label {
 
 #humidityTitle, #temperatureTitle {
     margin-top: 15px;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
+    color: #3AA6B9;
 }
 
 #startDateHumidity, #startDateTemperature, #endDateHumidity, #endDateTemperature {
     width: 16%;
     padding: 2px;
     text-align: center;
-}
-
-#humidityData, #temperatureData {
-    text-align: left;
 }
 
 #getDataHumidity, #getDataTemperature {
@@ -36,7 +35,23 @@ label {
     width: 16.5%;
 }
 
+#humidityData, #temperatureData {
+    text-align: justify;
+    font-size: 0.9em;
+    overflow-y: auto;
+    height: 500px;
+    margin-top: 15px;
+    background-color: #FFF;
+    border-radius: 25px;
+}
+
+#humidityData p, #temperatureData p {
+  padding: 2px 10px;  
+}
+
 #output {
+    color: #3AA6B9;
     margin: 0;
+    margin-top: 20px;
 }
 
