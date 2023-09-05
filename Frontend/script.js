@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    if (currentUrl.includes("humidity")) {
+    if (currentUrl.includes("currentHumidity")) {
         getCurrentHumidity();
-    } else if (currentUrl.includes("temperature")) {
+    } else if (currentUrl.includes("currentTemperature")) {
         getCurrentTemperature();
     }
 });
@@ -47,13 +47,21 @@ document.addEventListener('DOMContentLoaded', function () {
         const startDateInput = document.getElementById(`startDate${endpointName}`);
         const endDateInput = document.getElementById(`endDate${endpointName}`);
         const dataDiv = document.getElementById(`${endpointName.toLowerCase()}Data`);
+        // loggen waardes constanten
+        console.log(`getDataButton: ${getDataButton}`);
+        console.log(startDateInput);
+        console.log(endDateInput);
+        console.log(dataDiv);
 
         getDataButton.addEventListener('click', async function () {
-            const startDate = startDateInput.value;
-            const endDate = endDateInput.value;
+            const startDate = new Date(startDateInput.value).toISOString();
+            const endDate = new Date(endDateInput.value).toISOString();
+            console.log(startDate);
+            console.log(endDate);   
 
             try {
-                const response = await fetch(`${url}${endpointName}ByDateRange?startDate=${startDate}&endDate=${endDate}`);
+                const response = await fetch(
+                    `${url}${endpointName.toLowerCase()}/${endpointName.toLowerCase()}ByDateRange?startDate=${startDate}&endDate=${endDate}`);
                 const data = await response.json();
 
                 dataDiv.innerHTML = '';
@@ -63,6 +71,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     dataDiv.appendChild(itemElement);
                 });
             } catch (error) {
+                console.log(`${url}${endpointName.toLowerCase()}/${endpointName.toLowerCase()}
+                ByDateRange?startDate=${startDate}&endDate=${endDate}`);
                 console.error(`Error during ${endpointName.toLowerCase()} list retrieval: `, error);
             }
         });
