@@ -1,52 +1,115 @@
-html {
+* {
     box-sizing: border-box;
     margin: 0;
     font-family: Helvetica, Arial, sans-serif;
-    background-color: #d6f4ed;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+html {
+    background-color: #d6f4ed;
 }
 
 label {
     padding: 5px;
 }
 
-#humidityTitle, #temperatureTitle {
-    margin-top: 15px;
+
+#humidityTitle,
+#temperatureTitle {
+    margin-top: 40px;
     margin-bottom: 20px;
     color: #3AA6B9;
 }
 
-#startDateHumidity, #startDateTemperature, #endDateHumidity, #endDateTemperature {
-    width: 16%;
+#startDateHumidity,
+#startDateTemperature,
+#endDateHumidity,
+#endDateTemperature {
     padding: 2px;
     text-align: center;
 }
 
-#getDataHumidity, #getDataTemperature {
+#getDataHumidity,
+#getDataTemperature {
     margin-top: 15px;
     margin-bottom: 30px;
-    padding: 9px;
-    width: 16.5%;
+    padding: 10px;
+    width: 100%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    border: none;
+    font-size: 1em;
+    font-weight: 400;
+    color: #FFF;
+    letter-spacing: 0.07em;
+    font-weight: 600;
+    border-radius: 5px;
+    background: radial-gradient(circle, rgba(255,92,157,1) 0%, rgba(254,0,88,1) 100%);
 }
 
-#humidityData, #temperatureData {
+#getDataHumidity:hover,
+#getDataTemperature:hover {
+    background: radial-gradient(circle, rgba(255,124,177,1) 0%, rgba(255,43,116,1) 100%);
+}
+
+#humidityContainer, #temperatureContainer {
+    text-align: center;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    align-items: center;
+    justify-content: center;
+}
+
+.humidityItem, .temperatureItem {
+    width: 90%;
+}
+
+.inputField {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#humidityData::-webkit-scrollbar, #temperatureData::-webkit-scrollbar {
+    width: 11px;
+}
+
+#humidityData,
+#temperatureData {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: justify;
     font-size: 0.9em;
     overflow-y: auto;
     height: 500px;
     margin-top: 15px;
     background-color: #FFF;
-    border-radius: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-#humidityData p, #temperatureData p {
-  padding: 2px 10px;  
+#humidityData::-webkit-scrollbar-track, #temperatureData::-webkit-scrollbar-track {
+    background-color: rgb(255, 176, 213);
+}
+
+#humidityData::-webkit-scrollbar-thumb, #temperatureData::-webkit-scrollbar-thumb {
+    background-color: rgb(245, 32, 103);
+    width: 11px;
+}
+
+#humidityData p,
+#temperatureData p {
+    padding: 10px 10px;
+    padding-left: 20px;
+    width: 90%;
+    border: 0.2px black solid;
+    border-radius: 50px;
+    background: linear-gradient(0deg, rgba(241,241,241,1) 0%, rgba(255,255,255,1) 50%, rgba(241,241,241,1) 100%);
+    margin: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 #output {
@@ -54,4 +117,3 @@ label {
     margin: 0;
     margin-top: 20px;
 }
-

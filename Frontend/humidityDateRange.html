@@ -8,18 +8,31 @@
     <link rel="stylesheet" href="styles/style.css">
     <title>Humidity Date Range</title>
 </head>
-
-<body>
-    <h1 id="humidityTitle">Humidity data</h1>
-    <label for="startDateHumidity">Start date:</label>
-    <input type="date" id="startDateHumidity">
-    <label for="endDateHumidity">End date:</label>
-    <input type="date" id="endDateHumidity">
-    <button id="getDataHumidity">View</button>
-    <h2 id="output">Output</h2>
-    <div id="humidityData">
-        <!-- Humidity data is shown here -->
+  
+<body>   
+    <div id="humidityContainer">
+        <div class="humidityItem">
+            <h1 id="humidityTitle">Humidity data</h1>
+        </div>   
+        <div class="humidityItem inputField">
+            <label for="startDateHumidity">Start date:</label>
+            <input type="date" id="startDateHumidity">
+        </div>
+        <div class="humidityItem inputField">
+            <label for="endDateHumidity">End date:</label>
+            <input type="date" id="endDateHumidity">
+        </div>
+        <div class="humidityItem">
+            <button id="getDataHumidity">VIEW</button>
+        </div>
+        <div class="humidityItem">
+            <h2 id="output">Output</h2>
+            <div id="humidityData">
+                <!-- Humidity data is shown here -->
+            </div>
+        </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 

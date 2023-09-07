@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,17 +8,32 @@
     <link rel="stylesheet" href="styles/style.css">
     <title>Temperature Date Range</title>
 </head>
+
 <body>
-    <h1 id="temperatureTitle">Temperature data</h1>
-    <label for="startDateTemperature">Start date:</label>
-    <input type="date" id="startDateTemperature">
-    <label for="endDateTemperature">End date:</label>
-    <input type="date" id="endDateTemperature">
-    <button id="getDataTemperature">View</button>
-    <h2 id="output">Output</h2>
-    <div id="temperatureData">
-        <!-- Temperature data is shown here -->
+    <div id="temperatureContainer">
+        <div class="temperatureItem">
+            <h1 id="temperatureTitle">Temperature data</h1>
+        </div>
+        <div class="temperatureItem inputField">
+            <label for="startDateTemperature">Start date:</label>
+            <input type="date" id="startDateTemperature">
+        </div>
+        <div class="temperatureItem inputField">
+            <label for="endDateTemperature">End date:</label>
+            <input type="date" id="endDateTemperature">
+        </div>
+        <div class="temperatureButtonItem temperatureItem">
+            <button id="getDataTemperature">VIEW</button>
+        </div>
+        <div class="temperatureItem">
+            <h2 id="output">Output</h2>
+            <div id="temperatureData">
+                <!-- Temperature data is shown here -->
+            </div>
+        </div>
     </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>

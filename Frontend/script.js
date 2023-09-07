@@ -55,9 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         getDataButton.addEventListener('click', async function () {
             const startDate = new Date(startDateInput.value).toISOString();
-            const endDate = new Date(endDateInput.value).toISOString();
-            console.log(startDate);
-            console.log(endDate);   
+            const endDate = new Date(endDateInput.value).toISOString(); 
 
             try {
                 const response = await fetch(
@@ -73,8 +71,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     dataDiv.appendChild(itemElement);
                 });
             } catch (error) {
-                console.log(`${url}${endpointName.toLowerCase()}/${endpointName.toLowerCase()}
-                ByDateRange?startDate=${startDate}&endDate=${endDate}`);
                 console.error(`Error during ${endpointName.toLowerCase()} list retrieval: `, error);
             }
         });
