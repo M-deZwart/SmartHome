@@ -8,33 +8,110 @@ html {
     background-color: #d6f4ed;
 }
 
-label {
-    padding: 5px;
+/* navbar */
+nav {
+    position: fixed;
+    width: 100%;
+    background-color: rgb(255, 98, 153);
+    color: white;
+    font-size: 1.1em;
+    z-index: 100;
+    display: flex;
+    justify-content: center; 
+    padding: 15px;
 }
 
+nav li {
+    display: inline;
+    margin: 0 100px;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+}
+
+nav a:hover {
+    border-bottom: 1px solid #fff;
+}
+
+
+/* Current */
+#currentHumidityContainer, #currentTemperatureContainer {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+}
+
+#currentHumidityItem,
+#currentTemperatureItem {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background: radial-gradient(circle, rgb(255, 148, 191) 0%, rgb(255, 88, 146) 100%);
+    border-radius: 10px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    height: 30%;
+    width: 40%;
+    color: #fff;
+}
+
+#currentHumidityTitle,
+#currentTemperatureTitle {
+    border-bottom: 1px solid #fff;
+    width: 70%;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+}
+
+#currentHumidityInfo, #currentTemperatureInfo {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+
+/* Date Range */
+label {
+    padding: 5px;
+    color: #3AA6B9;
+    font-weight: 600;
+}
 
 #humidityTitle,
 #temperatureTitle {
     margin-top: 40px;
-    margin-bottom: 20px;
-    color: #3AA6B9;
+    margin-bottom: 5px;
+    background-color: rgb(255, 176, 213);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
 }
 
 #startDateHumidity,
 #startDateTemperature,
 #endDateHumidity,
 #endDateTemperature {
-    padding: 2px;
+    padding: 7px;
     text-align: center;
+    border: none;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    font-size: 0.9em;
 }
 
 #getDataHumidity,
 #getDataTemperature {
-    margin-top: 15px;
+    margin-top: 10px;
     margin-bottom: 30px;
-    padding: 10px;
+    padding: 15px;
     width: 100%;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
     border: none;
     font-size: 1em;
     font-weight: 400;
@@ -53,11 +130,8 @@ label {
 #humidityContainer, #temperatureContainer {
     text-align: center;
     margin: auto;
-    display: flex;
-    flex-direction: column;
-    width: 500px;
-    align-items: center;
-    justify-content: center;
+    width: 500px; 
+    padding-top: 100px;
 }
 
 .humidityItem, .temperatureItem {
@@ -83,8 +157,8 @@ label {
     align-items: center;
     text-align: justify;
     font-size: 0.9em;
+    height: 700px;
     overflow-y: auto;
-    height: 500px;
     margin-top: 15px;
     background-color: #FFF;
     border-radius: 10px;
@@ -103,17 +177,20 @@ label {
 #humidityData p,
 #temperatureData p {
     padding: 10px 10px;
-    padding-left: 20px;
+    padding-left: 50px;
     width: 90%;
-    border: 0.2px black solid;
-    border-radius: 50px;
-    background: linear-gradient(0deg, rgba(241,241,241,1) 0%, rgba(255,255,255,1) 50%, rgba(241,241,241,1) 100%);
+    border: 1px rgb(121, 144, 148) solid;
+    border-radius: 10px;
     margin: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 #output {
-    color: #3AA6B9;
+    color: #fff;
+    background-color: rgb(255, 176, 213);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     margin: 0;
-    margin-top: 20px;
+    margin-top: 30px;
 }

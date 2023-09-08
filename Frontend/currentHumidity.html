@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,12 +8,18 @@
     <link rel="stylesheet" href="styles/style.css">
     <title>Current Humidity</title>
 </head>
-<body>
-    <div id="humidityDisplay">
-        <h1>Current Humidity</h1>
-        <p>The current humidity is: <span id="currentHumidity">Loading...</span></p>
-    </div>
 
+<body>
+    <div id="navbar-container"></div>
+    <div id="currentHumidityContainer">
+        <div id="currentHumidityItem">
+            <h1 id="currentHumidityTitle">Current Humidity</h1>
+            <p id="currentHumidityInfo">The current humidity is: <span id="currentHumidity">Loading...</span></p>
+        </div>
+    </div>
+    
+    <script src="navbar.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

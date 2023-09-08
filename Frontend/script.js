@@ -47,11 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const startDateInput = document.getElementById(`startDate${endpointName}`);
         const endDateInput = document.getElementById(`endDate${endpointName}`);
         const dataDiv = document.getElementById(`${endpointName.toLowerCase()}Data`);
-        // loggen waardes constanten
-        console.log(`getDataButton: ${getDataButton}`);
-        console.log(startDateInput);
-        console.log(endDateInput);
-        console.log(dataDiv);
 
         getDataButton.addEventListener('click', async function () {
             const startDate = new Date(startDateInput.value).toISOString();
