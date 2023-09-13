@@ -12,6 +12,8 @@ const char* ssid = "H369A8E1A7C";
 const char* password = "653C3DDC7A62";
 const char* dns = "NBNL865.rademaker.nl";
 const int serverPort = 5233;
+// LivingRoom, Bedroom, WorkSpace
+const String sensorTitle = "LivingRoom";
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -56,8 +58,8 @@ void loop() {
 }
 
 void sendSensorData(double temperature, double humidity) {
-  String serverUrlT = "http://" + String(dns) + ":" + String(serverPort) + "/api/temperature/setTemperature";
-  String serverUrlH = "http://" + String(dns) + ":" + String(serverPort) + "/api/humidity/setHumidity";
+  String serverUrlT = "http://" + String(dns) + ":" + String(serverPort) + "/api/temperature/setTemperature/" + sensorTitle;
+  String serverUrlH = "http://" + String(dns) + ":" + String(serverPort) + "/api/humidity/setHumidity/" + sensorTitle;
 
   // send temperature
   http.begin(wifiClient, serverUrlT);

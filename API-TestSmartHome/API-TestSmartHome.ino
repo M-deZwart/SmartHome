@@ -6,6 +6,8 @@ const char* ssid = "H369A8E1A7C";
 const char* password = "653C3DDC7A62";
 const char* dns = "NBNL865.rademaker.nl";
 const int serverPort = 5233;
+// LivingRoom, Bedroom, WorkSpace
+const String sensorTitle = "LivingRoom";
 
 WiFiClient wifiClient;
 HTTPClient http;
@@ -26,11 +28,11 @@ void loop() {
 }
 
 void sendSensorData(double temperature, double humidity) {
-  String serverUrlT = "http://" + String(dns) + ":" + String(serverPort) + "/api/temperature/setTemperature";
-  String serverUrlH = "http://" + String(dns) + ":" + String(serverPort) + "/api/humidity/setHumidity";
+  String serverUrlT = "http://" + String(dns) + ":" + String(serverPort) + "/api/temperature/setTemperature/" + sensorTitle;
+  String serverUrlH = "http://" + String(dns) + ":" + String(serverPort) + "/api/humidity/setHumidity/" + sensorTitle;
 
   // send temperature
-  http.begin(serverUrlT);
+  http.begin(wifiClient, serverUrlT);
   http.addHeader("Content-Type", "application/json");
 
   int httpResponseCodeT = http.POST(String(temperature));
@@ -38,7 +40,7 @@ void sendSensorData(double temperature, double humidity) {
   http.end();
 
   // send humidity
-  http.begin(serverUrlH);
+  http.begin(wifiClient, serverUrlH);
   http.addHeader("Content-Type", "application/json");
 
   int httpResponseCodeH = http.POST(String(humidity));
