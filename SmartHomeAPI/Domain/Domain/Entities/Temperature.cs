@@ -1,7 +1,6 @@
 ﻿
 using Domain.Domain.Exceptions;
 using Domain.Domain.Validators;
-using FluentValidation;
 using System.Text;
 
 namespace Domain.Domain.Entities
@@ -11,6 +10,9 @@ namespace Domain.Domain.Entities
         public Guid Id { get; set; }
         public double Celsius { get; private set; }
         public DateTime Date { get; private set; }
+
+        public Guid SensorId { get; set; }
+        public Sensor Sensor { get; set; } = null!;
 
         public Temperature(double celsius, DateTime date)
         {

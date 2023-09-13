@@ -1,5 +1,4 @@
 ﻿using Application.Application.DTOs;
-using Application.Application.Exceptions;
 using Application.Application.Contracts;
 using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
@@ -18,17 +17,17 @@ public class TemperatureService : ITemperatureService
         _temperatureMapper = temperatureMapper;
     }
 
-    public async Task<TemperatureDTO> GetCurrentTemperature()
+    public async Task<TemperatureDTO> GetCurrentTemperature(string sensorTitle)
     {
-        var temperature = await _temperatureRepository.GetLatestTemperature();
+        var temperature = await _temperatureRepository.GetLatestTemperature(sensorTitle);
         var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
 
         return temperatureDTO;
     }
 
-    public async Task<List<TemperatureDTO>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate)
+    public async Task<List<TemperatureDTO>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
     {
-        var temperatureList = await _temperatureRepository.GetByDateRange(startDate, endDate);
+        var temperatureList = await _temperatureRepository.GetByDateRange(startDate, endDate, sensorTitle);
         List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
 
         temperatureList.ForEach(temperature =>
@@ -39,7 +38,7 @@ public class TemperatureService : ITemperatureService
         return temperatureListDTO;
     }
 
-    public async Task SetTemperature(double celsius)
+    public async Task SetTemperature(double celsius, string sensorTitle)
     {
         Temperature temperature = new Temperature
         (
@@ -47,7 +46,7 @@ public class TemperatureService : ITemperatureService
             date: DateTime.Now
         );
 
-        await _temperatureRepository.Create(temperature);
+        await _temperatureRepository.Create(temperature, sensorTitle);
     }
 
 }

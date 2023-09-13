@@ -10,6 +10,9 @@ namespace Domain.Domain.Entities
         public double Percentage { get; private set; }
         public DateTime Date { get; private set; }
 
+        public Guid SensorId { get; set; }
+        public Sensor Sensor { get; set; } = null!;
+
         public Humidity(double percentage, DateTime date)
         {
             Percentage = percentage;

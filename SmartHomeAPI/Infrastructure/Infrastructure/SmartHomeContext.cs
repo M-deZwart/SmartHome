@@ -7,6 +7,7 @@ namespace Infrastructure.Infrastructure
     {
         public DbSet<Temperature> Temperatures { get; set; }
         public DbSet<Humidity> Humidities { get; set; }
+        public DbSet<Sensor> Sensors { get; set; }
 
         public SmartHomeContext(DbContextOptions<SmartHomeContext> options)
             :base(options)

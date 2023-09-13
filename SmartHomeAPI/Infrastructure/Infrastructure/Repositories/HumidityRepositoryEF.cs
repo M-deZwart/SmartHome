@@ -14,24 +14,32 @@ namespace Infrastructure.Infrastructure.Repositories
             _smartHomeContext = smartHomeContext;
         }
 
-        public async Task Create(Humidity humidity)
+        public async Task Create(Humidity humidity, string sensorTitle)
         {
+            var sensor = await FindSensor(sensorTitle);
+            humidity.SensorId = sensor.Id; 
+
             _smartHomeContext.Humidities.Add(humidity);
             await _smartHomeContext.SaveChangesAsync();
         }
 
-        public async Task<List<Humidity>> GetByDateRange(DateTime startDate, DateTime endDate)
+        public async Task<List<Humidity>> GetByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
         {
+            var sensor = await FindSensor(sensorTitle);
+
             var humidityList = await _smartHomeContext.Humidities
-            .Where(h => h.Date >= startDate && h.Date <= endDate)
+            .Where(h => h.Date >= startDate && h.Date <= endDate && h.SensorId == sensor.Id)
             .ToListAsync();
 
             return humidityList;
         }
 
-        public async Task<Humidity> GetLatestHumidity()
+        public async Task<Humidity> GetLatestHumidity(string sensorTitle)
         {
+            var sensor = await FindSensor(sensorTitle);
+
             var latestHumidity = await _smartHomeContext.Humidities
+                .Where(h => h.SensorId == sensor.Id)
                 .OrderByDescending(h => h.Date)
                 .FirstOrDefaultAsync();
 
@@ -42,6 +50,20 @@ namespace Infrastructure.Infrastructure.Repositories
             else
             {
                 throw new NotFoundException($"Humidity was not found");
+            }
+        }
+
+        private async Task<Sensor> FindSensor(string sensorTitle)
+        {
+            var sensor = await _smartHomeContext.Sensors.FirstOrDefaultAsync(s => s.Title == sensorTitle);
+
+            if (sensor is not null)
+            {
+                return sensor;
+            }
+            else
+            {
+                throw new NotFoundException("Sensor is not found");
             }
         }
 

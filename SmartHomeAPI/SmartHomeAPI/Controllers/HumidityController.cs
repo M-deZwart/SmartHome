@@ -19,8 +19,8 @@ namespace SmartHomeAPI.Controllers
             _percentageValidator = new PercentageValidator();
         }
 
-        [HttpPost("setHumidity")]
-        public async Task<IActionResult> SetHumidity([FromBody] double percentage)
+        [HttpPost("setHumidity/{sensorTitle}")]
+        public async Task<IActionResult> SetHumidity([FromBody] double percentage, string sensorTitle)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace SmartHomeAPI.Controllers
 
                 if (validationResult.IsValid)
                 {
-                    await _humidityService.SetHumidity(percentage);
+                    await _humidityService.SetHumidity(percentage, sensorTitle);
                     return Ok();
                 }
                 else
@@ -44,12 +44,12 @@ namespace SmartHomeAPI.Controllers
             }
         }
 
-        [HttpGet("getCurrentHumidity")]
-        public async Task<ActionResult<HumidityDTO>> GetCurrentHumidity()
+        [HttpGet("getCurrentHumidity/{sensorTitle}")]
+        public async Task<ActionResult<HumidityDTO>> GetCurrentHumidity(string sensorTitle)
         {
             try
             {
-                var humidityDTO = await _humidityService.GetCurrentHumidity();
+                var humidityDTO = await _humidityService.GetCurrentHumidity(sensorTitle);
                 return Ok(humidityDTO);
             }
             catch (Exception ex)
@@ -58,8 +58,8 @@ namespace SmartHomeAPI.Controllers
             }
         }
        
-        [HttpGet("humidityByDateRange")]
-        public async Task<ActionResult<List<HumidityDTO>>> GetHumidityByDateRange(DateTime startDate, DateTime endDate)
+        [HttpGet("humidityByDateRange/{sensorTitle}")]
+        public async Task<ActionResult<List<HumidityDTO>>> GetHumidityByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace SmartHomeAPI.Controllers
                     return BadRequest("Invalid date range. The start date must be less than the end date.");
                 }
 
-                var humidityListDTO = await _humidityService.GetHumidityByDateRange(startDate, endDate);
+                var humidityListDTO = await _humidityService.GetHumidityByDateRange(startDate, endDate, sensorTitle);
                 return Ok(humidityListDTO);
             }
             catch (Exception ex)

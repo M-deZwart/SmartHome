@@ -17,17 +17,17 @@ public class HumidityService : IHumidityService
         _humidityMapper = humidityMapper;
     }
 
-    public async Task<HumidityDTO> GetCurrentHumidity()
+    public async Task<HumidityDTO> GetCurrentHumidity(string sensorTitle)
     {
-        var humidity = await _humidityRepository.GetLatestHumidity();
+        var humidity = await _humidityRepository.GetLatestHumidity(sensorTitle);
         var humidityDTO = _humidityMapper.MapToDTO(humidity);
 
         return humidityDTO;
     }
 
-    public async Task<List<HumidityDTO>> GetHumidityByDateRange(DateTime startDate, DateTime endDate)
+    public async Task<List<HumidityDTO>> GetHumidityByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
     {
-        var humidityList = await _humidityRepository.GetByDateRange(startDate, endDate);
+        var humidityList = await _humidityRepository.GetByDateRange(startDate, endDate, sensorTitle);
         List<HumidityDTO> humidityListDTO = new List<HumidityDTO>();
 
         humidityList.ForEach(humidity =>
@@ -39,7 +39,7 @@ public class HumidityService : IHumidityService
         return humidityListDTO;
     }
 
-    public async Task SetHumidity(double percentage)
+    public async Task SetHumidity(double percentage, string sensorTitle)
     {
         Humidity humidity = new Humidity
         (
@@ -47,7 +47,7 @@ public class HumidityService : IHumidityService
             date: DateTime.Now
         );
 
-        await _humidityRepository.Create(humidity);
+        await _humidityRepository.Create(humidity, sensorTitle);
     }
 
 }
