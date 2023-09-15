@@ -47,8 +47,10 @@ namespace Infrastructure.Infrastructure.Repositories
             {
                 return latestTemperature;
             }
-
-            throw new NotFoundException($"Temperature was not found");
+            else
+            {
+                throw new NotFoundException($"Temperature was not found");
+            }        
         }
 
         private async Task<Sensor> FindSensor(string sensorTitle)

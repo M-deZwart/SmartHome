@@ -1,10 +1,9 @@
 ﻿using Application.Application.Exceptions;
+using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
-using Infrastructure.Infrastructure;
 using Infrastructure.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Tests.IntegrationTests;
 
@@ -43,7 +42,6 @@ public class TemperatureRepositoryEFTests : CommonTestBase
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-1)).Build(),
             new TemperatureBuilder().WithDate(DateTime.Now).Build()
         };
-        Sensor.Temperatures = mockData;
         foreach (var temperature in mockData)
         {
             await _temperatureRepository.Create(temperature, SENSOR_TITLE);
@@ -73,7 +71,6 @@ public class TemperatureRepositoryEFTests : CommonTestBase
             new TemperatureBuilder().WithDate(endDate),
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-0.5))
         };
-        Sensor.Temperatures = mockData;
         foreach (var temperature in mockData)
         {
             await _temperatureRepository.Create(temperature, SENSOR_TITLE);

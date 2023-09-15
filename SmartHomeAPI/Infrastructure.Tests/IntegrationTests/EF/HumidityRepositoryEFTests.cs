@@ -2,9 +2,7 @@
 using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
-using Infrastructure.Infrastructure;
 using Infrastructure.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Tests.IntegrationTests;
 
