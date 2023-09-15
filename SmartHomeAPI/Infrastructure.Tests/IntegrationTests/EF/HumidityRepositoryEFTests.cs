@@ -8,31 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Tests.IntegrationTests;
 
-public class HumidityRepositoryEFTests
+public class HumidityRepositoryEFTests : CommonTestBase
 {
-    private readonly SmartHomeContext _context;
     private readonly HumidityRepositoryEF _humidityRepository;
-    private const string SENSOR_TITLE = "LivingRoom";
 
     public HumidityRepositoryEFTests()
     {
-        _context = CreateTestContext();
-        _humidityRepository = new HumidityRepositoryEF(_context);
-        _context.SaveChanges();
-    }
-
-    private DbContextOptions<SmartHomeContext> CreateNewInMemoryDatabase()
-    {
-        var optionsBuilder = new DbContextOptionsBuilder<SmartHomeContext>();
-        optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
-        return optionsBuilder.Options;
-    }
-
-    private SmartHomeContext CreateTestContext()
-    {
-        var options = CreateNewInMemoryDatabase();
-        var context = new SmartHomeContext(options);
-        return context;
+        _humidityRepository = new HumidityRepositoryEF(Context);
     }
 
     [Fact]
@@ -43,7 +25,7 @@ public class HumidityRepositoryEFTests
 
         // act
         await _humidityRepository.Create(humidity, SENSOR_TITLE);
-        var savedHumidity = _context.Humidities.FirstOrDefault();
+        var savedHumidity = Context.Humidities.FirstOrDefault();
 
         // assert
         savedHumidity.Should().NotBeNull();
@@ -55,7 +37,7 @@ public class HumidityRepositoryEFTests
     public async Task GetLatestHumidity_Should_Return_Latest_Humidity_When_Date_Exists()
     {
         // arrange
-        var mockData = new List<Humidity>
+        var mockData = new List<Humidity>()
         {
             new HumidityBuilder().WithDate(DateTime.Now.AddHours(-2)).Build(),
             new HumidityBuilder().WithDate(DateTime.Now.AddHours(-1)).Build(),
@@ -91,8 +73,10 @@ public class HumidityRepositoryEFTests
             new HumidityBuilder().WithDate(DateTime.Now.AddHours(-0.5))
         };
 
-        _context.Humidities.AddRange(mockData);
-        await _context.SaveChangesAsync();
+        foreach (var humidity in mockData)
+        {
+            await _humidityRepository.Create(humidity, SENSOR_TITLE);
+        }
 
         // act
         var humiditiesInRange = await _humidityRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);

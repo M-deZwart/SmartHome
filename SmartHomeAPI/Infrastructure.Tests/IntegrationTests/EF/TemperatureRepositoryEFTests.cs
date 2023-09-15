@@ -8,34 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Tests.IntegrationTests;
 
-public class TemperatureRepositoryEFTests
+public class TemperatureRepositoryEFTests : CommonTestBase
 {
-    private readonly SmartHomeContext _context;
     private readonly TemperatureRepositoryEF _temperatureRepository;
-    private readonly Sensor _sensor;
-    private const string SENSOR_TITLE = "LivingRoom";
 
     public TemperatureRepositoryEFTests()
     {
-        _context = CreateTestContext();
-        _temperatureRepository = new TemperatureRepositoryEF(_context);
-        _sensor = new Sensor(SENSOR_TITLE);
-        _context.Sensors.Add(_sensor);
-        _context.SaveChanges();
-    }
-
-    private DbContextOptions<SmartHomeContext> CreateNewInMemoryDatabase()
-    {
-        var optionsBuilder = new DbContextOptionsBuilder<SmartHomeContext>();
-        optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
-        return optionsBuilder.Options;
-    }
-
-    private SmartHomeContext CreateTestContext()
-    {
-        var options = CreateNewInMemoryDatabase();
-        var context = new SmartHomeContext(options);
-        return context;
+        _temperatureRepository = new TemperatureRepositoryEF(Context);       
     }
 
     [Fact]
@@ -46,7 +25,7 @@ public class TemperatureRepositoryEFTests
 
         // act
         await _temperatureRepository.Create(temperature, SENSOR_TITLE);
-        var savedTemperature = _context.Temperatures.FirstOrDefault();
+        var savedTemperature = Context.Temperatures.FirstOrDefault();
 
         // assert
         savedTemperature.Should().NotBeNull();
@@ -58,15 +37,17 @@ public class TemperatureRepositoryEFTests
     public async Task GetLatestTemperature_Should_Return_Latest_Temperature_When_Date_Exists()
     {
         // arrange
-        var mockData = new[]
+        var mockData = new List<Temperature>()
         {
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-2)).Build(),
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-1)).Build(),
             new TemperatureBuilder().WithDate(DateTime.Now).Build()
         };
-        _sensor.Temperatures = mockData;
-        _context.Temperatures.AddRange(mockData);
-        await _context.SaveChangesAsync();
+        Sensor.Temperatures = mockData;
+        foreach (var temperature in mockData)
+        {
+            await _temperatureRepository.Create(temperature, SENSOR_TITLE);
+        }
 
         // act
         var latestTemperature = await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
@@ -92,9 +73,11 @@ public class TemperatureRepositoryEFTests
             new TemperatureBuilder().WithDate(endDate),
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-0.5))
         };
-        _sensor.Temperatures = mockData;
-        _context.Temperatures.AddRange(mockData);
-        await _context.SaveChangesAsync();
+        Sensor.Temperatures = mockData;
+        foreach (var temperature in mockData)
+        {
+            await _temperatureRepository.Create(temperature, SENSOR_TITLE);
+        }
 
         // act
         var temperaturesInRange = await _temperatureRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);
