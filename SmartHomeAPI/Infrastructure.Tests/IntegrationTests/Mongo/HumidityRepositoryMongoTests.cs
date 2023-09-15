@@ -1,4 +1,5 @@
-﻿using Domain.Domain.Contracts;
+﻿using Application.Application.Exceptions;
+using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
@@ -16,6 +17,7 @@ public class HumidityRepositoryMongoTests : IDisposable
     private readonly IMongoCollection<Humidity> _humidityCollection;
     private readonly MongoClient _mongoClient;
     private readonly string _databaseName;
+    private const string SENSOR_TITLE = "LivingRoom";
 
     public HumidityRepositoryMongoTests(MongoFixture mongoFixture)
     {
@@ -34,7 +36,7 @@ public class HumidityRepositoryMongoTests : IDisposable
         var humidity = new HumidityBuilder().Build();
 
         // act
-        await _humidityRepository.Create(humidity);
+        await _humidityRepository.Create(humidity, SENSOR_TITLE);
 
         // assert
         var filter = Builders<Humidity>.Filter.Eq("Percentage", humidity.Percentage);
@@ -60,7 +62,7 @@ public class HumidityRepositoryMongoTests : IDisposable
               .InsertManyAsync(new List<Humidity> { humidity1, humidity2, humidity3 });
 
         // act
-        var result = await _humidityRepository.GetByDateRange(startDate, endDate);
+        var result = await _humidityRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);
 
         // assert
         result.Should().NotBeNull();
@@ -82,11 +84,21 @@ public class HumidityRepositoryMongoTests : IDisposable
             { humidity1, humidity2 });
 
         // act
-        var result = await _humidityRepository.GetLatestHumidity();
+        var result = await _humidityRepository.GetLatestHumidity(SENSOR_TITLE);
 
         // assert
         result.Should().NotBeNull();
         result.Date.Should().BeCloseTo(humidity2.Date, precision: TimeSpan.FromSeconds(1));
+    }
+
+    [Fact]
+    public async Task GetLatestHumidity_Should_Throw_NotFoundException_When_No_Humidity_Exists()
+    {
+        // act
+        Func<Task> act = async () => await _humidityRepository.GetLatestHumidity(SENSOR_TITLE);
+
+        // assert
+        await act.Should().ThrowAsync<NotFoundException>();
     }
 
     public void Dispose()

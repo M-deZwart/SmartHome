@@ -12,7 +12,7 @@ namespace Infrastructure.Infrastructure
         public SmartHomeContext(DbContextOptions<SmartHomeContext> options)
             :base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,6 +40,23 @@ namespace Infrastructure.Infrastructure
             modelBuilder.Entity<Humidity>()
                 .Property(h => h.Date)
                 .HasColumnName(nameof(Humidity.Date));
+
+            modelBuilder.Entity<Temperature>()
+                .HasOne(t => t.Sensor)
+                .WithMany(s => s.Temperatures)
+                .HasForeignKey(t => t.SensorId);
+
+            modelBuilder.Entity<Humidity>()
+                .HasOne(h => h.Sensor)
+                .WithMany(s => s.Humidities)
+                .HasForeignKey(h => h.SensorId);
+
+            modelBuilder.Entity<Sensor>().HasData(
+                    new Sensor(title: "LivingRoom") { Id = Guid.NewGuid() });
+            modelBuilder.Entity<Sensor>().HasData(
+                    new Sensor(title: "Bedroom") { Id = Guid.NewGuid() });
+            modelBuilder.Entity<Sensor>().HasData(
+                    new Sensor(title: "WorkSpace") { Id = Guid.NewGuid() });
 
             base.OnModelCreating(modelBuilder);
         }

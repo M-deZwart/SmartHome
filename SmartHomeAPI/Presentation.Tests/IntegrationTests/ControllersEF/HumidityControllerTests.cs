@@ -19,6 +19,8 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
         private readonly HumidityRepositoryEF _humidityRepository;
         private readonly IHumidityMapper _mapper;
         private readonly HumidityController _controller;
+        private readonly Sensor _sensor;
+        private const string SENSOR_TITLE = "LivingRoom";
 
         public HumidityControllerTests()
         {
@@ -28,6 +30,10 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             _mapper = new HumidityMapper();
             var humidityService = new HumidityService(_humidityRepository, _mapper);
             _controller = new HumidityController(humidityService);
+
+            _sensor = new Sensor(SENSOR_TITLE);
+            _context.Sensors.Add(_sensor);
+            _context.SaveChanges();
         }
 
         private DbContextOptions<SmartHomeContext> CreateNewInMemoryDatabase()
@@ -51,7 +57,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             double validPercentage = 50;
 
             // act
-            var result = await _controller.SetHumidity(validPercentage);
+            var result = await _controller.SetHumidity(validPercentage, SENSOR_TITLE);
 
             // assert
             result.Should().BeOfType<OkResult>();
@@ -70,7 +76,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             _context.Humidities.Add(humidityData);
 
             // act
-            var result = await _controller.GetCurrentHumidity();
+            var result = await _controller.GetCurrentHumidity(SENSOR_TITLE);
 
             // assert
             var okObjectResult = result.Should().BeOfType<ActionResult<HumidityDTO>>().Subject.Result as OkObjectResult;
@@ -92,7 +98,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             await _context.SaveChangesAsync();
 
             // act
-            var result = await _controller.GetHumidityByDateRange(startDate, endDate);
+            var result = await _controller.GetHumidityByDateRange(startDate, endDate, SENSOR_TITLE);
 
             // assert
             result.Should().BeOfType<ActionResult<List<HumidityDTO>>>();

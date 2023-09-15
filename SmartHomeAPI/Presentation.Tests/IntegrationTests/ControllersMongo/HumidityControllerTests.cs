@@ -27,6 +27,8 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         private readonly IHumidityMapper _mapper;
         // controller
         private readonly HumidityController _controller;
+        // sensor title
+        private const string SENSOR_TITLE = "LivingRoom"; 
 
         public HumidityControllerTests(MongoFixture mongoFixture)
         {
@@ -50,7 +52,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             double validPercentage = 50;
 
             // act
-            var result = await _controller.SetHumidity(validPercentage);
+            var result = await _controller.SetHumidity(validPercentage, SENSOR_TITLE);
 
             // assert
             result.Should().BeOfType<OkResult>();
@@ -69,7 +71,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             await _humidityCollection.InsertOneAsync(humidityData);
 
             // act
-            var result = await _controller.GetCurrentHumidity();
+            var result = await _controller.GetCurrentHumidity(SENSOR_TITLE);
 
             // assert
             var okObjectResult = result.Should().BeOfType<ActionResult<HumidityDTO>>().Subject.Result as OkObjectResult;
@@ -90,7 +92,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             await _humidityCollection.InsertManyAsync(new List<Humidity> { humidityData1, humidityData2, humidityData3 });
 
             // act
-            var result = await _controller.GetHumidityByDateRange(startDate, endDate);
+            var result = await _controller.GetHumidityByDateRange(startDate, endDate, SENSOR_TITLE);
 
             // assert
             result.Should().BeOfType<ActionResult<List<HumidityDTO>>>();
@@ -112,7 +114,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             double invalidPercentage = -10;
 
             // act
-            var result = await _controller.SetHumidity(invalidPercentage);
+            var result = await _controller.SetHumidity(invalidPercentage, SENSOR_TITLE);
 
             // assert
             result.Should().BeOfType<BadRequestObjectResult>();

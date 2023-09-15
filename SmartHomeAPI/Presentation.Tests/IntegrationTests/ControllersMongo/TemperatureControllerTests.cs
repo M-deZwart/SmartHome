@@ -27,6 +27,8 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         private readonly ITemperatureMapper _mapper;
         // controller
         private readonly TemperatureController _controller;
+        // sensor title
+        private const string SENSOR_TITLE = "LivingRoom";
 
         public TemperatureControllerTests(MongoFixture mongoFixture)
         {
@@ -50,7 +52,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             double validCelsius = 20;
 
             // act
-            var result = await _controller.SetTemperature(validCelsius);
+            var result = await _controller.SetTemperature(validCelsius, SENSOR_TITLE);
 
             // assert
             result.Should().BeOfType<OkResult>();
@@ -69,7 +71,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             await _temperatureCollection.InsertOneAsync(temperatureData);
 
             // Act
-            var result = await _controller.GetCurrentTemperature();
+            var result = await _controller.GetCurrentTemperature(SENSOR_TITLE);
 
             // Assert
             var okObjectResult = result.Should().BeOfType<ActionResult<TemperatureDTO>>().Subject.Result as OkObjectResult;
@@ -90,7 +92,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             await _temperatureCollection.InsertManyAsync(new List<Temperature> { temperatureData1, temperatureData2, temperatureData3 });
 
             // act
-            var result = await _controller.GetTemperatureByDateRange(startDate, endDate);
+            var result = await _controller.GetTemperatureByDateRange(startDate, endDate, SENSOR_TITLE);
 
             // assert
             var okObjectResult = result.Should().BeOfType<ActionResult<List<TemperatureDTO>>>().Subject.Result as OkObjectResult;
@@ -111,7 +113,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             double invalidCelsius = -10;
 
             // act
-            var result = await _controller.SetTemperature(invalidCelsius);
+            var result = await _controller.SetTemperature(invalidCelsius, SENSOR_TITLE);
 
             // assert
             result.Should().BeOfType<BadRequestObjectResult>();

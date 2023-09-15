@@ -1,5 +1,4 @@
 ﻿using Application.Application.Exceptions;
-using Application.Application.Services;
 using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
@@ -13,11 +12,13 @@ public class HumidityRepositoryEFTests
 {
     private readonly SmartHomeContext _context;
     private readonly HumidityRepositoryEF _humidityRepository;
+    private const string SENSOR_TITLE = "LivingRoom";
 
     public HumidityRepositoryEFTests()
     {
         _context = CreateTestContext();
         _humidityRepository = new HumidityRepositoryEF(_context);
+        _context.SaveChanges();
     }
 
     private DbContextOptions<SmartHomeContext> CreateNewInMemoryDatabase()
@@ -41,7 +42,7 @@ public class HumidityRepositoryEFTests
         var humidity = new HumidityBuilder().WithPercentage(25).Build();
 
         // act
-        await _humidityRepository.Create(humidity);
+        await _humidityRepository.Create(humidity, SENSOR_TITLE);
         var savedHumidity = _context.Humidities.FirstOrDefault();
 
         // assert
@@ -54,28 +55,23 @@ public class HumidityRepositoryEFTests
     public async Task GetLatestHumidity_Should_Return_Latest_Humidity_When_Date_Exists()
     {
         // arrange
-        var mockData = new[]
+        var mockData = new List<Humidity>
         {
             new HumidityBuilder().WithDate(DateTime.Now.AddHours(-2)).Build(),
             new HumidityBuilder().WithDate(DateTime.Now.AddHours(-1)).Build(),
             new HumidityBuilder().WithDate(DateTime.Now).Build()
         };
-        _context.Humidities.AddRange(mockData);
-        await _context.SaveChangesAsync();
+        foreach (var humidity in mockData)
+        {
+            await _humidityRepository.Create(humidity, SENSOR_TITLE);
+        }
 
         // act
-        var latestHumidity = await _humidityRepository.GetLatestHumidity();
+        var latestHumidity = await _humidityRepository.GetLatestHumidity(SENSOR_TITLE);
 
         // assert
         latestHumidity.Should().NotBeNull();
         latestHumidity.Date.Should().Be(mockData[2].Date);
-    }
-
-    [Fact]
-    public async Task GetLatestHumidity_Should_Throw_NotFoundException_When_No_Humidity_Exists()
-    {
-        // act and assert
-        await Assert.ThrowsAsync<NotFoundException>(_humidityRepository.GetLatestHumidity);
     }
 
     [Fact]
@@ -99,11 +95,22 @@ public class HumidityRepositoryEFTests
         await _context.SaveChangesAsync();
 
         // act
-        var humiditiesInRange = await _humidityRepository.GetByDateRange(startDate, endDate);
+        var humiditiesInRange = await _humidityRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);
 
         // assert
         humiditiesInRange.Should().NotBeNull();
         humiditiesInRange.Should().HaveCount(3);
         humiditiesInRange.All(h => h.Date >= startDate && h.Date <= endDate).Should().BeTrue();
     }
+
+    [Fact]
+    public async Task GetLatestHumidity_Should_Throw_NotFoundException_When_No_Humidity_Exists()
+    {
+        // act
+        Func<Task> act = async () => await _humidityRepository.GetLatestHumidity(SENSOR_TITLE);
+
+        // assert
+        await act.Should().ThrowAsync<NotFoundException>();
+    }
+
 }

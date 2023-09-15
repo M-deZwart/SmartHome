@@ -31,9 +31,10 @@ namespace Infrastructure.Infrastructure
                 services.AddDbContext<SmartHomeContext>(options =>
                 {
                     var connectionString = configuration.GetConnectionString("EF");
-                    options.UseSqlServer(connectionString)
-                    .EnableSensitiveDataLogging()
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);                
+
+                    options.UseSqlite(connectionString)
+                        .EnableSensitiveDataLogging()
+                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
                 services.AddScoped<IHumidityRepository, HumidityRepositoryEF>();
                 services.AddScoped<ITemperatureRepository, TemperatureRepositoryEF>();

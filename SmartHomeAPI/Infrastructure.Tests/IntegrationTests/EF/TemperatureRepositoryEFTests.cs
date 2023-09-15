@@ -12,11 +12,16 @@ public class TemperatureRepositoryEFTests
 {
     private readonly SmartHomeContext _context;
     private readonly TemperatureRepositoryEF _temperatureRepository;
+    private readonly Sensor _sensor;
+    private const string SENSOR_TITLE = "LivingRoom";
 
     public TemperatureRepositoryEFTests()
     {
         _context = CreateTestContext();
         _temperatureRepository = new TemperatureRepositoryEF(_context);
+        _sensor = new Sensor(SENSOR_TITLE);
+        _context.Sensors.Add(_sensor);
+        _context.SaveChanges();
     }
 
     private DbContextOptions<SmartHomeContext> CreateNewInMemoryDatabase()
@@ -40,7 +45,7 @@ public class TemperatureRepositoryEFTests
         var temperature = new TemperatureBuilder().Build();
 
         // act
-        await _temperatureRepository.Create(temperature);
+        await _temperatureRepository.Create(temperature, SENSOR_TITLE);
         var savedTemperature = _context.Temperatures.FirstOrDefault();
 
         // assert
@@ -59,24 +64,16 @@ public class TemperatureRepositoryEFTests
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-1)).Build(),
             new TemperatureBuilder().WithDate(DateTime.Now).Build()
         };
-
+        _sensor.Temperatures = mockData;
         _context.Temperatures.AddRange(mockData);
         await _context.SaveChangesAsync();
 
         // act
-        var latestTemperature = await _temperatureRepository.GetLatestTemperature();
+        var latestTemperature = await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
 
         // assert
         latestTemperature.Should().NotBeNull();
         latestTemperature.Date.Should().Be(mockData[2].Date);
-    }
-
-
-    [Fact]
-    public async Task GetLatestHumidity_Should_Throw_NotFoundException_When_No_Humidity_Exists()
-    {
-        // act and assert
-        await Assert.ThrowsAsync<NotFoundException>(_temperatureRepository.GetLatestTemperature);
     }
 
     [Fact]
@@ -95,17 +92,27 @@ public class TemperatureRepositoryEFTests
             new TemperatureBuilder().WithDate(endDate),
             new TemperatureBuilder().WithDate(DateTime.Now.AddHours(-0.5))
         };
-
+        _sensor.Temperatures = mockData;
         _context.Temperatures.AddRange(mockData);
         await _context.SaveChangesAsync();
 
         // act
-        var temperaturesInRange = await _temperatureRepository.GetByDateRange(startDate, endDate);
+        var temperaturesInRange = await _temperatureRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);
 
         // assert
         temperaturesInRange.Should().NotBeNull();
         temperaturesInRange.Should().HaveCount(3);
         temperaturesInRange.All(h => h.Date >= startDate && h.Date <= endDate).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GetLatestTemperature_Should_Throw_NotFoundException_When_No_Temperature_Exists()
+    {
+        // act
+        Func<Task> act = async () => await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
+
+        // assert
+        await act.Should().ThrowAsync<NotFoundException>();
     }
 
 }

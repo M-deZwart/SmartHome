@@ -1,4 +1,5 @@
-﻿using Domain.Domain.Contracts;
+﻿using Application.Application.Exceptions;
+using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
@@ -16,6 +17,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
     private readonly IMongoCollection<Temperature> _temperatureCollection;
     private readonly MongoClient _mongoClient;
     private readonly string _databaseName;
+    private const string SENSOR_TITLE = "LivingRoom";
 
     public TemperatureRepositoryMongoTests(MongoFixture mongoFixture)
     {
@@ -34,7 +36,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
         var temperature = new TemperatureBuilder().Build();
 
         // act
-        await _temperatureRepository.Create(temperature);
+        await _temperatureRepository.Create(temperature, SENSOR_TITLE);
 
         // assert
         var filter = Builders<Temperature>.Filter.Eq("Celsius", temperature.Celsius);
@@ -60,7 +62,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
               .InsertManyAsync(new List<Temperature> { temperature1, temperature2, temperature3 });
 
         // act
-        var result = await _temperatureRepository.GetByDateRange(startDate, endDate);
+        var result = await _temperatureRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);
 
         // assert
         result.Should().NotBeNull();
@@ -82,11 +84,21 @@ public class TemperatureRepositoryMongoTests : IDisposable
                 { temperature1, temperature2 });
 
         // act
-        var result = await _temperatureRepository.GetLatestTemperature();
+        var result = await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
 
         // assert
         result.Should().NotBeNull();
         result.Date.Should().BeCloseTo(temperature2.Date, precision: TimeSpan.FromSeconds(1));
+    }
+
+    [Fact]
+    public async Task GetLatestTemperature_Should_Throw_NotFoundException_When_No_Temperature_Exists()
+    {
+        // act
+        Func<Task> act = async () => await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
+
+        // assert
+        await act.Should().ThrowAsync<NotFoundException>();
     }
 
     public void Dispose()

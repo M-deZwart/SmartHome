@@ -19,6 +19,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
         private readonly TemperatureRepositoryEF _temperatureRepository;
         private readonly ITemperatureMapper _mapper;
         private readonly TemperatureController _controller;
+        private const string SENSOR_TITLE = "LivingRoom";
 
         public TemperatureControllerTests()
         {
@@ -51,7 +52,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             double validCelsius = 20;
 
             // act
-            var result = await _controller.SetTemperature(validCelsius);
+            var result = await _controller.SetTemperature(validCelsius, SENSOR_TITLE);
 
             // assert
             result.Should().BeOfType<OkResult>();
@@ -70,7 +71,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             _context.Temperatures.Add(temperatureData);
 
             // act
-            var result = await _controller.GetCurrentTemperature();
+            var result = await _controller.GetCurrentTemperature(SENSOR_TITLE);
 
             // assert
             var okObjectResult = result.Should().BeOfType<ActionResult<TemperatureDTO>>().Subject.Result as OkObjectResult;
@@ -92,7 +93,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             await _context.SaveChangesAsync();
 
             // act
-            var result = await _controller.GetTemperatureByDateRange(startDate, endDate);
+            var result = await _controller.GetTemperatureByDateRange(startDate, endDate, SENSOR_TITLE);
 
             // assert
             result.Should().BeOfType<ActionResult<List<TemperatureDTO>>>();
