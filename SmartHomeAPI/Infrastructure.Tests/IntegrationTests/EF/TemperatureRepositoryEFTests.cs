@@ -1,5 +1,4 @@
 ﻿using Application.Application.Exceptions;
-using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;

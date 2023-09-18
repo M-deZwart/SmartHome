@@ -13,41 +13,18 @@ using Domain.Tests.Builders;
 
 namespace Presentation.Tests.IntegrationTests.ControllersEF
 {
-    public class HumidityControllerTests
+    public class HumidityControllerTests : CommonTestBase
     {
-        private readonly SmartHomeContext _context;
         private readonly HumidityRepositoryEF _humidityRepository;
         private readonly IHumidityMapper _mapper;
         private readonly HumidityController _controller;
-        private readonly Sensor _sensor;
-        private const string SENSOR_TITLE = "LivingRoom";
 
         public HumidityControllerTests()
         {
-            _context = CreateTestContext();
-            _humidityRepository = new HumidityRepositoryEF(_context);
-
+            _humidityRepository = new HumidityRepositoryEF(Context);
             _mapper = new HumidityMapper();
             var humidityService = new HumidityService(_humidityRepository, _mapper);
             _controller = new HumidityController(humidityService);
-
-            _sensor = new Sensor(SENSOR_TITLE);
-            _context.Sensors.Add(_sensor);
-            _context.SaveChanges();
-        }
-
-        private DbContextOptions<SmartHomeContext> CreateNewInMemoryDatabase()
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<SmartHomeContext>();
-            optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
-            return optionsBuilder.Options;
-        }
-
-        private SmartHomeContext CreateTestContext()
-        {
-            var options = CreateNewInMemoryDatabase();
-            var context = new SmartHomeContext(options);
-            return context;
         }
 
         [Fact]
@@ -62,7 +39,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             // assert
             result.Should().BeOfType<OkResult>();
 
-            var persistedHumidity = _context.Humidities.FirstOrDefault();
+            var persistedHumidity = Context.Humidities.FirstOrDefault();
             persistedHumidity.Should().NotBeNull();
             persistedHumidity?.Percentage.Should().Be(validPercentage);
         }
@@ -73,7 +50,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             // arrange
             var expectedPercentage = 50;
             var humidityData = new HumidityBuilder().Build();
-            _context.Humidities.Add(humidityData);
+            Context.Humidities.Add(humidityData);
 
             // act
             var result = await _controller.GetCurrentHumidity(SENSOR_TITLE);
@@ -90,12 +67,17 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             // arrange
             var startDate = DateTime.Now.AddHours(-24);
             var endDate = DateTime.Now;
-            Humidity humidityData1 = new HumidityBuilder().WithDate(startDate.AddMinutes(30));
-            Humidity humidityData2 = new HumidityBuilder().WithDate(startDate.AddMinutes(90));
-            Humidity humidityData3 = new HumidityBuilder().WithDate(endDate.AddHours(-2));
-
-            await _context.Humidities.AddRangeAsync(new List<Humidity> { humidityData1, humidityData2, humidityData3 });
-            await _context.SaveChangesAsync();
+            var mockData = new List<Humidity>()
+            {
+                new HumidityBuilder().WithDate(startDate.AddMinutes(30)),
+                new HumidityBuilder().WithDate(startDate.AddMinutes(90)),
+                new HumidityBuilder().WithDate(endDate.AddHours(-2)),
+            };
+            
+            foreach(var humidity in mockData)
+            {
+                await _humidityRepository.Create(humidity, SENSOR_TITLE);
+            }
 
             // act
             var result = await _controller.GetHumidityByDateRange(startDate, endDate, SENSOR_TITLE);
@@ -108,9 +90,9 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             humidityDtoList.Should().NotBeNull();
             humidityDtoList.Should().HaveCount(3);
 
-            humidityDtoList?[0].Date.Should().BeCloseTo(humidityData1.Date, precision: TimeSpan.FromSeconds(1));
-            humidityDtoList?[1].Date.Should().BeCloseTo(humidityData2.Date, precision: TimeSpan.FromSeconds(1));
-            humidityDtoList?[2].Date.Should().BeCloseTo(humidityData3.Date, precision: TimeSpan.FromSeconds(1));
+            humidityDtoList?[0].Date.Should().BeCloseTo(mockData.ElementAt(0).Date, precision: TimeSpan.FromSeconds(1));
+            humidityDtoList?[1].Date.Should().BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
+            humidityDtoList?[2].Date.Should().BeCloseTo(mockData.ElementAt(2).Date, precision: TimeSpan.FromSeconds(1));
         }
     }
 }

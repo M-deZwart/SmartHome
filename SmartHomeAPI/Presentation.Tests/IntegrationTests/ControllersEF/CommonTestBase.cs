@@ -2,7 +2,7 @@
 using Domain.Domain.Entities;
 using Infrastructure.Infrastructure;
 
-public class CommonTestBase
+public class CommonTestBase : IDisposable
 {
     protected readonly SmartHomeContext Context;
     protected readonly Sensor Sensor;
