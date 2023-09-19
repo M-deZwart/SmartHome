@@ -13,10 +13,15 @@ namespace Infrastructure.Tests.IntegrationTests.Mongo;
 public class HumidityRepositoryMongoTests : IDisposable
 {
     private readonly IMongoDatabase _database;
-    private readonly IHumidityRepository _humidityRepository;
-    private readonly IMongoCollection<Humidity> _humidityCollection;
     private readonly MongoClient _mongoClient;
     private readonly string _databaseName;
+
+    private readonly IMongoCollection<Humidity> _humidityCollection;
+    private readonly IMongoCollection<Sensor> _sensorCollection;
+    
+    private readonly IHumidityRepository _humidityRepository;
+    private readonly Sensor _sensor;
+
     private const string SENSOR_TITLE = "LivingRoom";
 
     public HumidityRepositoryMongoTests(MongoFixture mongoFixture)
@@ -27,6 +32,10 @@ public class HumidityRepositoryMongoTests : IDisposable
 
         _humidityRepository = new HumidityRepositoryMongo(_database);
         _humidityCollection = _database.GetCollection<Humidity>("Humidity");
+
+        _sensor = new Sensor(SENSOR_TITLE);
+        _sensorCollection = _database.GetCollection<Sensor>("Sensor");
+        _sensorCollection.InsertOne(_sensor);
     }
 
     [Fact]
@@ -54,12 +63,17 @@ public class HumidityRepositoryMongoTests : IDisposable
         var startDate = DateTime.UtcNow.AddHours(-24);
         var endDate = DateTime.UtcNow;
 
-        var humidity1 = new HumidityBuilder().WithDate(startDate.AddMinutes(30).ToUniversalTime()).Build();
-        var humidity2 = new HumidityBuilder().WithDate(startDate.AddMinutes(60).ToUniversalTime()).Build();
-        var humidity3 = new HumidityBuilder().WithDate(endDate.AddHours(-30).ToUniversalTime()).Build();
-
-        await _humidityCollection
-              .InsertManyAsync(new List<Humidity> { humidity1, humidity2, humidity3 });
+        var mockData = new List<Humidity>
+        {
+            new HumidityBuilder().WithDate(startDate.AddMinutes(30).ToUniversalTime()).Build(),
+            new HumidityBuilder().WithDate(startDate.AddMinutes(60).ToUniversalTime()).Build(),
+            new HumidityBuilder().WithDate(endDate.AddHours(-30).ToUniversalTime()).Build(),
+        };
+        
+        foreach (var humidity in mockData)
+        {
+            await _humidityRepository.Create(humidity, SENSOR_TITLE);
+        }
 
         // act
         var result = await _humidityRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);
@@ -77,18 +91,22 @@ public class HumidityRepositoryMongoTests : IDisposable
         var date1 = DateTime.UtcNow.AddMinutes(-30);
         var date2 = DateTime.UtcNow;
 
-        var humidity1 = new HumidityBuilder().WithDate(date1).Build();
-        var humidity2 = new HumidityBuilder().WithDate(date2).Build();
-
-        await _humidityCollection.InsertManyAsync(new List<Humidity>
-            { humidity1, humidity2 });
+        var mockData = new List<Humidity> {
+            new HumidityBuilder().WithDate(date1).Build(),
+            new HumidityBuilder().WithDate(date2).Build()
+        };
+        
+        foreach (var humidity in mockData)
+        {
+            await _humidityRepository.Create(humidity, SENSOR_TITLE);
+        }
 
         // act
         var result = await _humidityRepository.GetLatestHumidity(SENSOR_TITLE);
 
         // assert
         result.Should().NotBeNull();
-        result.Date.Should().BeCloseTo(humidity2.Date, precision: TimeSpan.FromSeconds(1));
+        result.Date.Should().BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
     }
 
     [Fact]

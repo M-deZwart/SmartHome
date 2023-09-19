@@ -56,7 +56,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             }
             else
             {
-                throw new InvalidOperationException($"Temperature was not found");
+                throw new NotFoundException($"Temperature was not found");
             }
         }
 

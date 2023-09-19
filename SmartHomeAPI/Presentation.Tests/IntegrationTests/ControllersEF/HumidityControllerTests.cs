@@ -94,5 +94,21 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             humidityDtoList?[1].Date.Should().BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
             humidityDtoList?[2].Date.Should().BeCloseTo(mockData.ElementAt(2).Date, precision: TimeSpan.FromSeconds(1));
         }
+
+        [Fact]
+        public async Task SetHumidity_WithInvalidPercentage_Should_ReturnBadRequestWithValidationErrors()
+        {
+            // arrange
+            double invalidPercentage = -10;
+
+            // act
+            var result = await _controller.SetHumidity(invalidPercentage, SENSOR_TITLE);
+
+            // assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            var errorMessage = badRequestResult?.Value as string;
+            errorMessage.Should().Contain("Validation errors occurred");
+        }
     }
 }

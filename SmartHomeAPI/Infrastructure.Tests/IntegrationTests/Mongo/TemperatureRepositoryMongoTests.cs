@@ -4,6 +4,7 @@ using Domain.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
 using Infrastructure.Tests.IntegrationTests.TestInfra;
+using Microsoft.Identity.Client;
 using MongoDB.Driver;
 using SmartHomeAPI.Infrastructure.Repositories;
 
@@ -13,10 +14,15 @@ namespace Infrastructure.Tests.IntegrationTests.Mongo;
 public class TemperatureRepositoryMongoTests : IDisposable
 {
     private readonly IMongoDatabase _database;
-    private readonly ITemperatureRepository _temperatureRepository;
-    private readonly IMongoCollection<Temperature> _temperatureCollection;
     private readonly MongoClient _mongoClient;
     private readonly string _databaseName;
+
+    private readonly IMongoCollection<Temperature> _temperatureCollection;
+    private readonly IMongoCollection<Sensor> _sensorCollection;
+
+    private readonly ITemperatureRepository _temperatureRepository;
+    private readonly Sensor _sensor;
+    
     private const string SENSOR_TITLE = "LivingRoom";
 
     public TemperatureRepositoryMongoTests(MongoFixture mongoFixture)
@@ -27,6 +33,10 @@ public class TemperatureRepositoryMongoTests : IDisposable
 
         _temperatureRepository = new TemperatureRepositoryMongo(_database);
         _temperatureCollection = _database.GetCollection<Temperature>("Temperature");
+
+        _sensor = new Sensor(SENSOR_TITLE);
+        _sensorCollection = _database.GetCollection<Sensor>("Sensor");
+        _sensorCollection.InsertOne(_sensor);
     }
 
     [Fact]
@@ -54,12 +64,17 @@ public class TemperatureRepositoryMongoTests : IDisposable
         var startDate = DateTime.UtcNow.AddHours(-24);
         var endDate = DateTime.UtcNow;
 
-        var temperature1 = new TemperatureBuilder().WithDate(startDate.AddMinutes(30).ToUniversalTime()).Build();
-        var temperature2 = new TemperatureBuilder().WithDate(startDate.AddMinutes(60).ToUniversalTime()).Build();
-        var temperature3 = new TemperatureBuilder().WithDate(endDate.AddHours(-30).ToUniversalTime()).Build();
+        var mockData = new List<Temperature>
+        {
+            new TemperatureBuilder().WithDate(startDate.AddMinutes(30).ToUniversalTime()).Build(),
+            new TemperatureBuilder().WithDate(startDate.AddMinutes(60).ToUniversalTime()).Build(),
+            new TemperatureBuilder().WithDate(endDate.AddHours(-30).ToUniversalTime()).Build()
+        };
 
-        await _temperatureCollection
-              .InsertManyAsync(new List<Temperature> { temperature1, temperature2, temperature3 });
+        foreach (var temperature in mockData)
+        {
+            await _temperatureRepository.Create(temperature, SENSOR_TITLE);
+        }
 
         // act
         var result = await _temperatureRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);
@@ -77,18 +92,23 @@ public class TemperatureRepositoryMongoTests : IDisposable
         var startDate = DateTime.UtcNow.AddMinutes(-30);
         var endDate = DateTime.UtcNow;
 
-        var temperature1 = new TemperatureBuilder().WithDate(startDate).Build();
-        var temperature2 = new TemperatureBuilder().WithDate(endDate).Build();
-
-        await _temperatureCollection.InsertManyAsync(new List<Temperature>
-                { temperature1, temperature2 });
+        var mockData = new List<Temperature>
+        {
+            new TemperatureBuilder().WithDate(startDate).Build(),
+            new TemperatureBuilder().WithDate(endDate).Build()
+        };
+        
+        foreach (var temperature in mockData)
+        {
+            await _temperatureRepository.Create(temperature, SENSOR_TITLE);
+        }
 
         // act
         var result = await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
 
         // assert
         result.Should().NotBeNull();
-        result.Date.Should().BeCloseTo(temperature2.Date, precision: TimeSpan.FromSeconds(1));
+        result.Date.Should().BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
     }
 
     [Fact]

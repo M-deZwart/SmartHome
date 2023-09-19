@@ -92,5 +92,21 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             temperatureDtoList?[1].Date.Should().BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
             temperatureDtoList?[2].Date.Should().BeCloseTo(mockData.ElementAt(2).Date, precision: TimeSpan.FromSeconds(1));
         }
+
+        [Fact]
+        public async Task SetTemperature_WithInvalidCelsius_Should_ReturnBadRequestWithValidationErrors()
+        {
+            // arrange
+            double invalidCelsius = -10;
+
+            // act
+            var result = await _controller.SetTemperature(invalidCelsius, SENSOR_TITLE);
+
+            // assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestResult = result as BadRequestObjectResult;
+            var errorMessage = badRequestResult?.Value as string;
+            errorMessage.Should().Contain("Validation errors occurred");
+        }
     }
 }
