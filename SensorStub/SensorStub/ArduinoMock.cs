@@ -17,6 +17,7 @@ namespace SensorStub
         private readonly HttpClient _client;
         private readonly string _temperatureEndpoint = "temperature/setTemperature";
         private readonly string _humidityEndpoint = "humidity/setHumidity";
+        private readonly string _sensorTitle = "LivingRoom";
 
         public ArduinoMock()
         {
@@ -31,18 +32,20 @@ namespace SensorStub
                 double temperature = 12;
                 double humidity = 25;
 
-                await SendSensorData(_temperatureEndpoint, temperature);
-                await SendSensorData(_humidityEndpoint, humidity);
+                await SendSensorData(_temperatureEndpoint, temperature, _sensorTitle);
+                await SendSensorData(_humidityEndpoint, humidity, _sensorTitle);
 
                 await Task.Delay(5000);
             }
         }
 
-        private async Task SendSensorData(string serverUrl, double sensorValue)
+        private async Task SendSensorData(string serverUrl, double sensorValue, string sensorTitle)
         {        
             try
-            {           
-                HttpResponseMessage response = await _client.PostAsJsonAsync(serverUrl, sensorValue);
+            {
+                var apiUrl = $"{serverUrl}/{sensorTitle}";
+
+                HttpResponseMessage response = await _client.PostAsJsonAsync(apiUrl, sensorValue);
                 response.EnsureSuccessStatusCode();
                 Console.WriteLine("Data sent successfully");
             }
