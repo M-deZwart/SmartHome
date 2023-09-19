@@ -1,7 +1,6 @@
 ﻿using Application.Application.Exceptions;
 using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
-using Infrastructure.Infrastructure;
 using MongoDB.Driver;
 
 namespace SmartHomeAPI.Infrastructure.Repositories

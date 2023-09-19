@@ -1,7 +1,7 @@
 ﻿using Domain.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Infrastructure
+namespace Infrastructure.Infrastructure.EF
 {
     public class SmartHomeContext : DbContext
     {
@@ -10,7 +10,7 @@ namespace Infrastructure.Infrastructure
         public DbSet<Sensor> Sensors { get; set; }
 
         public SmartHomeContext(DbContextOptions<SmartHomeContext> options)
-            :base(options)
+            : base(options)
         {
 
         }

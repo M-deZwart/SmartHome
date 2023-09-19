@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Domain.Domain.Entities;
-using Infrastructure.Infrastructure;
+using Infrastructure.Infrastructure.EF;
 
 public class CommonTestBase : IDisposable
 {

@@ -1,4 +1,6 @@
 ﻿using Domain.Domain.Contracts;
+using Infrastructure.Infrastructure.EF;
+using Infrastructure.Infrastructure.Mongo;
 using Infrastructure.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +24,10 @@ namespace Infrastructure.Infrastructure
                 services.AddSingleton(mongoDatabase);
 
                 MongoDbConfig.Configure();
+
+                var serviceProvider = services.BuildServiceProvider();
+                var mongoSeeder = serviceProvider.GetRequiredService<MongoSeeder>();
+                mongoSeeder.SeedData();
 
                 services.AddScoped<IHumidityRepository, HumidityRepositoryMongo>();
                 services.AddScoped<ITemperatureRepository, TemperatureRepositoryMongo>();

@@ -1,7 +1,7 @@
 ﻿using Domain.Domain.Entities;
 using MongoDB.Bson.Serialization;
 
-namespace Infrastructure.Infrastructure;
+namespace Infrastructure.Infrastructure.Mongo;
 public static class MongoDbConfig
 {
     public static void Configure()

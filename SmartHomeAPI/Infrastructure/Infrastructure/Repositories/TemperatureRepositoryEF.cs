@@ -1,6 +1,7 @@
 ﻿using Application.Application.Exceptions;
 using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
+using Infrastructure.Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Infrastructure.Repositories
