@@ -12,7 +12,10 @@ namespace Infrastructure.Infrastructure
 {
     public static class ServiceRegistration
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
             var databaseType = configuration["DatabaseType"];
 
@@ -25,6 +28,7 @@ namespace Infrastructure.Infrastructure
 
                 MongoDbConfig.Configure();
 
+                services.AddScoped<MongoSeeder>();
                 var serviceProvider = services.BuildServiceProvider();
                 var mongoSeeder = serviceProvider.GetRequiredService<MongoSeeder>();
                 mongoSeeder.SeedData();
@@ -38,7 +42,8 @@ namespace Infrastructure.Infrastructure
                 {
                     var connectionString = configuration.GetConnectionString("EF");
 
-                    options.UseSqlite(connectionString)
+                    options
+                        .UseSqlite(connectionString)
                         .EnableSensitiveDataLogging()
                         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
