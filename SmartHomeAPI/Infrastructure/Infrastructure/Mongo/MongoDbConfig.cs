@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization;
 
 namespace Infrastructure.Infrastructure.Mongo;
+
 public static class MongoDbConfig
 {
     public static void Configure()

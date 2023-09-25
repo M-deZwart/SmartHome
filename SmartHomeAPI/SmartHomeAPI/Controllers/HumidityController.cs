@@ -20,7 +20,10 @@ namespace SmartHomeAPI.Controllers
         }
 
         [HttpPost("setHumidity/{sensorTitle}")]
-        public async Task<IActionResult> SetHumidity([FromBody] double percentage, string sensorTitle)
+        public async Task<IActionResult> SetHumidity(
+            [FromBody] double percentage,
+            string sensorTitle
+        )
         {
             try
             {
@@ -33,10 +36,13 @@ namespace SmartHomeAPI.Controllers
                 }
                 else
                 {
-                    var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
-                    throw new OutOfRangeException($"Validation errors occurred: {validationErrors}");
+                    var validationErrors = validationResult.Errors.Select(
+                        error => error.ErrorMessage
+                    );
+                    throw new OutOfRangeException(
+                        $"Validation errors occurred: {validationErrors}"
+                    );
                 }
-                
             }
             catch (Exception ex)
             {
@@ -57,18 +63,28 @@ namespace SmartHomeAPI.Controllers
                 return NotFound($"Humidity could not be found: {ex.Message}");
             }
         }
-       
+
         [HttpGet("humidityByDateRange/{sensorTitle}")]
-        public async Task<ActionResult<List<HumidityDTO>>> GetHumidityByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
+        public async Task<ActionResult<List<HumidityDTO>>> GetHumidityByDateRange(
+            DateTime startDate,
+            DateTime endDate,
+            string sensorTitle
+        )
         {
             try
             {
                 if (startDate > endDate)
                 {
-                    return BadRequest("Invalid date range. The start date must be less than the end date.");
+                    return BadRequest(
+                        "Invalid date range. The start date must be less than the end date."
+                    );
                 }
 
-                var humidityListDTO = await _humidityService.GetHumidityByDateRange(startDate, endDate, sensorTitle);
+                var humidityListDTO = await _humidityService.GetHumidityByDateRange(
+                    startDate,
+                    endDate,
+                    sensorTitle
+                );
                 return Ok(humidityListDTO);
             }
             catch (Exception ex)
@@ -76,6 +92,5 @@ namespace SmartHomeAPI.Controllers
                 return NotFound($"Date range for humidities could not be found: {ex.Message}");
             }
         }
-
     }
 }

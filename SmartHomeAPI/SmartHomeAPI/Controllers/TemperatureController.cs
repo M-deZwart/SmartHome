@@ -13,15 +13,17 @@ namespace SmartHomeAPI.Controllers
         private readonly ITemperatureService _temperatureService;
         private readonly CelsiusValidator _celsiusValidator;
 
-        public TemperatureController(
-            ITemperatureService temperatureService)
+        public TemperatureController(ITemperatureService temperatureService)
         {
             _temperatureService = temperatureService;
             _celsiusValidator = new CelsiusValidator();
         }
 
         [HttpPost("setTemperature/{sensorTitle}")]
-        public async Task<IActionResult> SetTemperature([FromBody] double celsius, string sensorTitle)
+        public async Task<IActionResult> SetTemperature(
+            [FromBody] double celsius,
+            string sensorTitle
+        )
         {
             try
             {
@@ -34,8 +36,12 @@ namespace SmartHomeAPI.Controllers
                 }
                 else
                 {
-                    var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
-                    throw new OutOfRangeException($"Validation errors occurred: {validationErrors}");
+                    var validationErrors = validationResult.Errors.Select(
+                        error => error.ErrorMessage
+                    );
+                    throw new OutOfRangeException(
+                        $"Validation errors occurred: {validationErrors}"
+                    );
                 }
             }
             catch (Exception ex)
@@ -59,16 +65,26 @@ namespace SmartHomeAPI.Controllers
         }
 
         [HttpGet("temperatureByDateRange/{sensorTitle}")]
-        public async Task<ActionResult<List<TemperatureDTO>>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
+        public async Task<ActionResult<List<TemperatureDTO>>> GetTemperatureByDateRange(
+            DateTime startDate,
+            DateTime endDate,
+            string sensorTitle
+        )
         {
             try
             {
                 if (startDate > endDate)
                 {
-                    return BadRequest("Invalid date range. The start date must be less than the end date.");
+                    return BadRequest(
+                        "Invalid date range. The start date must be less than the end date."
+                    );
                 }
 
-                var temperatureListDTO = await _temperatureService.GetTemperatureByDateRange(startDate, endDate, sensorTitle);
+                var temperatureListDTO = await _temperatureService.GetTemperatureByDateRange(
+                    startDate,
+                    endDate,
+                    sensorTitle
+                );
                 return Ok(temperatureListDTO);
             }
             catch (Exception ex)
@@ -76,6 +92,5 @@ namespace SmartHomeAPI.Controllers
                 return NotFound($"Date range for temperatures could not be found: {ex.Message}");
             }
         }
-
     }
 }

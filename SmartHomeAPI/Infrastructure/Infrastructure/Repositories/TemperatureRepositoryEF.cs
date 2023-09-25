@@ -24,13 +24,17 @@ namespace Infrastructure.Infrastructure.Repositories
             await _smartHomeContext.SaveChangesAsync();
         }
 
-        public async Task<List<Temperature>> GetByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
+        public async Task<List<Temperature>> GetByDateRange(
+            DateTime startDate,
+            DateTime endDate,
+            string sensorTitle
+        )
         {
             var sensor = await FindSensor(sensorTitle);
 
             var temperatureList = await _smartHomeContext.Temperatures
-            .Where(t => t.Date >= startDate && t.Date <= endDate && t.SensorId == sensor.Id)
-            .ToListAsync();
+                .Where(t => t.Date >= startDate && t.Date <= endDate && t.SensorId == sensor.Id)
+                .ToListAsync();
 
             return temperatureList;
         }
@@ -51,12 +55,14 @@ namespace Infrastructure.Infrastructure.Repositories
             else
             {
                 throw new NotFoundException($"Temperature was not found");
-            }        
+            }
         }
 
         private async Task<Sensor> FindSensor(string sensorTitle)
         {
-            var sensor = await _smartHomeContext.Sensors.FirstOrDefaultAsync(s => s.Title == sensorTitle);
+            var sensor = await _smartHomeContext.Sensors.FirstOrDefaultAsync(
+                s => s.Title == sensorTitle
+            );
 
             if (sensor is not null)
             {
@@ -67,6 +73,5 @@ namespace Infrastructure.Infrastructure.Repositories
                 throw new NotFoundException("Sensor is not found");
             }
         }
-
     }
 }

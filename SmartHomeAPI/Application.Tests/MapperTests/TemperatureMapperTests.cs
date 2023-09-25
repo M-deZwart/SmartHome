@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Tests.MapperTests;
+
 public class TemperatureMapperTests
 {
     [Fact]
@@ -16,10 +17,7 @@ public class TemperatureMapperTests
     {
         // Arrange
         var mapper = new TemperatureMapper();
-        var temperature = new TemperatureBuilder()
-            .WithCelsius(23.5)
-            .WithDate(DateTime.Now)
-            .Build();
+        var temperature = new TemperatureBuilder().WithCelsius(23.5).WithDate(DateTime.Now).Build();
 
         // Act
         var result = mapper.MapToDTO(temperature);

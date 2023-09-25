@@ -24,13 +24,16 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         private readonly IMongoCollection<Sensor> _sensorCollection;
         private readonly MongoClient _mongoClient;
         private readonly string _databaseName;
+
         // mapper
         private readonly IHumidityMapper _mapper;
+
         // controller
         private readonly HumidityController _controller;
+
         // sensor
         private readonly Sensor _sensor;
-        private const string SENSOR_TITLE = "LivingRoom"; 
+        private const string SENSOR_TITLE = "LivingRoom";
 
         public HumidityControllerTests(MongoFixture mongoFixture)
         {
@@ -73,14 +76,16 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         {
             // arrange
             var expectedPercentage = 50;
-            var humidityData = new HumidityBuilder().Build();      
+            var humidityData = new HumidityBuilder().Build();
             await _humidityCollection.InsertOneAsync(humidityData);
 
             // act
             var result = await _controller.GetCurrentHumidity(SENSOR_TITLE);
 
             // assert
-            var okObjectResult = result.Should().BeOfType<ActionResult<HumidityDTO>>().Subject.Result as OkObjectResult;
+            var okObjectResult =
+                result.Should().BeOfType<ActionResult<HumidityDTO>>().Subject.Result
+                as OkObjectResult;
             var humidityDto = okObjectResult?.Value as HumidityDTO;
             humidityDto?.Percentage.Should().Be(expectedPercentage);
         }
@@ -98,7 +103,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
                 new HumidityBuilder().WithDate(startDate.AddMinutes(90)),
                 new HumidityBuilder().WithDate(endDate.AddHours(-2))
             };
-            
+
             foreach (var humidity in mockData)
             {
                 await _humidityRepository.Create(humidity, SENSOR_TITLE);
@@ -109,15 +114,32 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
 
             // assert
             result.Should().BeOfType<ActionResult<List<HumidityDTO>>>();
-            var okObjectResult = result.Should().BeOfType<ActionResult<List<HumidityDTO>>>().Subject.Result as OkObjectResult;
+            var okObjectResult =
+                result.Should().BeOfType<ActionResult<List<HumidityDTO>>>().Subject.Result
+                as OkObjectResult;
             var humidityDtoList = okObjectResult?.Value as List<HumidityDTO>;
 
             humidityDtoList.Should().NotBeNull();
-            humidityDtoList.Should().HaveCount(3); 
+            humidityDtoList.Should().HaveCount(3);
 
-            humidityDtoList?[0].Date.Should().BeCloseTo(mockData.ElementAt(0).Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
-            humidityDtoList?[1].Date.Should().BeCloseTo(mockData.ElementAt(1).Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
-            humidityDtoList?[2].Date.Should().BeCloseTo(mockData.ElementAt(2).Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+            humidityDtoList
+                ?[0].Date.Should()
+                .BeCloseTo(
+                    mockData.ElementAt(0).Date.ToUniversalTime(),
+                    precision: TimeSpan.FromSeconds(1)
+                );
+            humidityDtoList
+                ?[1].Date.Should()
+                .BeCloseTo(
+                    mockData.ElementAt(1).Date.ToUniversalTime(),
+                    precision: TimeSpan.FromSeconds(1)
+                );
+            humidityDtoList
+                ?[2].Date.Should()
+                .BeCloseTo(
+                    mockData.ElementAt(2).Date.ToUniversalTime(),
+                    precision: TimeSpan.FromSeconds(1)
+                );
         }
 
         [Fact]

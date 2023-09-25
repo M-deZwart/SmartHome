@@ -22,7 +22,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
 
     private readonly ITemperatureRepository _temperatureRepository;
     private readonly Sensor _sensor;
-    
+
     private const string SENSOR_TITLE = "LivingRoom";
 
     public TemperatureRepositoryMongoTests(MongoFixture mongoFixture)
@@ -53,7 +53,9 @@ public class TemperatureRepositoryMongoTests : IDisposable
         var result = await _temperatureCollection.Find(filter).FirstOrDefaultAsync();
 
         result.Should().NotBeNull();
-        result.Date.Should().BeCloseTo(temperature.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+        result.Date
+            .Should()
+            .BeCloseTo(temperature.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
         result.Should().BeEquivalentTo(temperature, options => options.Excluding(x => x.Date));
     }
 
@@ -97,7 +99,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
             new TemperatureBuilder().WithDate(startDate).Build(),
             new TemperatureBuilder().WithDate(endDate).Build()
         };
-        
+
         foreach (var temperature in mockData)
         {
             await _temperatureRepository.Create(temperature, SENSOR_TITLE);
@@ -108,14 +110,17 @@ public class TemperatureRepositoryMongoTests : IDisposable
 
         // assert
         result.Should().NotBeNull();
-        result.Date.Should().BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
+        result.Date
+            .Should()
+            .BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
     }
 
     [Fact]
     public async Task GetLatestTemperature_Should_Throw_NotFoundException_When_No_Temperature_Exists()
     {
         // act
-        Func<Task> act = async () => await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
+        Func<Task> act = async () =>
+            await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
 
         // assert
         await act.Should().ThrowAsync<NotFoundException>();

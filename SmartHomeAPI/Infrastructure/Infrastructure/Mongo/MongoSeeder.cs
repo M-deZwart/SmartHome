@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 
 namespace Infrastructure.Infrastructure.Mongo;
+
 public class MongoSeeder
 {
     private readonly IMongoDatabase _database;

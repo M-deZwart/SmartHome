@@ -12,7 +12,7 @@ public class TemperatureRepositoryEFTests : CommonTestBase
 
     public TemperatureRepositoryEFTests()
     {
-        _temperatureRepository = new TemperatureRepositoryEF(Context);       
+        _temperatureRepository = new TemperatureRepositoryEF(Context);
     }
 
     [Fact]
@@ -27,7 +27,9 @@ public class TemperatureRepositoryEFTests : CommonTestBase
 
         // assert
         savedTemperature.Should().NotBeNull();
-        savedTemperature?.Date.Should().BeCloseTo(temperature.Date, precision: TimeSpan.FromSeconds(1));
+        savedTemperature?.Date
+            .Should()
+            .BeCloseTo(temperature.Date, precision: TimeSpan.FromSeconds(1));
         savedTemperature?.Celsius.Should().Be(20);
     }
 
@@ -76,7 +78,11 @@ public class TemperatureRepositoryEFTests : CommonTestBase
         }
 
         // act
-        var temperaturesInRange = await _temperatureRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);
+        var temperaturesInRange = await _temperatureRepository.GetByDateRange(
+            startDate,
+            endDate,
+            SENSOR_TITLE
+        );
 
         // assert
         temperaturesInRange.Should().NotBeNull();
@@ -88,10 +94,10 @@ public class TemperatureRepositoryEFTests : CommonTestBase
     public async Task GetLatestTemperature_Should_Throw_NotFoundException_When_No_Temperature_Exists()
     {
         // act
-        Func<Task> act = async () => await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
+        Func<Task> act = async () =>
+            await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
 
         // assert
         await act.Should().ThrowAsync<NotFoundException>();
     }
-
 }

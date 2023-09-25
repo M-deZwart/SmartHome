@@ -58,12 +58,13 @@ public class ExceptionMiddleware
         }
         else
         {
-            await context.Response.WriteAsync(new ErrorDetails()
-            {
-                Message = "Internal Server Error",
-                ClassName = "Exception"
-            }.ToString());
+            await context.Response.WriteAsync(
+                new ErrorDetails()
+                {
+                    Message = "Internal Server Error",
+                    ClassName = "Exception"
+                }.ToString()
+            );
         }
     }
-
 }

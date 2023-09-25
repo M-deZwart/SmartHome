@@ -6,6 +6,10 @@ namespace Domain.Domain.Contracts
     {
         Task Create(Humidity humidity, string sensorTitle);
         Task<Humidity> GetLatestHumidity(string sensorTitle);
-        Task<List<Humidity>> GetByDateRange(DateTime startDate, DateTime endDate, string sensorTitle);
+        Task<List<Humidity>> GetByDateRange(
+            DateTime startDate,
+            DateTime endDate,
+            string sensorTitle
+        );
     }
 }

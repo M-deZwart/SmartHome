@@ -5,7 +5,7 @@ using FluentAssertions;
 
 namespace Domain.Tests.ValidatorTests;
 
-public class HumidityValidatorTests 
+public class HumidityValidatorTests
 {
     private readonly HumidityValidator _validator;
 
@@ -33,9 +33,7 @@ public class HumidityValidatorTests
         // act and assert
         Assert.Throws<DomainException>(() =>
         {
-            var humidity = new HumidityBuilder()
-                .WithPercentage(100.000001)
-                .Build();
+            var humidity = new HumidityBuilder().WithPercentage(100.000001).Build();
         });
     }
 
@@ -45,9 +43,7 @@ public class HumidityValidatorTests
         // act and assert
         Assert.Throws<DomainException>(() =>
         {
-            var humidity = new HumidityBuilder()
-                .WithDate(DateTime.Now.AddDays(1))
-                .Build();
+            var humidity = new HumidityBuilder().WithDate(DateTime.Now.AddDays(1)).Build();
         });
     }
 }

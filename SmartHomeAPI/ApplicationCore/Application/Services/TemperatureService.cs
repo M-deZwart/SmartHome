@@ -4,6 +4,7 @@ using Domain.Domain.Contracts;
 using Domain.Domain.Entities;
 
 namespace Application.Application.Services;
+
 public class TemperatureService : ITemperatureService
 {
     private readonly ITemperatureRepository _temperatureRepository;
@@ -11,7 +12,8 @@ public class TemperatureService : ITemperatureService
 
     public TemperatureService(
         ITemperatureRepository temperatureRepository,
-        ITemperatureMapper temperatureMapper)
+        ITemperatureMapper temperatureMapper
+    )
     {
         _temperatureRepository = temperatureRepository;
         _temperatureMapper = temperatureMapper;
@@ -25,9 +27,17 @@ public class TemperatureService : ITemperatureService
         return temperatureDTO;
     }
 
-    public async Task<List<TemperatureDTO>> GetTemperatureByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
+    public async Task<List<TemperatureDTO>> GetTemperatureByDateRange(
+        DateTime startDate,
+        DateTime endDate,
+        string sensorTitle
+    )
     {
-        var temperatureList = await _temperatureRepository.GetByDateRange(startDate, endDate, sensorTitle);
+        var temperatureList = await _temperatureRepository.GetByDateRange(
+            startDate,
+            endDate,
+            sensorTitle
+        );
         List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
 
         temperatureList.ForEach(temperature =>
@@ -40,13 +50,8 @@ public class TemperatureService : ITemperatureService
 
     public async Task SetTemperature(double celsius, string sensorTitle)
     {
-        Temperature temperature = new Temperature
-        (
-            celsius: celsius,
-            date: DateTime.Now
-        );
+        Temperature temperature = new Temperature(celsius: celsius, date: DateTime.Now);
 
         await _temperatureRepository.Create(temperature, sensorTitle);
     }
-
 }

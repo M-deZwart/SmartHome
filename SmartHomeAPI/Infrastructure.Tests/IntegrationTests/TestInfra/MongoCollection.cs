@@ -1,7 +1,4 @@
-﻿
-namespace Infrastructure.Tests.IntegrationTests.TestInfra;
+﻿namespace Infrastructure.Tests.IntegrationTests.TestInfra;
 
 [CollectionDefinition("MongoCollection")]
-public class MongoCollection : ICollectionFixture<MongoFixture>
-{
-}
+public class MongoCollection : ICollectionFixture<MongoFixture> { }

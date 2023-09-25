@@ -54,7 +54,9 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             var result = await _controller.GetCurrentTemperature(SENSOR_TITLE);
 
             // assert
-            var okObjectResult = result.Should().BeOfType<ActionResult<TemperatureDTO>>().Subject.Result as OkObjectResult;
+            var okObjectResult =
+                result.Should().BeOfType<ActionResult<TemperatureDTO>>().Subject.Result
+                as OkObjectResult;
             var temperatureDto = okObjectResult?.Value as TemperatureDTO;
             temperatureDto?.Celsius.Should().Be(expectedCelsius);
         }
@@ -71,26 +73,38 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
                 new TemperatureBuilder().WithDate(startDate.AddMinutes(90)),
                 new TemperatureBuilder().WithDate(endDate.AddHours(-2)),
             };
-            
+
             foreach (var temperature in mockData)
             {
                 await _temperatureRepository.Create(temperature, SENSOR_TITLE);
             }
 
             // act
-            var result = await _controller.GetTemperatureByDateRange(startDate, endDate, SENSOR_TITLE);
+            var result = await _controller.GetTemperatureByDateRange(
+                startDate,
+                endDate,
+                SENSOR_TITLE
+            );
 
             // assert
             result.Should().BeOfType<ActionResult<List<TemperatureDTO>>>();
-            var okObjectResult = result.Should().BeOfType<ActionResult<List<TemperatureDTO>>>().Subject.Result as OkObjectResult;
+            var okObjectResult =
+                result.Should().BeOfType<ActionResult<List<TemperatureDTO>>>().Subject.Result
+                as OkObjectResult;
             var temperatureDtoList = okObjectResult?.Value as List<TemperatureDTO>;
 
             temperatureDtoList.Should().NotBeNull();
             temperatureDtoList.Should().HaveCount(3);
 
-            temperatureDtoList?[0].Date.Should().BeCloseTo(mockData.ElementAt(0).Date, precision: TimeSpan.FromSeconds(1));
-            temperatureDtoList?[1].Date.Should().BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
-            temperatureDtoList?[2].Date.Should().BeCloseTo(mockData.ElementAt(2).Date, precision: TimeSpan.FromSeconds(1));
+            temperatureDtoList
+                ?[0].Date.Should()
+                .BeCloseTo(mockData.ElementAt(0).Date, precision: TimeSpan.FromSeconds(1));
+            temperatureDtoList
+                ?[1].Date.Should()
+                .BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
+            temperatureDtoList
+                ?[2].Date.Should()
+                .BeCloseTo(mockData.ElementAt(2).Date, precision: TimeSpan.FromSeconds(1));
         }
 
         [Fact]

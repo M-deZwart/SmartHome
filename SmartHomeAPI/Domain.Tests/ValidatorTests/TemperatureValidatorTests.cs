@@ -5,7 +5,7 @@ using FluentAssertions;
 
 namespace Domain.Tests.ValidatorTests;
 
-public class TemperatureValidatorTests 
+public class TemperatureValidatorTests
 {
     private readonly TemperatureValidator _validator;
 
@@ -30,13 +30,10 @@ public class TemperatureValidatorTests
     [Fact]
     public void Invalid_Celsius_Should_Throw_DomainException()
     {
-
         // act and assert
         Assert.Throws<DomainException>(() =>
         {
-            var temperature = new TemperatureBuilder()
-                .WithCelsius(9.99)
-                .Build();
+            var temperature = new TemperatureBuilder().WithCelsius(9.99).Build();
         });
     }
 
@@ -46,10 +43,7 @@ public class TemperatureValidatorTests
         // act and assert
         Assert.Throws<DomainException>(() =>
         {
-            var temperature = new TemperatureBuilder()
-                .WithDate(DateTime.Now.AddDays(2))
-                .Build();
+            var temperature = new TemperatureBuilder().WithDate(DateTime.Now.AddDays(2)).Build();
         });
     }
-
 }

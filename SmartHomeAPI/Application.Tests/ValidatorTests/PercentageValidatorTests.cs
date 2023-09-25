@@ -2,7 +2,8 @@
 using FluentAssertions;
 
 namespace Application.Tests.ValidatorTests;
-public class PercentageValidatorTests 
+
+public class PercentageValidatorTests
 {
     private readonly PercentageValidator _validator;
 
@@ -37,7 +38,10 @@ public class PercentageValidatorTests
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().ContainSingle().Which.ErrorMessage.Should()
+        result.Errors
+            .Should()
+            .ContainSingle()
+            .Which.ErrorMessage.Should()
             .Be("Invalid percentage value. The humidity percentage should be between 0 and 100.");
     }
 }

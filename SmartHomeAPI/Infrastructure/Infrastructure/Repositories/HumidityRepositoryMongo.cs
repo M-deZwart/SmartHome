@@ -24,7 +24,11 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             await _humidityCollection.InsertOneAsync(humidity);
         }
 
-        public async Task<List<Humidity>> GetByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
+        public async Task<List<Humidity>> GetByDateRange(
+            DateTime startDate,
+            DateTime endDate,
+            string sensorTitle
+        )
         {
             var sensor = await FindSensor(sensorTitle);
 
@@ -34,9 +38,7 @@ namespace SmartHomeAPI.Infrastructure.Repositories
                 Builders<Humidity>.Filter.Lte("Date", endDate)
             );
 
-            var humidityList = await _humidityCollection
-                .Find(filter)
-                .ToListAsync();
+            var humidityList = await _humidityCollection.Find(filter).ToListAsync();
 
             return humidityList;
         }
@@ -46,7 +48,8 @@ namespace SmartHomeAPI.Infrastructure.Repositories
             var sensor = await FindSensor(sensorTitle);
             var filter = Builders<Humidity>.Filter.Where(h => h.SensorId == sensor.Id);
 
-            var latestHumidity = await _humidityCollection.Find(filter)
+            var latestHumidity = await _humidityCollection
+                .Find(filter)
                 .SortByDescending(humidity => humidity.Date)
                 .FirstOrDefaultAsync();
 
@@ -74,6 +77,5 @@ namespace SmartHomeAPI.Infrastructure.Repositories
                 throw new NotFoundException("Sensor is not found");
             }
         }
-
     }
 }

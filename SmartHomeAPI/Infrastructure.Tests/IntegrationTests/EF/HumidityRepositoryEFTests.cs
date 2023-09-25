@@ -77,7 +77,11 @@ public class HumidityRepositoryEFTests : CommonTestBase
         }
 
         // act
-        var humiditiesInRange = await _humidityRepository.GetByDateRange(startDate, endDate, SENSOR_TITLE);
+        var humiditiesInRange = await _humidityRepository.GetByDateRange(
+            startDate,
+            endDate,
+            SENSOR_TITLE
+        );
 
         // assert
         humiditiesInRange.Should().NotBeNull();
@@ -94,5 +98,4 @@ public class HumidityRepositoryEFTests : CommonTestBase
         // assert
         await act.Should().ThrowAsync<NotFoundException>();
     }
-
 }

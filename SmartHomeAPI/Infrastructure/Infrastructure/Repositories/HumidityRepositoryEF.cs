@@ -18,19 +18,23 @@ namespace Infrastructure.Infrastructure.Repositories
         public async Task Create(Humidity humidity, string sensorTitle)
         {
             var sensor = await FindSensor(sensorTitle);
-            humidity.SensorId = sensor.Id; 
+            humidity.SensorId = sensor.Id;
 
             _smartHomeContext.Humidities.Add(humidity);
             await _smartHomeContext.SaveChangesAsync();
         }
 
-        public async Task<List<Humidity>> GetByDateRange(DateTime startDate, DateTime endDate, string sensorTitle)
+        public async Task<List<Humidity>> GetByDateRange(
+            DateTime startDate,
+            DateTime endDate,
+            string sensorTitle
+        )
         {
             var sensor = await FindSensor(sensorTitle);
 
             var humidityList = await _smartHomeContext.Humidities
-            .Where(h => h.Date >= startDate && h.Date <= endDate && h.SensorId == sensor.Id)
-            .ToListAsync();
+                .Where(h => h.Date >= startDate && h.Date <= endDate && h.SensorId == sensor.Id)
+                .ToListAsync();
 
             return humidityList;
         }
@@ -56,7 +60,9 @@ namespace Infrastructure.Infrastructure.Repositories
 
         private async Task<Sensor> FindSensor(string sensorTitle)
         {
-            var sensor = await _smartHomeContext.Sensors.FirstOrDefaultAsync(s => s.Title == sensorTitle);
+            var sensor = await _smartHomeContext.Sensors.FirstOrDefaultAsync(
+                s => s.Title == sensorTitle
+            );
 
             if (sensor is not null)
             {
@@ -67,6 +73,5 @@ namespace Infrastructure.Infrastructure.Repositories
                 throw new NotFoundException("Sensor is not found");
             }
         }
-
     }
 }

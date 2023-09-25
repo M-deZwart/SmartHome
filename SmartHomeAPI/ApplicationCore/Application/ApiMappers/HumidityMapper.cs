@@ -8,11 +8,7 @@ namespace Application.Application.ApiMappers
     {
         public HumidityDTO MapToDTO(Humidity humidity)
         {
-            return new HumidityDTO
-            {
-                Percentage = humidity.Percentage,
-                Date = humidity.Date,
-            };
+            return new HumidityDTO { Percentage = humidity.Percentage, Date = humidity.Date, };
         }
     }
 }

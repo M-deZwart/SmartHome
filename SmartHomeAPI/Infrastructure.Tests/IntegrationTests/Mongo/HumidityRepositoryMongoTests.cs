@@ -18,7 +18,7 @@ public class HumidityRepositoryMongoTests : IDisposable
 
     private readonly IMongoCollection<Humidity> _humidityCollection;
     private readonly IMongoCollection<Sensor> _sensorCollection;
-    
+
     private readonly IHumidityRepository _humidityRepository;
     private readonly Sensor _sensor;
 
@@ -52,7 +52,9 @@ public class HumidityRepositoryMongoTests : IDisposable
         var result = await _humidityCollection.Find(filter).FirstOrDefaultAsync();
 
         result.Should().NotBeNull();
-        result.Date.Should().BeCloseTo(humidity.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+        result.Date
+            .Should()
+            .BeCloseTo(humidity.Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
         result.Should().BeEquivalentTo(humidity, options => options.Excluding(x => x.Date));
     }
 
@@ -69,7 +71,7 @@ public class HumidityRepositoryMongoTests : IDisposable
             new HumidityBuilder().WithDate(startDate.AddMinutes(60).ToUniversalTime()).Build(),
             new HumidityBuilder().WithDate(endDate.AddHours(-30).ToUniversalTime()).Build(),
         };
-        
+
         foreach (var humidity in mockData)
         {
             await _humidityRepository.Create(humidity, SENSOR_TITLE);
@@ -91,11 +93,12 @@ public class HumidityRepositoryMongoTests : IDisposable
         var date1 = DateTime.UtcNow.AddMinutes(-30);
         var date2 = DateTime.UtcNow;
 
-        var mockData = new List<Humidity> {
+        var mockData = new List<Humidity>
+        {
             new HumidityBuilder().WithDate(date1).Build(),
             new HumidityBuilder().WithDate(date2).Build()
         };
-        
+
         foreach (var humidity in mockData)
         {
             await _humidityRepository.Create(humidity, SENSOR_TITLE);
@@ -106,7 +109,9 @@ public class HumidityRepositoryMongoTests : IDisposable
 
         // assert
         result.Should().NotBeNull();
-        result.Date.Should().BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
+        result.Date
+            .Should()
+            .BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
     }
 
     [Fact]

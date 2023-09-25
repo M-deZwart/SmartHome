@@ -56,7 +56,9 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
             var result = await _controller.GetCurrentHumidity(SENSOR_TITLE);
 
             // assert
-            var okObjectResult = result.Should().BeOfType<ActionResult<HumidityDTO>>().Subject.Result as OkObjectResult;
+            var okObjectResult =
+                result.Should().BeOfType<ActionResult<HumidityDTO>>().Subject.Result
+                as OkObjectResult;
             var humidityDto = okObjectResult?.Value as HumidityDTO;
             humidityDto?.Percentage.Should().Be(expectedPercentage);
         }
@@ -73,8 +75,8 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
                 new HumidityBuilder().WithDate(startDate.AddMinutes(90)),
                 new HumidityBuilder().WithDate(endDate.AddHours(-2)),
             };
-            
-            foreach(var humidity in mockData)
+
+            foreach (var humidity in mockData)
             {
                 await _humidityRepository.Create(humidity, SENSOR_TITLE);
             }
@@ -84,15 +86,23 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
 
             // assert
             result.Should().BeOfType<ActionResult<List<HumidityDTO>>>();
-            var okObjectResult = result.Should().BeOfType<ActionResult<List<HumidityDTO>>>().Subject.Result as OkObjectResult;
+            var okObjectResult =
+                result.Should().BeOfType<ActionResult<List<HumidityDTO>>>().Subject.Result
+                as OkObjectResult;
             var humidityDtoList = okObjectResult?.Value as List<HumidityDTO>;
 
             humidityDtoList.Should().NotBeNull();
             humidityDtoList.Should().HaveCount(3);
 
-            humidityDtoList?[0].Date.Should().BeCloseTo(mockData.ElementAt(0).Date, precision: TimeSpan.FromSeconds(1));
-            humidityDtoList?[1].Date.Should().BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
-            humidityDtoList?[2].Date.Should().BeCloseTo(mockData.ElementAt(2).Date, precision: TimeSpan.FromSeconds(1));
+            humidityDtoList
+                ?[0].Date.Should()
+                .BeCloseTo(mockData.ElementAt(0).Date, precision: TimeSpan.FromSeconds(1));
+            humidityDtoList
+                ?[1].Date.Should()
+                .BeCloseTo(mockData.ElementAt(1).Date, precision: TimeSpan.FromSeconds(1));
+            humidityDtoList
+                ?[2].Date.Should()
+                .BeCloseTo(mockData.ElementAt(2).Date, precision: TimeSpan.FromSeconds(1));
         }
 
         [Fact]

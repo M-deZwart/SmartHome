@@ -4,6 +4,7 @@ using Domain.Tests.Builders;
 using FluentAssertions;
 
 namespace Application.Tests.MapperTests;
+
 public class HumidityMapperTests
 {
     [Fact]
@@ -11,10 +12,7 @@ public class HumidityMapperTests
     {
         // Arrange
         var mapper = new HumidityMapper();
-        var humidity = new HumidityBuilder()
-            .WithPercentage(75.5)
-            .WithDate(DateTime.Now)
-            .Build();
+        var humidity = new HumidityBuilder().WithPercentage(75.5).WithDate(DateTime.Now).Build();
 
         // Act
         var result = mapper.MapToDTO(humidity);

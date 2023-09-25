@@ -24,10 +24,13 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         private readonly IMongoCollection<Sensor> _sensorCollection;
         private readonly MongoClient _mongoClient;
         private readonly string _databaseName;
+
         // mapper
         private readonly ITemperatureMapper _mapper;
+
         // controller
         private readonly TemperatureController _controller;
+
         // sensor
         private readonly Sensor _sensor;
         private const string SENSOR_TITLE = "LivingRoom";
@@ -63,7 +66,9 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             // assert
             result.Should().BeOfType<OkResult>();
 
-            var persistedTemperature = await _temperatureCollection.Find(x => true).FirstOrDefaultAsync();
+            var persistedTemperature = await _temperatureCollection
+                .Find(x => true)
+                .FirstOrDefaultAsync();
             persistedTemperature.Should().NotBeNull();
             persistedTemperature.Celsius.Should().Be(validCelsius);
         }
@@ -80,7 +85,9 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             var result = await _controller.GetCurrentTemperature(SENSOR_TITLE);
 
             // Assert
-            var okObjectResult = result.Should().BeOfType<ActionResult<TemperatureDTO>>().Subject.Result as OkObjectResult;
+            var okObjectResult =
+                result.Should().BeOfType<ActionResult<TemperatureDTO>>().Subject.Result
+                as OkObjectResult;
             var temperatureDto = okObjectResult?.Value as TemperatureDTO;
             temperatureDto?.Celsius.Should().Be(expectedTemperature);
         }
@@ -98,25 +105,46 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
                 new TemperatureBuilder().WithDate(startDate.AddMinutes(90)),
                 new TemperatureBuilder().WithDate(endDate.AddHours(-2))
             };
-            
+
             foreach (var temperature in mockData)
             {
                 await _temperatureRepository.Create(temperature, SENSOR_TITLE);
             }
 
             // act
-            var result = await _controller.GetTemperatureByDateRange(startDate, endDate, SENSOR_TITLE);
+            var result = await _controller.GetTemperatureByDateRange(
+                startDate,
+                endDate,
+                SENSOR_TITLE
+            );
 
             // assert
-            var okObjectResult = result.Should().BeOfType<ActionResult<List<TemperatureDTO>>>().Subject.Result as OkObjectResult;
+            var okObjectResult =
+                result.Should().BeOfType<ActionResult<List<TemperatureDTO>>>().Subject.Result
+                as OkObjectResult;
             var temperatureDtoList = okObjectResult?.Value as List<TemperatureDTO>;
 
             temperatureDtoList.Should().NotBeNull();
-            temperatureDtoList.Should().HaveCount(3); 
+            temperatureDtoList.Should().HaveCount(3);
 
-            temperatureDtoList?[0].Date.Should().BeCloseTo(mockData.ElementAt(0).Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
-            temperatureDtoList?[1].Date.Should().BeCloseTo(mockData.ElementAt(1).Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
-            temperatureDtoList?[2].Date.Should().BeCloseTo(mockData.ElementAt(2).Date.ToUniversalTime(), precision: TimeSpan.FromSeconds(1));
+            temperatureDtoList
+                ?[0].Date.Should()
+                .BeCloseTo(
+                    mockData.ElementAt(0).Date.ToUniversalTime(),
+                    precision: TimeSpan.FromSeconds(1)
+                );
+            temperatureDtoList
+                ?[1].Date.Should()
+                .BeCloseTo(
+                    mockData.ElementAt(1).Date.ToUniversalTime(),
+                    precision: TimeSpan.FromSeconds(1)
+                );
+            temperatureDtoList
+                ?[2].Date.Should()
+                .BeCloseTo(
+                    mockData.ElementAt(2).Date.ToUniversalTime(),
+                    precision: TimeSpan.FromSeconds(1)
+                );
         }
 
         [Fact]
