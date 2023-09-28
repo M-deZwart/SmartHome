@@ -1,7 +1,5 @@
 ﻿using Domain.Domain.Exceptions;
 using Domain.Domain.Validators;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Domain.Entities
