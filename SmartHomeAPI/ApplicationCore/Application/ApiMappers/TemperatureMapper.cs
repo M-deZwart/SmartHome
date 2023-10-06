@@ -8,7 +8,7 @@ namespace Application.Application.ApiMappers
     {
         public TemperatureDTO MapToDTO(Temperature temperature)
         {
-            return new TemperatureDTO { Celsius = temperature.Celsius, Date = temperature.Date };
+            return new TemperatureDTO(Celsius: temperature.Celsius, Date: temperature.Date);
         }
     }
 }

@@ -1,48 +1,65 @@
 const url = "http://NBNL865.rademaker.nl:5233/api/";
 const currentUrl = window.location.href;
 
-document.addEventListener('DOMContentLoaded', function() {
-    async function getCurrentHumidity() {
+//home
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById("livingRoom").addEventListener("click", function () {
+        navigateToCurrentOrRangePage("LivingRoom");
+    });
+
+    document.getElementById("bedroom").addEventListener("click", function () {
+        navigateToCurrentOrRangePage("Bedroom");
+    });
+
+    document.getElementById("workspace").addEventListener("click", function () {
+        navigateToCurrentOrRangePage("WorkSpace");
+    });
+
+    async function navigateToCurrentOrRangePage(sensor) {
+        const currentOrRangePageName = "currentOrRange.html";
+        // add selected sensor as queryparameter to URL
+        const currentOrRangePageURL = `${currentOrRangePageName}?sensor=${sensor}`;
+        // navigate to new page
+        window.location.href = currentOrRangePageURL;
+    }
+
+    // currentOrRange
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedSensor = urlParams.get("sensor");
+
+    async function getDataForSensor(sensor) {
         const humidityId = "currentHumidity";
+        const temperatureId = "currentTemperature";
+
         try {
-            const response = await fetch(`${url}humidity/getCurrentHumidity`);
-            if (response.ok) {
-                const humidityDTO = await response.json();
+            // get current humidity for selected sensor
+            const humidityResponse = await fetch(`${url}humidity/getCurrentHumidity/${sensor}`);
+            if (humidityResponse.ok) {
+                const humidityDTO = await humidityResponse.json();
                 document.getElementById(humidityId).innerText = `${humidityDTO.percentage}%`;
             } else {
                 document.getElementById(humidityId).innerText = "Percentage could not be retrieved";
             }
-        } catch (error) {
-            console.error(error);
-            document.getElementById(humidityId).innerText = "Error while retrieving the percentage"
-        }
-    }
-    
-    async function getCurrentTemperature() {
-        const temperatureId = "currentTemperature";
-        try {
-            const response = await fetch(`${url}temperature/getCurrentTemperature`);
-            if (response.ok) {
-                const temperatureDTO = await response.json();
+            // get current temperature for selected sensor
+            const temperatureResponse = await fetch(`${url}temperature/getCurrentTemperature/${sensor}`)
+            if (temperatureResponse.ok) {
+                const temperatureDTO = await temperatureResponse.json();
                 document.getElementById(temperatureId).innerText = `${temperatureDTO.celsius} °C`;
             } else {
                 document.getElementById(temperatureId).innerText = "Celsius could not be retrieved";
             }
         } catch (error) {
             console.error(error);
-            document.getElementById(temperatureId).innerText = "Error while retrieving the degree in celsius"
+            document.getElementById(humidityId).innerText = "Error while retrieving humidity";
+            document.getElementById(temperatureId).innerText = "Error while retrieving temperature";
         }
     }
 
-    if (currentUrl.includes("currentHumidity")) {
-        getCurrentHumidity();
-    } else if (currentUrl.includes("currentTemperature")) {
-        getCurrentTemperature();
-    }
-});
+    document.getElementById("currentData").addEventListener("click", function () {
+        getDataForSensor(selectedSensor);
+    });
 
-document.addEventListener('DOMContentLoaded', function () {
-    async function getDataAndDisplay(endpointName, valueName) {
+    async function getDataAndDisplay(endpointName, valueName, sensor) {
         const getDataButton = document.getElementById(`getData${endpointName}`);
         const startDateInput = document.getElementById(`startDate${endpointName}`);
         const endDateInput = document.getElementById(`endDate${endpointName}`);
@@ -50,30 +67,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
         getDataButton.addEventListener('click', async function () {
             const startDate = new Date(startDateInput.value).toISOString();
-            const endDate = new Date(endDateInput.value).toISOString(); 
+            const endDate = new Date(endDateInput.value).toISOString();
 
             try {
                 const response = await fetch(
-                    `${url}${endpointName.toLowerCase()}/${endpointName.toLowerCase()}ByDateRange?startDate=${startDate}&endDate=${endDate}`);
-                const data = await response.json();
+                    `${url}${endpointName.toLowerCase()}/${endpointName.toLowerCase()}ByDateRange/${sensor}?startDate=${startDate}&endDate=${endDate}`);
 
-                dataDiv.innerHTML = '';
-                data.forEach(item => {
-                    const itemElement = document.createElement('p');
-                    const formattedDate = new Date(item.date).toLocaleString();
-                    const formattedValue = item[valueName.toLowerCase()].toFixed(1);
-                    itemElement.textContent = `Date: ${formattedDate}, ${valueName}: ${formattedValue}%`;
-                    dataDiv.appendChild(itemElement);
-                });
+                if (response.ok) {
+                    const data = await response.json();
+
+                    dataDiv.innerHTML = '';
+                    data.forEach(item => {
+                        const itemElement = document.createElement('p');
+                        const formattedDate = new Date(item.date).toLocaleString();
+                        const formattedValue = item[valueName.toLowerCase()].toFixed(1);
+                        itemElement.textContent = `Date: ${formattedDate}, ${valueName}: ${formattedValue}%`;
+                        dataDiv.appendChild(itemElement);
+                    });
+                } else {
+                    console.error(`Error during ${endpointName.toLowerCase()} list retrieval: `, response.statusText)
+                }
             } catch (error) {
                 console.error(`Error during ${endpointName.toLowerCase()} list retrieval: `, error);
             }
         });
     }
-    if(currentUrl.includes("humidityDateRange")) {
-        getDataAndDisplay("Humidity", "Percentage");
-    } else if (currentUrl.includes("temperatureDateRange")) {
-        getDataAndDisplay("Temperature", "Celsius");
-    }
+
+    document.getElementById("dateRange").addEventListener("click", function () {
+        getDataAndDisplay("Humidity", "Percentage", selectedSensor);
+        getDataAndDisplay("Temperature", "Celsius", selectedSensor);
+    })
 });
+
+
+
 
