@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Smarthome.Presentation.Middleware;
+﻿namespace Smarthome.Presentation.Middleware;
 
 public static class ExceptionMiddlewareExtensions
 {

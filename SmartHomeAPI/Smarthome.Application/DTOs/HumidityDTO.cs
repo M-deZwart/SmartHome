@@ -1,4 +1,13 @@
-﻿namespace Smarthome.Application.DTOs
+﻿using Smarthome.Domain.Entities;
+
+namespace Smarthome.Application.DTOs
 {
-    public record HumidityDTO(double Percentage, DateTime Date);
+    public class HumidityDTO
+    {
+        public double Percentage { get; set; }
+        public DateTime Date { get; set; }
+
+        public static HumidityDTO FromDomain(Humidity humidity) =>
+            new HumidityDTO { Percentage = humidity.Percentage, Date = humidity.Date };
+    }
 }

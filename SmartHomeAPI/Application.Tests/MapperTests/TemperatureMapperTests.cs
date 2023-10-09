@@ -1,5 +1,4 @@
-﻿using Smarthome.Application.ApiMappers;
-using Smarthome.Application.DTOs;
+﻿using Smarthome.Application.DTOs;
 using Domain.Tests.Builders;
 using FluentAssertions;
 
@@ -11,11 +10,10 @@ public class TemperatureMapperTests
     public void MapToDTO_Should_Map_To_TemperatureDTO()
     {
         // Arrange
-        var mapper = new TemperatureMapper();
         var temperature = new TemperatureBuilder().WithCelsius(23.5).WithDate(DateTime.Now).Build();
 
         // Act
-        var result = mapper.MapToDTO(temperature);
+        var result = TemperatureDTO.FromDomain(temperature);
 
         // Assert
         result.Should().NotBeNull();

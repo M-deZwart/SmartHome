@@ -1,5 +1,4 @@
-﻿using Smarthome.Application.ApiMappers;
-using Smarthome.Application.DTOs;
+﻿using Smarthome.Application.DTOs;
 using Domain.Tests.Builders;
 using FluentAssertions;
 
@@ -11,11 +10,10 @@ public class HumidityMapperTests
     public void MapToDTO_Should_Map_To_HumidityDTO()
     {
         // Arrange
-        var mapper = new HumidityMapper();
         var humidity = new HumidityBuilder().WithPercentage(75.5).WithDate(DateTime.Now).Build();
 
         // Act
-        var result = mapper.MapToDTO(humidity);
+        var result = HumidityDTO.FromDomain(humidity);
 
         // Assert
         result.Should().NotBeNull();

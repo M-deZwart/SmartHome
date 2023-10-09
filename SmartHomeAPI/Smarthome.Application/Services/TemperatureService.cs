@@ -1,5 +1,4 @@
 ﻿using Smarthome.Application.DTOs;
-using Smarthome.Application.Contracts;
 using Smarthome.Domain.Contracts;
 using Smarthome.Domain.Entities;
 
@@ -8,21 +7,16 @@ namespace Application.Services;
 public class TemperatureService : ITemperatureService
 {
     private readonly ITemperatureRepository _temperatureRepository;
-    private readonly ITemperatureMapper _temperatureMapper;
 
-    public TemperatureService(
-        ITemperatureRepository temperatureRepository,
-        ITemperatureMapper temperatureMapper
-    )
+    public TemperatureService(ITemperatureRepository temperatureRepository)
     {
         _temperatureRepository = temperatureRepository;
-        _temperatureMapper = temperatureMapper;
     }
 
     public async Task<TemperatureDTO> GetCurrentTemperature(string sensorTitle)
     {
         var temperature = await _temperatureRepository.GetLatestTemperature(sensorTitle);
-        var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
+        var temperatureDTO = TemperatureDTO.FromDomain(temperature);
 
         return temperatureDTO;
     }
@@ -42,7 +36,7 @@ public class TemperatureService : ITemperatureService
 
         temperatureList.ForEach(temperature =>
         {
-            var temperatureDTO = _temperatureMapper.MapToDTO(temperature);
+            var temperatureDTO = TemperatureDTO.FromDomain(temperature);
             temperatureListDTO.Add(temperatureDTO);
         });
         return temperatureListDTO;

@@ -1,6 +1,4 @@
-﻿using Smarthome.Application.Contracts;
-using Smarthome.Presentation.Controllers;
-using Smarthome.Application.ApiMappers;
+﻿using Smarthome.Presentation.Controllers;
 using Application.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +12,12 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
     public class TemperatureControllerTests : CommonTestBase
     {
         private readonly TemperatureRepositoryEF _temperatureRepository;
-        private readonly ITemperatureMapper _mapper;
         private readonly TemperatureController _controller;
 
         public TemperatureControllerTests()
         {
             _temperatureRepository = new TemperatureRepositoryEF(Context);
-            _mapper = new TemperatureMapper();
-            var temperatureService = new TemperatureService(_temperatureRepository, _mapper);
+            var temperatureService = new TemperatureService(_temperatureRepository);
             _controller = new TemperatureController(temperatureService);
         }
 

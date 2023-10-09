@@ -1,5 +1,4 @@
 ﻿using Smarthome.Application.DTOs;
-using Smarthome.Application.Contracts;
 using Smarthome.Domain.Contracts;
 using Smarthome.Domain.Entities;
 
@@ -8,18 +7,16 @@ namespace Application.Services;
 public class HumidityService : IHumidityService
 {
     private readonly IHumidityRepository _humidityRepository;
-    private readonly IHumidityMapper _humidityMapper;
 
-    public HumidityService(IHumidityRepository humidityRepository, IHumidityMapper humidityMapper)
+    public HumidityService(IHumidityRepository humidityRepository)
     {
         _humidityRepository = humidityRepository;
-        _humidityMapper = humidityMapper;
     }
 
     public async Task<HumidityDTO> GetCurrentHumidity(string sensorTitle)
     {
         var humidity = await _humidityRepository.GetLatestHumidity(sensorTitle);
-        var humidityDTO = _humidityMapper.MapToDTO(humidity);
+        var humidityDTO = HumidityDTO.FromDomain(humidity);
 
         return humidityDTO;
     }
@@ -39,7 +36,7 @@ public class HumidityService : IHumidityService
 
         humidityList.ForEach(humidity =>
         {
-            var humidityDTO = _humidityMapper.MapToDTO(humidity);
+            var humidityDTO = HumidityDTO.FromDomain(humidity);
             humidityListDTO.Add(humidityDTO);
         });
 

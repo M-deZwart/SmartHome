@@ -1,6 +1,4 @@
-﻿using Smarthome.Application.ApiMappers;
-using Smarthome.Application.Contracts;
-using Smarthome.Application.DTOs;
+﻿using Smarthome.Application.DTOs;
 using Application.Services;
 using Smarthome.Domain.Contracts;
 using Smarthome.Domain.Entities;
@@ -25,9 +23,6 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         private readonly MongoClient _mongoClient;
         private readonly string _databaseName;
 
-        // mapper
-        private readonly ITemperatureMapper _mapper;
-
         // controller
         private readonly TemperatureController _controller;
 
@@ -48,9 +43,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
             _sensor = new Sensor(SENSOR_TITLE);
             _sensorCollection.InsertOne(_sensor);
 
-            _mapper = new TemperatureMapper();
-
-            var temperatureService = new TemperatureService(_temperatureRepository, _mapper);
+            var temperatureService = new TemperatureService(_temperatureRepository);
             _controller = new TemperatureController(temperatureService);
         }
 

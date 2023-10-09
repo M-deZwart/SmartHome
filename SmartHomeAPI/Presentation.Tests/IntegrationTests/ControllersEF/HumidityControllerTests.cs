@@ -1,6 +1,4 @@
-﻿using Smarthome.Application.Contracts;
-using Smarthome.Presentation.Controllers;
-using Smarthome.Application.ApiMappers;
+﻿using Smarthome.Presentation.Controllers;
 using Application.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +12,12 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
     public class HumidityControllerTests : CommonTestBase
     {
         private readonly HumidityRepositoryEF _humidityRepository;
-        private readonly IHumidityMapper _mapper;
         private readonly HumidityController _controller;
 
         public HumidityControllerTests()
         {
             _humidityRepository = new HumidityRepositoryEF(Context);
-            _mapper = new HumidityMapper();
-            var humidityService = new HumidityService(_humidityRepository, _mapper);
+            var humidityService = new HumidityService(_humidityRepository);
             _controller = new HumidityController(humidityService);
         }
 
