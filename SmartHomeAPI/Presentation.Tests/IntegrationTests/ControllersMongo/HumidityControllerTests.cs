@@ -51,7 +51,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         public async Task SetHumidity_WithValidPercentage_Should_ReturnOkAndPersistData()
         {
             // arrange
-            double validPercentage = 50;
+            var validPercentage = 50;
 
             // act
             var result = await _controller.SetHumidity(validPercentage, SENSOR_TITLE);

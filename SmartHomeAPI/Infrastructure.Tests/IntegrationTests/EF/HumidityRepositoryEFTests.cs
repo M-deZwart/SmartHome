@@ -93,7 +93,7 @@ public class HumidityRepositoryEFTests : CommonTestBase
     public async Task GetLatestHumidity_Should_Throw_NotFoundException_When_No_Humidity_Exists()
     {
         // act
-        Func<Task> act = async () => await _humidityRepository.GetLatestHumidity(SENSOR_TITLE);
+        var act = async () => await _humidityRepository.GetLatestHumidity(SENSOR_TITLE);
 
         // assert
         await act.Should().ThrowAsync<NotFoundException>();

@@ -25,7 +25,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
         public async Task SetHumidity_WithValidPercentage_Should_ReturnOkAndPersistData()
         {
             // arrange
-            double validPercentage = 50;
+            var validPercentage = 50;
 
             // act
             var result = await _controller.SetHumidity(validPercentage, SENSOR_TITLE);
@@ -103,7 +103,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersEF
         public async Task SetHumidity_WithInvalidPercentage_Should_ReturnBadRequestWithValidationErrors()
         {
             // arrange
-            double invalidPercentage = -10;
+            var invalidPercentage = -10;
 
             // act
             var result = await _controller.SetHumidity(invalidPercentage, SENSOR_TITLE);

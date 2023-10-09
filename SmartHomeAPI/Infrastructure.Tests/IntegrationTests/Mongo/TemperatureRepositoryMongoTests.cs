@@ -118,8 +118,7 @@ public class TemperatureRepositoryMongoTests : IDisposable
     public async Task GetLatestTemperature_Should_Throw_NotFoundException_When_No_Temperature_Exists()
     {
         // act
-        Func<Task> act = async () =>
-            await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
+        var act = async () => await _temperatureRepository.GetLatestTemperature(SENSOR_TITLE);
 
         // assert
         await act.Should().ThrowAsync<NotFoundException>();

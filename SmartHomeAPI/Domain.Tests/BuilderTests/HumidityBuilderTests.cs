@@ -1,5 +1,4 @@
-﻿using Smarthome.Domain.Entities;
-using Domain.Tests.Builders;
+﻿using Domain.Tests.Builders;
 using FluentAssertions;
 
 namespace Domain.Tests.BuilderTests;
@@ -10,9 +9,10 @@ public class HumidityBuilderTests
     public void HumidityBuilder_Should_Return_Humidity()
     {
         // arrange
-        Humidity humidity = new HumidityBuilder()
+        var humidity = new HumidityBuilder()
             .WithPercentage(80.5)
-            .WithDate(DateTime.Now.AddDays(-1));
+            .WithDate(DateTime.Now.AddDays(-1))
+            .Build();
 
         // assert
         humidity.Percentage.Should().Be(80.5);

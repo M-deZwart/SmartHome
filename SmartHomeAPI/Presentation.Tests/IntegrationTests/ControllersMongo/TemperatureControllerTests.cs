@@ -51,7 +51,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         public async Task SetTemperature_WithValidCelsius_Should_ReturnOkAndPersistData()
         {
             // arrange
-            double validCelsius = 20;
+            var validCelsius = 20;
 
             // act
             var result = await _controller.SetTemperature(validCelsius, SENSOR_TITLE);
@@ -144,7 +144,7 @@ namespace Presentation.Tests.IntegrationTests.ControllersMongo
         public async Task SetTemperature_WithInvalidCelsius_Should_ReturnBadRequestWithValidationErrors()
         {
             // arrange
-            double invalidCelsius = -10;
+            var invalidCelsius = -10;
 
             // act
             var result = await _controller.SetTemperature(invalidCelsius, SENSOR_TITLE);

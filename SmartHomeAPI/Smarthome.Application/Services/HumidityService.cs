@@ -32,7 +32,7 @@ public class HumidityService : IHumidityService
             endDate,
             sensorTitle
         );
-        List<HumidityDTO> humidityListDTO = new List<HumidityDTO>();
+        var humidityListDTO = new List<HumidityDTO>();
 
         humidityList.ForEach(humidity =>
         {
@@ -45,7 +45,7 @@ public class HumidityService : IHumidityService
 
     public async Task SetHumidity(double percentage, string sensorTitle)
     {
-        Humidity humidity = new Humidity(percentage: percentage, date: DateTime.Now);
+        var humidity = new Humidity(percentage: percentage, date: DateTime.Now);
 
         await _humidityRepository.Create(humidity, sensorTitle);
     }

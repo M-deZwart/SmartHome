@@ -32,7 +32,7 @@ public class TemperatureService : ITemperatureService
             endDate,
             sensorTitle
         );
-        List<TemperatureDTO> temperatureListDTO = new List<TemperatureDTO>();
+        var temperatureListDTO = new List<TemperatureDTO>();
 
         temperatureList.ForEach(temperature =>
         {
@@ -44,7 +44,7 @@ public class TemperatureService : ITemperatureService
 
     public async Task SetTemperature(double celsius, string sensorTitle)
     {
-        Temperature temperature = new Temperature(celsius: celsius, date: DateTime.Now);
+        var temperature = new Temperature(celsius: celsius, date: DateTime.Now);
 
         await _temperatureRepository.Create(temperature, sensorTitle);
     }
