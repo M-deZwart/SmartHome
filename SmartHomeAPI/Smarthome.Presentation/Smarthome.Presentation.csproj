@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Smarthome.Application\Application.csproj" />
-    <ProjectReference Include="..\Smarthome.Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Smarthome.Application\Smarthome.Application.csproj" />
+    <ProjectReference Include="..\Smarthome.Infrastructure\Smarthome.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

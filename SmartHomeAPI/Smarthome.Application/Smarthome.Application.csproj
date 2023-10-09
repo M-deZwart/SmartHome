@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Smarthome.Domain\Domain.csproj" />
+    <ProjectReference Include="..\Smarthome.Domain\Smarthome.Domain.csproj" />
   </ItemGroup>
 
 </Project>

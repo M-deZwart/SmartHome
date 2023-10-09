@@ -25,8 +25,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain.Tests\Domain.Tests.csproj" />
-    <ProjectReference Include="..\Smarthome.Application\Application.csproj" />
-    <ProjectReference Include="..\Smarthome.Domain\Domain.csproj" />
+    <ProjectReference Include="..\Smarthome.Application\Smarthome.Application.csproj" />
+    <ProjectReference Include="..\Smarthome.Domain\Smarthome.Domain.csproj" />
   </ItemGroup>
 
 </Project>
