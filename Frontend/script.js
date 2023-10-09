@@ -1,20 +1,24 @@
 const url = "http://NBNL865.rademaker.nl:5233/api/";
 const currentUrl = window.location.href;
 
-//home
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById("livingRoom").addEventListener("click", function () {
+    // home
+    let button1 = document.getElementById("livingRoom").addEventListener("click", function () {
         navigateToCurrentOrRangePage("LivingRoom");
     });
 
-    document.getElementById("bedroom").addEventListener("click", function () {
+    let button2 = document.getElementById("bedroom").addEventListener("click", function () {
         navigateToCurrentOrRangePage("Bedroom");
     });
 
-    document.getElementById("workspace").addEventListener("click", function () {
+    let button3 = document.getElementById("workspace").addEventListener("click", function () {
         navigateToCurrentOrRangePage("WorkSpace");
     });
 
+    console.log(button1);
+    console.log(button2);
+    console.log(button3);
+    
     async function navigateToCurrentOrRangePage(sensor) {
         const currentOrRangePageName = "currentOrRange.html";
         // add selected sensor as queryparameter to URL
@@ -55,8 +59,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    document.getElementById("currentData").addEventListener("click", function () {
-        getDataForSensor(selectedSensor);
+    document.getElementById("currentData").addEventListener("click", async function () {
+        console.log("Click event handler invoked.");
+        await getDataForSensor(selectedSensor);
+        console.log("getDataForSensor completed.");
+        window.location.href = "currentOrRange.html";
+        console.log("Navigating to currentOrRange.html.");
     });
 
     async function getDataAndDisplay(endpointName, valueName, sensor) {
@@ -97,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
         getDataAndDisplay("Humidity", "Percentage", selectedSensor);
         getDataAndDisplay("Temperature", "Celsius", selectedSensor);
     })
+    
 });
 
 
