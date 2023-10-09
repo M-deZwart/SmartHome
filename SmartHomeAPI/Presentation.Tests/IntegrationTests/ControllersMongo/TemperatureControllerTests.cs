@@ -1,16 +1,16 @@
-﻿using Application.Application.ApiMappers;
-using Application.Application.Contracts;
-using Application.Application.DTOs;
-using Application.Application.Services;
-using Domain.Domain.Contracts;
-using Domain.Domain.Entities;
+﻿using Smarthome.Application.ApiMappers;
+using Smarthome.Application.Contracts;
+using Smarthome.Application.DTOs;
+using Application.Services;
+using Smarthome.Domain.Contracts;
+using Smarthome.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Presentation.Tests.IntegrationTests.TestInfra;
-using SmartHomeAPI.Controllers;
-using SmartHomeAPI.Infrastructure.Repositories;
+using Smarthome.Presentation.Controllers;
+using Smarthome.Infrastructure.Repositories;
 
 namespace Presentation.Tests.IntegrationTests.ControllersMongo
 {

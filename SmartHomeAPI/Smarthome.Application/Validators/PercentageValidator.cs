@@ -1,0 +1,16 @@
+﻿using FluentValidation;
+
+namespace Smarthome.Application.Validators;
+
+public class PercentageValidator : AbstractValidator<double>
+{
+    // in domeinobject class constructor en dan exception gooien als die niet klopt domainexception
+    public PercentageValidator()
+    {
+        RuleFor(percentage => percentage)
+            .InclusiveBetween(1, 100)
+            .WithMessage(
+                "Invalid percentage value. The humidity percentage should be between 0 and 100."
+            );
+    }
+}

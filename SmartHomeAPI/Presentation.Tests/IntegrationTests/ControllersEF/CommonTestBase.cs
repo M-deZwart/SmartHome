@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Domain.Domain.Entities;
-using Infrastructure.Infrastructure.EF;
+using Smarthome.Domain.Entities;
+using Smarthome.Infrastructure.EF;
 
 public class CommonTestBase : IDisposable
 {

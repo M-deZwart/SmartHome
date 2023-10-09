@@ -1,11 +1,11 @@
-﻿using Application.Application.Exceptions;
-using Domain.Domain.Contracts;
-using Domain.Domain.Entities;
+﻿using Smarthome.Application.Exceptions;
+using Smarthome.Domain.Contracts;
+using Smarthome.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
 using Infrastructure.Tests.IntegrationTests.TestInfra;
 using MongoDB.Driver;
-using SmartHomeAPI.Infrastructure.Repositories;
+using Smarthome.Infrastructure.Repositories;
 
 namespace Infrastructure.Tests.IntegrationTests.Mongo;
 

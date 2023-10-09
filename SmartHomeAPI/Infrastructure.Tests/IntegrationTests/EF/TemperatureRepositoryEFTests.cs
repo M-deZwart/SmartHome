@@ -1,8 +1,8 @@
-﻿using Application.Application.Exceptions;
-using Domain.Domain.Entities;
+﻿using Smarthome.Application.Exceptions;
+using Smarthome.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
-using Infrastructure.Infrastructure.Repositories;
+using Smarthome.Infrastructure.Repositories;
 
 namespace Infrastructure.Tests.IntegrationTests;
 

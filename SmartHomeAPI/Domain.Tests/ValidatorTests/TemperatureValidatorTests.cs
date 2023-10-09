@@ -1,6 +1,6 @@
-﻿using Domain.Domain.Exceptions;
-using Domain.Domain.Validators;
+﻿using Smarthome.Domain.Exceptions;
 using Domain.Tests.Builders;
+using Smarthome.Domain.Validators;
 using FluentAssertions;
 
 namespace Domain.Tests.ValidatorTests;

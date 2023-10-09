@@ -1,12 +1,7 @@
-﻿using Application.Application.ApiMappers;
-using Application.Application.DTOs;
+﻿using Smarthome.Application.ApiMappers;
+using Smarthome.Application.DTOs;
 using Domain.Tests.Builders;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Tests.MapperTests;
 

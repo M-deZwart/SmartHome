@@ -1,4 +1,4 @@
-﻿using Application.Application.Validators;
+﻿using Smarthome.Application.Validators;
 using FluentAssertions;
 
 namespace Application.Tests.ValidatorTests;

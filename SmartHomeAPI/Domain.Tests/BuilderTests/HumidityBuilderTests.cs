@@ -1,4 +1,4 @@
-﻿using Domain.Domain.Entities;
+﻿using Smarthome.Domain.Entities;
 using Domain.Tests.Builders;
 using FluentAssertions;
 

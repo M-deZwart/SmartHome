@@ -1,15 +1,13 @@
-﻿using Infrastructure.Infrastructure.Repositories;
-using Infrastructure.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Application.Application.Contracts;
-using SmartHomeAPI.Controllers;
-using Application.Application.ApiMappers;
-using Application.Application.Services;
+﻿using Smarthome.Application.Contracts;
+using Smarthome.Presentation.Controllers;
+using Smarthome.Application.ApiMappers;
+using Application.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Domain.Domain.Entities;
-using Application.Application.DTOs;
+using Smarthome.Application.DTOs;
 using Domain.Tests.Builders;
+using Smarthome.Domain.Entities;
+using Smarthome.Infrastructure.Repositories;
 
 namespace Presentation.Tests.IntegrationTests.ControllersEF
 {
