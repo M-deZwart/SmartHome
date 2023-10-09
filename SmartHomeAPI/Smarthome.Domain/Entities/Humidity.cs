@@ -6,7 +6,7 @@ namespace Smarthome.Domain.Entities
 {
     public class Humidity
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
         public double Percentage { get; private set; }
         public DateTime Date { get; private set; }
 

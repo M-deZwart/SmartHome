@@ -50,15 +50,9 @@ namespace Smarthome.Infrastructure.EF
                 .WithMany(s => s.Humidities)
                 .HasForeignKey(h => h.SensorId);
 
-            modelBuilder
-                .Entity<Sensor>()
-                .HasData(new Sensor(title: "LivingRoom") { Id = Guid.NewGuid() });
-            modelBuilder
-                .Entity<Sensor>()
-                .HasData(new Sensor(title: "Bedroom") { Id = Guid.NewGuid() });
-            modelBuilder
-                .Entity<Sensor>()
-                .HasData(new Sensor(title: "WorkSpace") { Id = Guid.NewGuid() });
+            modelBuilder.Entity<Sensor>().HasData(Sensor.CreateSensor("LivingRoom"));
+            modelBuilder.Entity<Sensor>().HasData(Sensor.CreateSensor("Bedroom"));
+            modelBuilder.Entity<Sensor>().HasData(Sensor.CreateSensor("WorkSpace"));
 
             base.OnModelCreating(modelBuilder);
         }
