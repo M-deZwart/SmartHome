@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Smarthome.Infrastructure.EF;
 
@@ -10,9 +11,11 @@ using Smarthome.Infrastructure.EF;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SmartHomeContext))]
-    partial class SmartHomeContextModelSnapshot : ModelSnapshot
+    [Migration("20231009111859_PrivateIdSet")]
+    partial class PrivateIdSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.8");
